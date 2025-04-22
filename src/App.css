@@ -1,13 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap');
+
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display:flex;
 }
+.Jacques-Francois {
+  font-family: 'Jacques Francois', serif;
+}
+.Manrope {
+  font-family: 'Manrope', sans-serif;
+}
+.Navbar-content{
+  font-family: 'Manrope', sans-serif;
+  color: black;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
+  padding-right: 0.75rem;
+}
+.Section-card{
+  border: 0.5px solid;
+  border-radius: 0.25rem;
+  border-color: black;
+}
+
+
+
+
+
+
+
 
 .logo {
   height: 6em;
-  padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -25,18 +51,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

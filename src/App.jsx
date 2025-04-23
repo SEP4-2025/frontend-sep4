@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import growMateLogo from './assets/GrowMate_Logo_Transparent.png'
 import supportIcon from './assets/mdi--support.svg'
@@ -14,9 +11,9 @@ function App() {
 
   return (
     Navbar()
-  )
+  ) //navbar usage
 }
-function Navbar() {
+function Navbar() { //navar creation 
   return (
     <>
       <div className="navbar bg-navbar-color text-white flex  flex-col items-center text- h-screen border-r-1 border-black">

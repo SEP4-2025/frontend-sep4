@@ -1,9 +1,10 @@
 import { SensorOverview } from '../components/SensorOverview';
+import Sensor_card from '../components/Sensor-cards'
 
 function Dashboard() {
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <Sensor_card />
       <SensorOverview />
     </div>
   );

@@ -86,3 +86,5 @@ frontend-sep4/
 ## Connecting to Backend
 
 The frontend communicates with the backend services. Ensure the backend services are running when developing or testing the full application stack.
+
+-- to be updated

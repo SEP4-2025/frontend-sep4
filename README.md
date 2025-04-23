@@ -16,8 +16,6 @@ The project follows a standard React + Vite application structure:
   - `src/index.css` - Contains global CSS and theme definitions
 - `public/` - Contains static files that will be served directly
 - `vite.config.js` - Configuration for the Vite build tool with tailwind integration
-- `tailwind.config.js` - Configuration for Tailwind CSS
-
 ### Styling
 
 The application uses Tailwind CSS for styling with:

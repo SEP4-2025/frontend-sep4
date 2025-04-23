@@ -76,15 +76,13 @@ frontend-sep4/
 ├── public/             # Static files
 ├── src/                # Source files
 │   ├── assets/         # Images, icons, etc.
-│   ├── components/     # Reusable React components
 │   ├── App.css         # Component-specific styles
 │   ├── App.jsx         # Main application component
 │   ├── index.css       # Global styles and Tailwind directives
 │   └── main.jsx        # Application entry point
 ├── .eslintrc.json      # ESLint configuration
 ├── package.json        # Dependencies and scripts
-├── vite.config.js      # Vite configuration
-└── tailwind.config.js  # Tailwind CSS configuration
+├── vite.config.js      # Vite configuration with tailwind
 ```
 
 ## Connecting to Backend

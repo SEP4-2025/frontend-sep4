@@ -82,6 +82,7 @@ frontend-sep4/
 ├── package.json        # Dependencies and scripts
 ├── vite.config.js      # Vite configuration with tailwind
 ```
+-- to be changed
 
 ## Connecting to Backend
 

@@ -24,6 +24,9 @@ jobs:
       - name: Lint code
         run: npm run lint
 
+      - name: Install TypeScript
+        run: npm install --no-save typescript
+
       - name: Type check
         run: npx tsc --noEmit
 

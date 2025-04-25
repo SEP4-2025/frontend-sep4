@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 @theme{
-  --color-navbar-color: #E8F5E9;
+  --color-navbar-color: #E8F5E9
   --color-support-icon-color: #B6F2D0 
-} //Theme is added here in gloval css file, instead of tailwind config like it was used to in prev version
+} /*Theme is added here in global css file, instead of tailwind config like it was used to in prev version */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

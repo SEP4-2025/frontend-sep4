@@ -1,6 +1,7 @@
 import { SensorOverview } from '../components/SensorOverview';
 import Name_card from '../components/Name-card';
 import Sensor_card from '../components/Sensor-cards'
+import Notification_centre from '../components/Notification-centre'
 
 function Dashboard() {
   return (
@@ -8,6 +9,7 @@ function Dashboard() {
       <Name_card />
       <Sensor_card />
       <SensorOverview />
+      <Notification_centre />
     </div>
   );
 }

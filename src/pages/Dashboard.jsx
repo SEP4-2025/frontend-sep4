@@ -11,7 +11,7 @@ function Dashboard() {
    * TODO: Fetch this data from the backend
    */
   const plantMetrics = [
-    { name: 'Temperature', unit: 'ºC', value: 28, optimal: 25 },
+    { name: 'Temperature', unit: 'ºC', value: 27, optimal: 25 },
     { name: 'Light Intensity', unit: 'lux', value: 18000, optimal: 20000 },
     { name: 'Humidity', unit: '%', value: 45, optimal: 60 },
   ];

@@ -3,7 +3,6 @@ import Name_card from '../components/Name-card';
 import Sensor_card from '../components/Sensor-cards'
 import { AIModelPredictions } from '../components/AIModelPredictions';
 import Notification_centre from '../components/Notification-centre'
-import { AIModelPredictions } from '../components/AIModelPredictions';
 
 
 function Dashboard() {
@@ -23,9 +22,10 @@ function Dashboard() {
       <Name_card />
       <Sensor_card />
       <SensorOverview />
-      <AIModelPredictions metrics={plantMetrics} />
+      <div className="flex ">
       <Notification_centre />
       <AIModelPredictions metrics={plantMetrics} />
+      </div>
     </div>
   );
 }

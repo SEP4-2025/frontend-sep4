@@ -14,7 +14,7 @@ function Navbar() {
   const isActive = (path) => location.pathname === path;
   
   return (
-    <div className="navbar bg-navbar-color text-white flex flex-col items-center h-full w-64 flex-shrink-0 border-r border-black">
+    <div className="w-64 bg-navbar-color text-white flex flex-col items-center p-4 min-h-full">
       <img src={growMateLogo} className="logo" alt="GrowMate Logo" />
       <h1 className='Jacques-Francois text-black text-center text-xl'> GrowMate </h1>
       <div className="border-b border-black w-4/5 mx-auto mt-1" />

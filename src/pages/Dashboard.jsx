@@ -2,6 +2,8 @@ import { SensorOverview } from '../components/SensorOverview';
 import Name_card from '../components/Name-card';
 import Sensor_card from '../components/Sensor-cards'
 import { AIModelPredictions } from '../components/AIModelPredictions';
+import Notification_centre from '../components/Notification-centre'
+
 
 function Dashboard() {
   /* 
@@ -21,6 +23,7 @@ function Dashboard() {
       <Sensor_card />
       <SensorOverview />
       <AIModelPredictions metrics={plantMetrics} />
+      <Notification_centre />
     </div>
   );
 }

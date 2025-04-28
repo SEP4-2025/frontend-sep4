@@ -3,7 +3,7 @@ import temperatureIcon from '../assets/solar--temperature-bold.svg';
 function Notification_card() {
 
     return (
-    <div className="border border-gray-400 rounded-xl p-2 bg-white w-full flex flex-col">
+    <div className="border border-gray-400 rounded-xl p-2 bg-white w-full flex flex-col z-51">
         <div className="flex justify_start">
             <img src={temperatureIcon} alt="temperature icon" width="23" height="2" />
                 <div className='text-left pl-2'>

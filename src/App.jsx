@@ -10,9 +10,11 @@ import Dashboard from './pages/Dashboard'
 function App() {
   return (
     <Router>
-      <div className="grid grid-cols-[auto_1fr] min-h-screen">
-        <Navbar />
-          <main className="overflow-y-auto h-screen">
+      <div className="flex min-h-screen">
+        <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
+          <Navbar />
+        </div>
+        <main className="flex-1 overflow-y-auto h-screen">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />

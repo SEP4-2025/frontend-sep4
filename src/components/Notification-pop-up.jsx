@@ -12,7 +12,7 @@ function Notification_pop_up({ isOpen, onClose }) {
     };
 
     return (
-        <div className='fixed inset-0 bg-white border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 mx-auto w-2/3 p-2 m-15'>
+        <div className='fixed inset-0 bg-white border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 mx-auto w-2/3 p-2 m-15 z-50'>
             <div className='flex flex-col p-2 gap-4'>
                 <div className='text-left'>
                     <h1 className='Manrope text-xl text-black font-bold'>Notification Centre</h1>

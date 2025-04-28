@@ -22,7 +22,7 @@ export function AIModelPredictions({ metrics }) {
   };
 
   return (
-    <div className="mx-auto my-[2vh] p-[3%] w-[66%] bg-green-50 rounded-xl border border-black shadow-lg">
+    <div className="ml-[1%] mt-[1%] p-[3%] w-[100%] bg-green-50 rounded-xl border border-black shadow-lg">
       {/* Header */}
       <div className="mb-[0%]">
         <h2 className="text-[clamp(1rem,3%,1.5rem)] font-bold leading-tight">

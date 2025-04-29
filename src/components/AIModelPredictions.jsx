@@ -22,13 +22,13 @@ export function AIModelPredictions({ metrics }) {
   };
 
   return (
-    <div className="ml-[1%] mt-[1%] p-[3%] w-[100%] bg-green-50 rounded-xl border border-black shadow-lg">
+    <div className="ml-[1%] mt-[2%] p-[3%] pt-3 w-[100%] bg-green-50 rounded-xl border border-black shadow-lg">
       {/* Header */}
       <div className="mb-[0%]">
-        <h2 className="text-[clamp(1rem,3%,1.5rem)] font-bold leading-tight">
+        <h2 className="Manrope text-xl font-bold">
           AI model predictions
         </h2>
-        <p className="text-[clamp(0.75rem,2%,1rem)] text-gray-600 mt-[1%]">
+        <p className="Manrope text-sm text-gray-500 mt-[1%] pb-3">
           Optimal growth metrics for your plant
         </p>
       </div>

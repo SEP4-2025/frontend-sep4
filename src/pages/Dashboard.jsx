@@ -1,22 +1,30 @@
-import { SensorOverview } from '../components/SensorOverview';
-import Name_card from '../components/Name-card';
-import Sensor_card from '../components/Sensor-cards'
+import { useState, useEffect } from 'react';
+import { compileDashboardData } from '../utils/dataCompiler';
+import Name_card             from '../components/Name-card';
+import Sensor_card           from '../components/Sensor-cards';
+import { SensorOverview }    from '../components/SensorOverview';
+import Notification_centre   from '../components/Notification-centre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
-import Notification_centre from '../components/Notification-centre'
 
+const dummyMetrics = [
+  { name: 'Temperature',     unit: 'ºC',  value: 23,   optimal: 25 },
+  { name: 'Light Intensity', unit: 'lux', value: 15000, optimal: 20000 },
+  { name: 'Humidity',        unit: '%',   value: 45,   optimal: 60 },
+];
 
 function Dashboard() {
-  /* 
-   * Input data for the AI model predictions
-   * Right now, this is hardcoded
-   * TODO: Fetch this data from the backend
-   */
-  const plantMetrics = [
-    { name: 'Temperature', unit: 'ºC', value: 27, optimal: 25 },
-    { name: 'Light Intensity', unit: 'lux', value: 18000, optimal: 20000 },
-    { name: 'Humidity', unit: '%', value: 45, optimal: 60 },
-  ];
-  
+  const [metrics, setMetrics] = useState([]);
+
+  useEffect(() => {
+    if (false) { // Comment this line to use the real data
+      setMetrics(dummyMetrics); // Comment this line to use the real data
+    } else {
+      compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
+        .then(({ metrics }) => setMetrics(metrics))
+        .catch(console.error);
+    }
+  }, []);
+
   return (
     <div className="p-4">
       <Name_card />
@@ -24,11 +32,10 @@ function Dashboard() {
       <SensorOverview />
       <div className="flex ">
       <Notification_centre />
-      <AIModelPredictions metrics={plantMetrics} />
+      <AIModelPredictions metrics={metrics} />
       </div>
     </div>
   );
 }
-
 
 export default Dashboard;

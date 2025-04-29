@@ -13,8 +13,8 @@ export function SensorOverview() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
         <div>
-          <h2 className="text-xl font-bold">Sensor Overview</h2>
-          <p className="text-sm text-gray-500">Overview parameters</p>
+          <h2 className="Manrope text-xl font-bold">Sensor Overview</h2>
+          <p className="Manrope text-sm text-gray-500">Overview parameters</p>
         </div>
         <div className="flex items-center gap-2">
           <img src={calendarIcon} className="w-5 h-5" alt="Calendar" />

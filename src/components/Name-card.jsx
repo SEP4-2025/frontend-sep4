@@ -1,6 +1,6 @@
 import PenLogo from '../assets/pen-icon.svg';
 import SaveLogo from '../assets/saveIcon.svg';
-import React, { use, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 function NameCard() {
   const [name, setName] = useState("My Greenhouse"); 
   // later we will fetch the name from the database and we will need to add a functionality so save changes

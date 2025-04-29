@@ -14,12 +14,14 @@ const _dummyMetrics = [
 
 function Dashboard() {
   const [metrics, setMetrics] = useState([]);
+  const [overviewData, setOverviewData] = useState([]);
 
   useEffect(() => {
-      compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
-        .then(({ metrics }) => setMetrics(metrics))
-        .catch(console.error);
-  }, []);
+    compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
+      .then(({ metrics }) => setMetrics(metrics))
+      .then(({ overviewData }) => setOverviewData(overviewData))
+      .catch(console.error);
+}, []);
 
   return (
     <div className="p-4">
@@ -27,7 +29,7 @@ function Dashboard() {
       <Sensor_card />
       <SensorOverview />
       <div className="flex ">
-      <Notification_centre />
+      <Notification_centre overviewData={overviewData} />
       <AIModelPredictions metrics={metrics} />
       </div>
     </div>

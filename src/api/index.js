@@ -27,7 +27,7 @@ export async function fetchNotifications(limit = 10) {
   return res.json();
 }
 
-export async function fetchNotificationById(id) {
+export async function _fetchNotificationById(id) {
   const res = await fetch(`${BASE_URL}/notifications/${id}`);
   if (!res.ok) throw new Error(`Notification ${id} not found`);
   return res.json();

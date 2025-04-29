@@ -2,7 +2,7 @@ import {
   fetchCurrentMeasurement,
   fetchSensorHistory,
   fetchNotifications,
-  fetchNotificationById,
+  _fetchNotificationById,
   fetchAIPrediction
 } from '../api';
 

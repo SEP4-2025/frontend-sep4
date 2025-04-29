@@ -13,24 +13,25 @@ const _dummyMetrics = [
 ];
 
 function Dashboard() {
-  const [metrics, setMetrics] = useState([]);
-  const [overviewData, setOverviewData] = useState([]);
+  // const [metrics, setMetrics] = useState([]);
+  const [lightSensorData, setlightSensorData,] = useState([]);
 
   useEffect(() => {
-    compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
-      .then(({ metrics }) => setMetrics(metrics))
-      .then(({ overviewData }) => setOverviewData(overviewData))
+    compileDashboardData()
+      // .then(({ metrics }) => setMetrics(metrics))
+      .then(({ lightSensorData }) => setlightSensorData(lightSensorData))
       .catch(console.error);
 }, []);
 
+console.log(lightSensorData);
   return (
     <div className="p-4">
       <Name_card />
-      <Sensor_card />
+      <Sensor_card lightSensorData={lightSensorData}/>
       <SensorOverview />
       <div className="flex ">
-      <Notification_centre overviewData={overviewData} />
-      <AIModelPredictions metrics={metrics} />
+      <Notification_centre />
+      <AIModelPredictions metrics={_dummyMetrics} />
       </div>
     </div>
   );

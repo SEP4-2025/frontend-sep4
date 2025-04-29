@@ -19,7 +19,7 @@ export async function fetchSensorHistory(sensorType, untilDate) {
 
 /**
  * Notifications
- * { id, message, timestamp, type }
+ * { icon, title, description, timestamp, importance }
  */
 export async function fetchNotifications(limit = 10) {
   const res = await fetch(`${BASE_URL}/notifications?limit=${limit}`);

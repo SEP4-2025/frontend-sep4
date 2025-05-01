@@ -3,7 +3,26 @@ import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import waterLevelIcon from '../assets/hugeicons--humidity.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 
-function Sensor_card() {
+function Sensor_card({ lightSensorData}) {
+    // const getSensorData = (sensorType) => {
+    //     if (!Array.isArray(overviewData)) {
+    //         return {
+    //             current: { value: 0 },
+    //             difference: 0
+    //         };
+    //     }
+    //     const sensor = overviewData.find(data => data.type === sensorType);
+    //     return{
+    //         current : sensor.current.value || 0,
+    //         difference: sensor.history.length > 1
+    //         ? sensor.current.value - sensor.history[1].value
+    //         : 0
+    //     };
+    // };
+    // const temperatureData = getSensorData('temperature');
+    // const humidityData = getSensorData('humidity');
+    // const lightIntensityData = getSensorData('lightIntensity');
+    // we need to somehow get the water level data from the database, for now we will just use a dummy value
     return (
         <div className='flex flex-row justify-evenly '>
             <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/5'>
@@ -35,8 +54,8 @@ function Sensor_card() {
                     <p className='Manrope text-xl'>Light intensity</p>
                     <img src={lightIntensityIcon} className="ml-auto" alt="light intensity icon" width="23" height="2" />
                 </div>
-                <p className='Manrope text-l font-bold'>12,500 lux</p>
-                <p className='Manrope text-xs text-gray-400'>Optimal range</p>
+                <p className='Manrope text-l font-bold'>{lightSensorData.value} lux</p>
+                <p className='Manrope text-xs text-gray-400'>Optimal Range</p>
             </div>
         </div>
     );

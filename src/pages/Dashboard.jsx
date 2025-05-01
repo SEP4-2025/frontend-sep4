@@ -12,7 +12,7 @@ import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import waterIcon from '../assets/lets-icons--water.svg';
 
-const dummyMetrics = [
+const _dummyMetrics = [
   { name: 'Temperature',     unit: 'ºC',  value: 23,   optimal: 25 },
   { name: 'Light Intensity', unit: 'lux', value: 15000, optimal: 20000 },
   { name: 'Humidity',        unit: '%',   value: 45,   optimal: 60 },
@@ -44,26 +44,25 @@ const dummyNotifications = [
 
 function Dashboard() {
   const [metrics, setMetrics] = useState([]);
-  const [notifications, setNotifications] = useState([]);
 
-  /*useEffect(() => {
-    compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
-      .then(({ metrics, notifications }) => {
-        setMetrics(metrics);
-        setNotifications(notifications); 
-      })
-    .catch(console.error);
-        
-  }, []);*/
+  useEffect(() => {
+    if (false) { // Comment this line to use the real data
+      setMetrics(dummyMetrics); // Comment this line to use the real data
+    } else {
+      compileDashboardData({ untilDate: '2025-04-29', notificationLimit: 5 })
+        .then(({ metrics }) => setMetrics(metrics))
+        .catch(console.error);
+    }
+  }, []);
 
-
+console.log(lightSensorData);
   return (
     <div className="p-4">
       <Name_card />
-      <Sensor_card />
+      <Sensor_card lightSensorData={lightSensorData}/>
       <SensorOverview />
       <div className="flex ">
-      <Notification_centre notifications={notifications}/>
+      <Notification_centre />
       <AIModelPredictions metrics={metrics} />
       </div>
     </div>

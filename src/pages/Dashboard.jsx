@@ -5,6 +5,7 @@ import Sensor_card           from '../components/Sensor-cards';
 import { SensorOverview }    from '../components/SensorOverview';
 import Notification_centre   from '../components/Notification-centre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
+import ClockCard              from '../components/Clock-card';
 
 const _dummyMetrics = [
   { name: 'Temperature',     unit: 'ºC',  value: 23,   optimal: 25 },
@@ -26,7 +27,10 @@ function Dashboard() {
 console.log(lightSensorData);
   return (
     <div className="p-4">
+      <div className='flex flex-row justify-between'>
       <Name_card />
+      <ClockCard />
+      </div>
       <Sensor_card lightSensorData={lightSensorData}/>
       <SensorOverview />
       <div className="flex ">

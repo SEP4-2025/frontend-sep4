@@ -13,20 +13,25 @@ const _dummyMetrics = [
 ];
 
 function Dashboard() {
-  // const [metrics, setMetrics] = useState([]);
   const [lightSensorData, setlightSensorData,] = useState([]);
+  const [greenhouseData, setGreenhouseData] = useState([]);
 
   useEffect(() => {
-    compileDashboardData()
-      // .then(({ metrics }) => setMetrics(metrics))
-      .then(({ lightSensorData }) => setlightSensorData(lightSensorData))
-      .catch(console.error);
+    const gardenerId = 1; // TODO: We will need to pass the information about the gardenerId from the login page to the dashboard page, for now it is hardcoded
+    compileDashboardData(gardenerId)
+      .then((data) => {
+        setlightSensorData(data.lightSensorData);
+        setGreenhouseData(data.greenhouseData);
+      })
+      .catch((error) => {
+        console.error('Error fetching dashboard data:', error);
+      });
 }, []);
-
+console.log(greenhouseData);
 console.log(lightSensorData);
   return (
     <div className="p-4">
-      <Name_card />
+      <Name_card greenhouseData= {greenhouseData}/>
       <Sensor_card lightSensorData={lightSensorData}/>
       <SensorOverview />
       <div className="flex ">

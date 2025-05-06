@@ -39,6 +39,7 @@ function NameCard({ greenhouseData }) {
     setIsSaving(false);
   }
 
+  
   const handleEditToggle = () => {
     if (isEditing) {
       setIsEditing(false);

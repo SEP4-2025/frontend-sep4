@@ -1,22 +1,37 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 
 // Components
 import Navbar from './components/Navbar'
 
 // Pages
 import Dashboard from './pages/Dashboard'
+import LoginPage from './pages/loginPage'
 
 function App() {
   return (
     <Router>
+      <AppContent />
+    </Router>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+
+  const shouldHideNavbar = location.pathname === "/";
+
+  return (
       <div className="flex min-h-screen">
-        <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
-          <Navbar />
-        </div>
+      {!shouldHideNavbar && (
+          <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
+            <Navbar />
+          </div>
+        )}
         <main className="flex-1 overflow-y-auto h-screen">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
+            <Routes>ç
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/dashboard" elemnt={<Dashboard />} />
               <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />
               <Route path="/sensor-view" element={<div className="p-4"><h1>Sensor View</h1><p>Sensor view page coming soon</p></div>} />
               <Route path="/gallery" element={<div className="p-4"><h1>Gallery</h1><p>Gallery page coming soon</p></div>} />
@@ -25,7 +40,6 @@ function App() {
             </Routes>
         </main>
       </div>
-    </Router>
   )
 }
 

@@ -20,7 +20,8 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  const shouldHideNavbar = location.pathname === "/";
+  const hideNavbarRoutes = ["/", "/loginPage"];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (
       <div className="flex min-h-screen">

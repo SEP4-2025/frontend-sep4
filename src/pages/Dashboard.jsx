@@ -16,6 +16,9 @@ const _dummyMetrics = [
 
 function Dashboard() {
   const [lightSensorData, setlightSensorData,] = useState([]);
+  const [temperatureSensorData, setTemperatureSensorData] = useState([]);
+  const [humiditySensorData, setHumiditySensorData] = useState([]);
+  const [soilMoistureSensorData, setSoilMoistureSensorData] = useState([]);
   const [greenhouseData, setGreenhouseData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,6 +27,9 @@ function Dashboard() {
     compileDashboardData(gardenerId)
       .then((data) => {
         setlightSensorData(data.lightSensorData);
+        setTemperatureSensorData(data.temperatureSensorData);
+        setHumiditySensorData(data.humiditySensorData);
+        setSoilMoistureSensorData(data.soilMoistureSensorData);
         setGreenhouseData(data.greenhouseData);
         setIsLoading(false);
       })
@@ -42,7 +48,7 @@ function Dashboard() {
       <Name_card greenhouseData= {greenhouseData}/>
       <ClockCard />
       </div>
-      <Sensor_card lightSensorData={lightSensorData}/>
+      <Sensor_card lightSensorData={lightSensorData} temperatureSensorData={temperatureSensorData} humiditySensorData={humiditySensorData} soilMoistureSensorData={soilMoistureSensorData}/>
       <SensorOverview />
       <div className="flex ">
       <Notification_centre />

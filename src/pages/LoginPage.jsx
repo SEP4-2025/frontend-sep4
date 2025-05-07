@@ -4,19 +4,38 @@ import { useNavigate } from 'react-router-dom';
 import loginBackground from '../assets/login_background.jpeg';
 import logo from '../assets/GrowMate_Logo_Transparent.png';
 
-function LoginPage () {
+function LoginPage({ setIsAuthenticated }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
-          alert("Please fill in both email and password.");
-          return;
+            alert("Please fill in both email and password.");
+            return;
         }
 
-        navigate('/dashboard');
-};
+        try {
+            const response = await fetch("https://webapi-service-68779328892.europe-north2.run.app/auth/login", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: email, password }) // assuming email = username
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                sessionStorage.setItem("token", data.token);
+                setIsAuthenticated(true);
+                navigate('/dashboard');
+            } else {
+                alert("Login failed. Check your credentials.");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("Could not connect to the server.");
+        }
+    };
+
     return (
         <div className='flex flex-col md:flex-row bg-[#EAF5E9] min-h-screen'>
             <div className="w-full md:w-2/3 h-64 md:h-auto relative">
@@ -35,29 +54,28 @@ function LoginPage () {
                         onChange={(e) => setEmail(e.target.value)}
                         className="border p-2 rounded"
                         placeholder="Insert Email"
-                        />
+                    />
                     <p>Password</p>
                     <input
-                        type="text"
+                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="border p-2 rounded"
                         placeholder="Insert Password"
-                        />
-                        <button
-                            onClick={handleLogin} //change when logic is actually working
-                            className="Manrope bg-[#282828] hover:bg-gray-500 text-white py-2 px-4 rounded"
-                        >
-                            Login
-                        </button>
-                        <a href="" className="text-blue-600 underline hover:text-blue-800">
-                            Forgot your password?
-                        </a>
-                    
+                    />
+                    <button
+                        onClick={handleLogin}
+                        className="Manrope bg-[#282828] hover:bg-gray-500 text-white py-2 px-4 rounded"
+                    >
+                        Login
+                    </button>
+                    <a href="#" className="text-blue-600 underline hover:text-blue-800">
+                        Forgot your password?
+                    </a>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default LoginPage;

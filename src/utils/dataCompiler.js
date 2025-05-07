@@ -7,13 +7,17 @@ import {
 export async function compileDashboardData(gardenerId) {
   // Geting the data from the database
   const greenhouseData = await fetchGrenhouseDataByGardenerId(gardenerId)
-
-  // Filtering the data to get the light sensor data
-  let lightSensorData = await getSensorDataLastest('light')
+  const lightSensorData = await getSensorDataLastest('light')
+  const temperatureSensorData = await getSensorDataLastest('temperature')
+  const humiditySensorData = await getSensorDataLastest('humidity')
+  const soilMoistureSensorData = await getSensorDataLastest('soilMoisture')
   
 
   return {
     lightSensorData,
+    temperatureSensorData,
+    humiditySensorData,
+    soilMoistureSensorData,
     greenhouseData
   };
 }

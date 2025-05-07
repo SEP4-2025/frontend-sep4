@@ -43,7 +43,6 @@ function PasswordResetForm({ onShowLogin }) {
                 setOldPassword(""); 
                 setNewPassword("");
                 setConfirmPassword("");
-                // onShowLogin(); 
             } else {
                 let errorDetail = responseText;
                 try {

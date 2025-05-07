@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/Navbar'
 
 // Pages
-import Dashboard from './pages/dashboard'
-import LoginPage from './pages/loginPage'
+import Dashboard from './pages/Dashboard'
+import LoginPage from './pages/LoginPage'
 
 function App() {
   return (

@@ -92,7 +92,7 @@ const SettingsPage = () => {
               <IconWrapper><img src={fontIconPath} alt="Font Size" className="w-full h-full" /></IconWrapper>
               <div className="ml-4">
                 <p className="text-lg font-medium text-gray-800">Font size: {fontSize}</p>
-                <p className="text-sm text-gray-500">Temperature exceeded normal level</p>
+                <p className="text-sm text-gray-500">Adjust the font size to improve readability and comfort.</p>
               </div>
             </div>
             <div className="relative">

@@ -29,7 +29,7 @@ function AppContent() {
           </div>
         )}
         <main className="flex-1 overflow-y-auto h-screen">
-            <Routes>ç
+            <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />

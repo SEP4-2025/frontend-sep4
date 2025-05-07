@@ -19,7 +19,7 @@ function Navbar() {
       <h1 className='Jacques-Francois text-black text-center text-xl'> GrowMate </h1>
       <div className="border-b border-black w-4/5 mx-auto mt-1" />
       
-      <Link to="/" className={`flex flex-row w-full justify-start pl-3 py-2 ${isActive('/') ? 'bg-green-100' : 'hover:bg-green-50'}`}>
+      <Link to="/dashboard" className={`flex flex-row w-full justify-start pl-3 py-2 ${isActive('/') ? 'bg-green-100' : 'hover:bg-green-50'}`}>
         <img src={homeIcon} className='' alt="Dashboard-icon" width="20" height="20" />
         <p className='Navbar-content self-start p-2'>Dashboard</p>
       </Link>

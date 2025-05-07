@@ -18,11 +18,11 @@ function LoginPage () {
         navigate('/dashboard');
 };
     return (
-        <div className='flex flex-row bg-[#EAF5E9]'>
-            <div className="relative w-2/3 h-screen">
-                <img src={loginBackground} alt="login_background" className='absolute top-0 left-0 w-full h-full object-cover' />
+        <div className='flex flex-col md:flex-row bg-[#EAF5E9] min-h-screen'>
+            <div className="w-full md:w-2/3 h-64 md:h-auto relative">
+                <img src={loginBackground} alt="login_background" className='top-0 left-0 w-full h-full object-cover' />
             </div>
-            <div className='flex flex-col gap-6 w-1/3 p-6'>
+            <div className='w-full md:w-1/3 flex flex-col justify-center items-center p-6'>
                 <div className='text-center flex items-center flex-col justify-center'>
                     <img src={logo} alt="logo" className='h-40 w-40' />
                     <h1 className='Jacques-Francois text-2xl'>Grow smarter, not harder</h1>
@@ -50,7 +50,7 @@ function LoginPage () {
                         >
                             Login
                         </button>
-                        <a href="dashboard" className="text-blue-600 underline hover:text-blue-800">
+                        <a href="" className="text-blue-600 underline hover:text-blue-800">
                             Forgot your password?
                         </a>
                     

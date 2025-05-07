@@ -1,8 +1,7 @@
 import PenLogo from '../assets/pen-icon.svg';
 import SaveLogo from '../assets/saveIcon.svg';
 import React, { useState, useRef, useEffect } from 'react';
-import { updateGreenhouseData } from '../api';
-
+import { updateGreenhouseName } from '../api';
 function NameCard({ greenhouseData }) {
   const [name, setName] = useState(greenhouseData?.name);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,7 +28,7 @@ function NameCard({ greenhouseData }) {
     }
     else{
       try{
-        await updateGreenhouseData(greenhouseData.id, name);
+        await updateGreenhouseName(greenhouseData.id, name);
         setIsEditing(false);
       }
       catch (error){

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import loginBackground from '../assets/login_background.jpeg';
 import logo from '../assets/GrowMate_Logo_Transparent.png';
@@ -6,7 +7,16 @@ import logo from '../assets/GrowMate_Logo_Transparent.png';
 function LoginPage () {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
+    const handleLogin = () => {
+        if (!email || !password) {
+          alert("Please fill in both email and password.");
+          return;
+        }
+
+        navigate('/dashboard');
+};
     return (
         <div className='flex flex-row bg-[#EAF5E9]'>
             <div className="relative w-2/3 h-screen">
@@ -35,7 +45,7 @@ function LoginPage () {
                         placeholder="Insert Password"
                         />
                         <button
-                            //onClick={checkCredentials}
+                            onClick={handleLogin} //change when logic is actually working
                             className="Manrope bg-[#282828] hover:bg-gray-500 text-white py-2 px-4 rounded"
                         >
                             Login

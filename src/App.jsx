@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/Navbar'
 
 // Pages
-import Dashboard from './pages/Dashboard'
+import Dashboard from './pages/dashboard'
 import LoginPage from './pages/loginPage'
 
 function App() {
@@ -31,7 +31,7 @@ function AppContent() {
         <main className="flex-1 overflow-y-auto h-screen">
             <Routes>ç
               <Route path="/" element={<LoginPage />} />
-              <Route path="/dashboard" elemnt={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />
               <Route path="/sensor-view" element={<div className="p-4"><h1>Sensor View</h1><p>Sensor view page coming soon</p></div>} />
               <Route path="/gallery" element={<div className="p-4"><h1>Gallery</h1><p>Gallery page coming soon</p></div>} />

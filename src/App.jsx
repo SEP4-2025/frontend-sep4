@@ -9,6 +9,8 @@ import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
+import StartPage from './pages/StartPage'
+
 
 function App() {
   return (
@@ -22,9 +24,11 @@ function AppContent() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
 
-  const shouldHideNavbar = location.pathname === "/";
+  const hideNavbarRoutes = ["/", "/loginPage"];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (
+
     <div className="flex min-h-screen">
       {!shouldHideNavbar && isAuthenticated && (
         <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
@@ -33,8 +37,18 @@ function AppContent() {
       )}
       <main className="flex-1 overflow-y-auto h-screen">
         <Routes>
-          <Route
+        <Route
             path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/loginPage" replace />
+              ) : (
+                <StartPage/>
+              )
+            }
+          />
+          <Route
+            path="/loginPage"
             element={
               isAuthenticated ? (
                 <Navigate to="/dashboard" replace />
@@ -49,7 +63,7 @@ function AppContent() {
               isAuthenticated ? (
                 <Dashboard />
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />
@@ -62,7 +76,7 @@ function AppContent() {
                   <p>Water managment page coming soon</p>
                 </div>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />
@@ -75,7 +89,7 @@ function AppContent() {
                   <p>Sensor view page coming soon</p>
                 </div>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />
@@ -88,7 +102,7 @@ function AppContent() {
                   <p>Gallery page coming soon</p>
                 </div>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />
@@ -98,7 +112,7 @@ function AppContent() {
               isAuthenticated ? (
                 <SettingsPage />
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />
@@ -111,7 +125,7 @@ function AppContent() {
                   <p>About us page coming soon</p>
                 </div>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/loginPage" replace />
               )
             }
           />

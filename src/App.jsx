@@ -6,7 +6,8 @@ import Navbar from './components/Navbar'
 
 // Pages
 import Dashboard from './pages/Dashboard'
-import LoginPage from './pages/LoginPage'
+import LoginPage from './pages/loginPage'
+import StartPage from './pages/StartPage'
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function AppContent() {
         )}
         <main className="flex-1 overflow-y-auto h-screen">
             <Routes>
-              <Route path="/" element={<LoginPage />} />
+              <Route path="/" element={<StartPage />} />
+              <Route path="/loginPage" element={<LoginPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />
               <Route path="/sensor-view" element={<div className="p-4"><h1>Sensor View</h1><p>Sensor view page coming soon</p></div>} />

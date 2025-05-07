@@ -16,7 +16,7 @@ function Navbar() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('token');
-    navigate('/');
+    navigate('/loginPage');
     window.location.reload(); // Ensures auth state is reset
   };
 

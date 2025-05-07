@@ -37,7 +37,7 @@ const SettingsPage = () => {
               <IconWrapper><img src={bellIconPath} alt="Notifications" className="w-full h-full" /></IconWrapper>
               <div className="ml-4">
                 <p className="text-lg font-medium text-gray-800">Notifications: {notifications}</p>
-                <p className="text-sm text-gray-500">Temperature exceeded normal level</p>
+                <p className="text-sm text-gray-500">Choose how you want to receive notifications</p>
               </div>
             </div>
             <div className="relative">

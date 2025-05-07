@@ -89,7 +89,7 @@ function LoginPage({ setIsAuthenticated }) {
                             onClick={handleShowPasswordReset} 
                             className="mt-2 text-sm text-blue-600 underline hover:text-blue-800 text-center w-full" 
                         >
-                            Forgot your password?
+                            Change Password
                         </a>
                     </div>
                 )}

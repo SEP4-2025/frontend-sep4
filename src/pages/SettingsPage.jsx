@@ -65,7 +65,7 @@ const SettingsPage = () => {
               <IconWrapper><img src={moonIconPath} alt="Color Mode" className="w-full h-full" /></IconWrapper>
               <div className="ml-4">
                 <p className="text-lg font-medium text-gray-800">Dark mode: {darkMode ? 'On' : 'Off'}</p>
-                <p className="text-sm text-gray-500">Temperature exceeded normal level</p>
+                <p className="text-sm text-gray-500">Toggle dark mode for a better low-light experience</p>
               </div>
             </div>
             <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">

@@ -26,7 +26,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/6'>
                 <div className='flex flex-row'>
                     <p className='Manrope text-xl'>Soil Moisture</p>
-                    <img src={soilMoistureIcon} className="ml-auto" alt="humidity icon" width="23" height="2" />
+                    <img src={soilMoistureIcon} className="ml-auto" alt="soil moisture icon" width="23" height="2" />
                 </div>
                 <p className='Manrope text-l font-bold'>{soilMoistureSensorData.value}%</p>
                 <p className='Manrope text-xs text-gray-400'>+4% from yesterday</p>

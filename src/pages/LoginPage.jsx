@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 import loginBackground from '../assets/login_background.jpeg';
 import logo from '../assets/GrowMate_Logo_Transparent.png';
+import PasswordResetForm from '../components/PasswordResetForm'; 
 
 function LoginPage({ setIsAuthenticated }) {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const [isResettingPassword, setIsResettingPassword] = useState(false); 
 
     const handleLogin = async () => {
-        if (!username || !password) {
-            alert("Please fill in both username and password.");
+        if (!email || !password) { 
+            alert("Please fill in both email and password.");
             return;
         }
 
@@ -19,7 +21,7 @@ function LoginPage({ setIsAuthenticated }) {
             const response = await fetch("https://webapi-service-68779328892.europe-north2.run.app/auth/login", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, password })
+                body: JSON.stringify({ username: email, password }) 
             });
 
             if (response.ok) {
@@ -36,6 +38,15 @@ function LoginPage({ setIsAuthenticated }) {
         }
     };
 
+    const handleShowPasswordReset = (e) => {
+        e.preventDefault(); 
+        setIsResettingPassword(true);
+    };
+
+    const handleShowLogin = () => {
+        setIsResettingPassword(false);
+    };
+
     return (
         <div className='flex flex-col md:flex-row bg-[#EAF5E9] min-h-screen'>
             <div className="w-full md:w-2/3 h-64 md:h-auto relative">
@@ -46,33 +57,42 @@ function LoginPage({ setIsAuthenticated }) {
                     <img src={logo} alt="logo" className='h-40 w-40' />
                     <h1 className='Jacques-Francois text-2xl'>Grow smarter, not harder</h1>
                 </div>
-                <div className='flex flex-col bg-white gap-3 p-6 rounded-lg'>
-                    <p>Username</p>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="border p-2 rounded"
-                        placeholder="Insert Username"
-                    />
-                    <p>Password</p>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border p-2 rounded"
-                        placeholder="Insert Password"
-                    />
-                    <button
-                        onClick={handleLogin}
-                        className="Manrope bg-[#282828] hover:bg-gray-500 text-white py-2 px-4 rounded"
-                    >
-                        Login
-                    </button>
-                    <a href="#" className="text-blue-600 underline hover:text-blue-800">
-                        Forgot your password?
-                    </a>
-                </div>
+                
+                {isResettingPassword ? (
+                    <PasswordResetForm onShowLogin={handleShowLogin} />
+                ) : (
+                    <div className='flex flex-col bg-white gap-3 p-6 rounded-lg w-full max-w-sm'> 
+                        <p>Username</p> 
+                        <input
+                            type="text" 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="border p-2 rounded w-full" 
+                            placeholder="Insert Username"
+                        />
+                        <p>Password</p>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="border p-2 rounded w-full" 
+                            placeholder="Insert Password"
+                        />
+                        <button
+                            onClick={handleLogin}
+                            className="Manrope bg-[#282828] hover:bg-gray-500 text-white py-2 px-4 rounded w-full" 
+                        >
+                            Login
+                        </button>
+                        <a 
+                            href="#"
+                            onClick={handleShowPasswordReset} 
+                            className="mt-2 text-sm text-blue-600 underline hover:text-blue-800 text-center w-full" 
+                        >
+                            Forgot your password?
+                        </a>
+                    </div>
+                )}
             </div>
         </div>
     );

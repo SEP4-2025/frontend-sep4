@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 // Pages
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   return (
@@ -95,10 +96,7 @@ function AppContent() {
             path="/settings"
             element={
               isAuthenticated ? (
-                <div className="p-4">
-                  <h1>Settings</h1>
-                  <p>Settings page coming soon</p>
-                </div>
+                <SettingsPage />
               ) : (
                 <Navigate to="/" replace />
               )

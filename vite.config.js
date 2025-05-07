@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import svgr from 'vite-plugin-svgr'; // Import svgr
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()], //new way od adding tailwind to the project
+  plugins: [react(), tailwindcss(), svgr()], // Add svgr back
   server: {
     proxy: {
       '/api': {

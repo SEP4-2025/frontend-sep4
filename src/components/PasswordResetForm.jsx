@@ -48,7 +48,9 @@ function PasswordResetForm({ onShowLogin }) {
                 try {
                     const errorJson = JSON.parse(responseText);
                     errorDetail = errorJson.message || errorJson.title || responseText;
-                } catch (jsonError) {
+                } 
+                // eslint-disable-next-line no-unused-vars
+                catch (_jsonError) { 
                     // Ignore if not JSON, use text as is
                 }
                 setMessage(`Error: ${response.status} - ${errorDetail}`);

@@ -21,14 +21,6 @@
   border-radius: 0.25rem;
   border-color: black;
 }
-
-
-
-
-
-
-
-
 .logo {
   height: 6em;
   will-change: filter;
@@ -41,6 +33,28 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Loading screen animation styles */
+.dots-1, .dots-2, .dots-3 {
+  animation: fade 1.4s infinite;
+}
+
+.dots-2 {
+  animation-delay: 0.2s;
+}
+
+.dots-3 {
+  animation-delay: 0.4s;
+}
+.spin-slow {
+  animation: logo-spin 3s linear infinite;
+}
+
+@keyframes fade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Idk */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

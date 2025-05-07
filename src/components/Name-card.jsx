@@ -6,7 +6,7 @@ import { updateGreenhouseData } from '../api';
 function NameCard({ greenhouseData }) {
   const [name, setName] = useState(greenhouseData?.name);
   const [isEditing, setIsEditing] = useState(false);
-  // const [isSaving, setIsSaving] = useState(false); // Commented out as it's unused
+  
   const inputReference = useRef(null);
 
   useEffect(() => {

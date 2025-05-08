@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useFontSize } from '../context/FontSizeContext'; // Import useFontSize
 
 // Import SVG paths
 import gearIconPath from '../assets/akar-icons--gear.svg'; // Using a known good icon for header
@@ -15,7 +16,7 @@ const ChevronDownIcon = () => (
 const SettingsPage = () => {
   const [notifications, setNotifications] = useState('All');
   const [darkMode, setDarkMode] = useState(false);
-  const [fontSize, setFontSize] = useState('Medium');
+  const { fontSizeKey, setFontSizeKey, FONT_SIZES_CONFIG } = useFontSize(); // Use context
 
   // Icon wrapper components for consistent styling
   const IconWrapper = ({ children }) => <div className="w-8 h-8 text-gray-600 flex items-center justify-center">{children}</div>;
@@ -91,19 +92,21 @@ const SettingsPage = () => {
             <div className="flex items-center">
               <IconWrapper><img src={fontIconPath} alt="Font Size" className="w-full h-full" /></IconWrapper>
               <div className="ml-4">
-                <p className="text-lg font-medium text-gray-800">Font size: {fontSize}</p>
+                <p className="text-lg font-medium text-gray-800">Font size: {fontSizeKey}</p>
                 <p className="text-sm text-gray-500">Adjust the font size to improve readability and comfort.</p>
               </div>
             </div>
             <div className="relative">
               <select 
-                value={fontSize} 
-                onChange={(e) => setFontSize(e.target.value)}
+                value={fontSizeKey} 
+                onChange={(e) => setFontSizeKey(e.target.value)}
                 className="appearance-none bg-transparent text-gray-800 py-2 pl-3 pr-8 rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 cursor-pointer"
               >
-                <option value="Small">Small</option>
-                <option value="Medium">Medium</option>
-                <option value="Large">Large</option>
+                {Object.keys(FONT_SIZES_CONFIG).map((sizeKey) => (
+                  <option key={sizeKey} value={sizeKey}>
+                    {sizeKey}
+                  </option>
+                ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <ChevronDownIcon />

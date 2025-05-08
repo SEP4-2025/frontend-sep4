@@ -5,7 +5,7 @@ function Plant_gallery_card ({name, time, condition, suggestion}) {
     const { darkMode } = useDarkMode();
 
     return (
-        <div className={`cursor-pointer rounded-lg p-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+        <div className={`rounded-lg p-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
             <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
                 <img src={logo} alt="logo" className={`w-30 max-w-xs h-auto block mx-auto ${darkMode ? 'filter brightness-90' : ''}`} />
                 <div className='flex flex-col'>

@@ -4,12 +4,14 @@ import { useState } from 'react';
 
 // Components
 import Navbar from './components/Navbar';
+import Plant_upload_popup from './components/Plant-upload-popup';
 
 // Pages
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
-import StartPage from './pages/StartPage'
+import StartPage from './pages/StartPage';
+import GalleryPage from './pages/GalleryPage';
 
 
 function App() {
@@ -97,10 +99,7 @@ function AppContent() {
             path="/gallery"
             element={
               isAuthenticated ? (
-                <div className="p-4">
-                  <h1>Gallery</h1>
-                  <p>Gallery page coming soon</p>
-                </div>
+                <GalleryPage />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -129,6 +128,16 @@ function AppContent() {
               )
             }
           />
+          <Route
+            path="/popup-page"
+            element={
+            isAuthenticated ? (
+              <Plant_upload_popup />
+            ) : (
+              <Navigate to="/loginPage" replace />
+            )
+          }
+        />
         </Routes>
       </main>
     </div>

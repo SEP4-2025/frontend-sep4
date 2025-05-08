@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFontSize } from '../context/FontSizeContext'; // Import useFontSize
+import { useDarkMode } from '../context/DarkModeContext'; // Import useDarkMode
 
 // Import SVG paths
 import gearIconPath from '../assets/akar-icons--gear.svg'; // Using a known good icon for header
@@ -15,23 +16,23 @@ const ChevronDownIcon = () => (
 
 const SettingsPage = () => {
   const [notifications, setNotifications] = useState('All');
-  const [darkMode, setDarkMode] = useState(false);
+  const {darkMode, setDarkMode} = useDarkMode(); // Use context
   const { fontSizeKey, setFontSizeKey, FONT_SIZES_CONFIG } = useFontSize(); // Use context
 
   // Icon wrapper components for consistent styling
   const IconWrapper = ({ children }) => <div className="w-8 h-8 text-gray-600 flex items-center justify-center">{children}</div>;
 
   return (
-    <div className="flex-1 p-8 min-h-screen">
+    <div className={`flex-1 p-8 min-h-screen ${darkMode ? 'darkMode' : ''} `}>
       <header className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-800 flex items-center">
+        <h1 className="text-4xl font-bold flex items-center">
           <IconWrapper><img src={gearIconPath} alt="Settings" className="w-full h-full" /></IconWrapper> <span className="Jacques-Francois ml-3">Settings</span>
         </h1>
       </header>
 
       <div className="space-y-8 max-w-2xl ">
         {/* Notification Preferences */}
-        <div className="bg-navbar-color p-6 rounded-lg shadow-md">
+        <div className={`bg-navbar-color p-6 rounded-lg shadow-md ${darkMode ? 'darkMode' : ''}`}>
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">Notification preferences</h2>
           <div className="flex items-center justify-between p-4 border border-gray-300 rounded-lg bg-gray-50">
             <div className="flex items-center">

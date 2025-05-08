@@ -2,9 +2,11 @@ import PenLogo from '../assets/pen-icon.svg';
 import SaveLogo from '../assets/saveIcon.svg';
 import React, { useState, useRef, useEffect } from 'react';
 import { updateGreenhouseName } from '../api';
+import { useDarkMode } from '../context/DarkModeContext.jsx'; 
 function NameCard({ greenhouseData }) {
   const [name, setName] = useState(greenhouseData?.name);
   const [isEditing, setIsEditing] = useState(false);
+  const { darkMode } = useDarkMode();
   
   const inputReference = useRef(null);
 
@@ -59,7 +61,7 @@ function NameCard({ greenhouseData }) {
   }; // Handles the enter key press to save the name
 
   return (
-    <div className="border-1 border-black rounded-3xl pl-2 pb-3 pt-3 pr-2 w-1/3 mb-6 mb-1 text-center flex flex-row items-center">
+    <div className={`border-1 border-black rounded-3xl pl-2 pb-3 pt-3 pr-2 w-1/3 mb-6 mb-1 text-center flex flex-row items-center ${darkMode ? 'darkMode border-white' : 'border-black'} `}>
       {isEditing ? ( // Conditional rendering, It check if the editing is true or false and shows either the input field or the name
         <input ref={inputReference} type="text" value={name} onChange={handleNameChange} onKeyDown={handleEnterKey} className="Jacques-Francois font-bold text-2xl  border-b-1 border-gray-600 focus:outline-none w-full" autoFocus />
       ) : (

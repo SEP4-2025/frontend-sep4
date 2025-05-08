@@ -1,4 +1,5 @@
 import {
+  fetchSensorsData,
   fetchGrenhouseDataByGardenerId,
   getSensorDataLastest,
   getSensorData,

@@ -9,6 +9,11 @@
 .Manrope {
   font-family: 'Manrope', sans-serif;
 }
+.darkMode{
+  background-color: #172537;
+  color: white;
+  border: 1px solid white;
+}
 .Navbar-content{
   font-family: 'Manrope', sans-serif;
   color: black;

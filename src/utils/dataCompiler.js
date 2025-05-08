@@ -1,9 +1,8 @@
 import {
-  fetchSensorsData,
   fetchGrenhouseDataByGardenerId,
   getSensorDataLastest,
-  getSensorData
-
+  getSensorData,
+  getSensorAverageByDate
 } from '../api';
 
 export async function compileDashboardData(gardenerId) {

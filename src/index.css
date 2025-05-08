@@ -21,3 +21,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Font Size Classes */
+html.font-size-small {
+  font-size: 14px; /* Small */
+}
+
+html.font-size-medium {
+  font-size: 16px; /* Default/Medium */
+}
+
+html.font-size-large {
+  font-size: 18px; /* Large */
+}

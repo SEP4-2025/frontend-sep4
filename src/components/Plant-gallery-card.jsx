@@ -6,8 +6,8 @@ function Plant_gallery_card ({name, time, condition, suggestion}) {
     return (
         <div className="Manrope flex flex-col border border-black rounded-xl p-2">
             <img src={logo} alt="logo" className="w-30 max-w-xs h-auto block mx-auto" />
-            <div className='flex flex-col'>
-                <div className='flex flex-row'>
+            <div className='flex flex-col '>
+                <div className='flex flex-row sm:flex-row sm:justify-between sm:items-start gap-2'>
                     <div className='flex flex-col'>
                         <div>{name}</div> {/*needs real data */}
                         <div>time{time}</div> {/*needs real data */}

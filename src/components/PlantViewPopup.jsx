@@ -21,6 +21,7 @@ function PlantViewPopup ({ plant, onClose }) {
                 <div className={`text-left w-1/3 ${darkMode ? 'text-gray-300' : ''}`}>Date</div> {/*add functionality here */}
                 <h2 className={`text-xl font-bold mb-4 text-center w-1/3 ${darkMode ? 'text-gray-100' : ''}`}>{plant.name}</h2>
                 <div className={`text-right w-1/3 ${darkMode ? 'text-gray-300' : ''}`}>Condition</div> {/*add functionality here */}
+
             </div>
           <div className='flex flex-row gap-4'>
             <div className='flex flex-col w-1/2'>

@@ -1,7 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-68779328892.europe-north2.run.app'; // Override in .env for real prod URL
 
-
-
 /*
  * 
  *   NEW API ENDPOINTS - Mariete
@@ -73,7 +71,7 @@ export async function getSensorDataLastest(type) {
   return latestData;
 }
 
-/* TODO: time format?
+/* 
  *   getSensorAverageByDate(type, date)
  *   INPUT:
  *     type (string) - type of sensor data to fetch || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
@@ -90,7 +88,7 @@ export async function getSensorDataLastest(type) {
  *       4 - soilMoisture
  */
 
-export async function getSensorAverageByDate (type, date) {
+export async function getSensorAverageByDate(type, date) {
   // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
     throw new Error(`Invalid sensor type: ${type}`);
@@ -132,8 +130,6 @@ export async function getSensorAverageByDate (type, date) {
     value: filteredData.reduce((acc, item) => acc + item.value, 0) / filteredData.length,
     sensorId: typeId
   };
-
-  console.log("Average data:", average);
 
   return average;
 }

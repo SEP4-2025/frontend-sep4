@@ -113,12 +113,17 @@ export async function getSensorAverageByDate(type, date) {
 
   // Fetch data from the API
   const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`);
-  if (!res.ok) throw new Error(`Failed to load sensor data average for the date ${date} [type ${type}, which is ${typeId}]`);
-
+  if (!res.ok) {
+    console.error(`Failed to load sensor data average for the date ${date} [type ${type}, which is ${typeId}]`);
+    return null; 
+  }
   // Filter the data by typeId
   const data = await res.json();
   const filteredData = data.filter(item => item.sensorId === typeId);
-  if (filteredData.length === 0) throw new Error(`No data found for type ${type} on date ${date}`);
+  if (filteredData.length === 0) {
+    console.error(`No data found for type ${type} on date ${date}`);
+    return null; 
+  }
 
   /* Construct the average data object, which is a single .json element averaging the "res" data:
    *   date (date-time) - date of the sensor data

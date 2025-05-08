@@ -14,14 +14,13 @@ function PlantViewPopup ({ plant, onClose }) {
     if (!plant) return null;
   
     return (
-      <div className={`fixed inset-0 z-50 flex justify-center items-center ${darkMode ? 'bg-gray-900 bg-opacity-50' : 'bg-black bg-opacity-50'}`}>
+      <div className={`fixed inset-0 z-50 flex justify-center items-center ${darkMode ? 'bg-gray-900/50' : 'bg-black/50'}`}>
         <div className={`p-6 rounded-lg shadow-lg max-w-sm ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
             <img src={logo} alt="logo" className={`w-40 max-w-xs h-auto mx-auto ${darkMode ? 'filter brightness-90' : ''}`} /> {/*replace with the actual image */}
             <div className='flex flex-row flex-wrap md:flex-row sm:flex-col'>
                 <div className={`text-left w-1/3 ${darkMode ? 'text-gray-300' : ''}`}>Date</div> {/*add functionality here */}
                 <h2 className={`text-xl font-bold mb-4 text-center w-1/3 ${darkMode ? 'text-gray-100' : ''}`}>{plant.name}</h2>
                 <div className={`text-right w-1/3 ${darkMode ? 'text-gray-300' : ''}`}>Condition</div> {/*add functionality here */}
-
             </div>
           <div className='flex flex-row gap-4'>
             <div className='flex flex-col w-1/2'>
@@ -40,7 +39,7 @@ function PlantViewPopup ({ plant, onClose }) {
           </div>
           <div className='text-center'>
           <button
-            className={`cursor-pointer mt-4 ${darkMode ? 'text-red-400' : 'text-red-500'} hover:underline`}
+            className={`mt-4 ${darkMode ? 'text-red-400' : 'text-red-500'} hover:underline`}
             onClick={onClose}
           >
             Close

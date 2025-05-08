@@ -11,6 +11,7 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@tailwindcss/vite": "^4.1.4",
     "flowbite-react": "^0.11.7",
     "lineicons-react": "^2.0.0",

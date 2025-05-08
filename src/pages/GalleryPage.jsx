@@ -5,7 +5,6 @@ import FilterIcon from '../assets/filter_icon.svg';
 import PlantViewPopup from '../components/PlantViewPopup';
 import { useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
-
 //dummy data
 const allPlants = [
     { id: 1, name: "Basil" },
@@ -45,6 +44,7 @@ function GalleryPage() {
                     type="text"
                     id="plantSearch"
                     className={`w-1/3 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}
+
                     placeholder="Search plants..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}

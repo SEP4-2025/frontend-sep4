@@ -12,7 +12,13 @@
 .darkMode{
   background-color: #172537;
   color: white;
-  border: 1px solid white;
+}
+
+.darkCard {
+  background-color: #1e293b !important; /* bg-slate-800 - slightly lighter than darkMode */
+  color: white;
+  border-color: #475569 !important; /* border-slate-600 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important; /* shadow-md */
 }
 .Navbar-content{
   font-family: 'Manrope', sans-serif;

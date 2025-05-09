@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import Notification_card from './Notification-card.jsx';
 import Notification_pop_up from './Notification-pop-up.jsx';
+import temperatureIcon from '../assets/solar--temperature-bold.svg';
+import { useNotificationHub } from '../context/NotificationHubContext.jsx';
 
 function Notification_centre() {
-
+    const { notifications, isConnected } = useNotificationHub();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+    const recentNotifications = notifications.slice(0, 3);
+    let notificationElements;
+    if (recentNotifications.length > 0) {
+        notificationElements = recentNotifications.map((notification, index) => (
+            <Notification_card key={index} notification={notification} />
+        ));
+    } else {
+        notificationElements = <p className='text-center py-2'>No notifications available</p>
+    }
+
     return (
     <div className='border-1 border-black rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/3 p-2 mt-[2%]'>
         <div className='flex flex-col p-2 gap-4'>
             <p className='Manrope text-xl font-bold'>Notification Centre</p>
+            <p className='Manrope text-l'>Connection status: {isConnected ? 'Connected' : 'Disconnected'}</p>
             <div className = 'text-black'>{/*Notification section */ }
-                <Notification_card />
-                <Notification_card />
-                <Notification_card />
+                {notificationElements}
                 <div className="text-center"> 
                 <button className="text-black p-2 mt-4 rounded-md mx-auto underline" onClick={openModal}>{/*Notification Button */ }
                     View All Alerts

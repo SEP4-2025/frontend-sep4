@@ -1,7 +1,7 @@
 import Plant_gallery_card from '../components/Plant-gallery-card';
 import Plant_upload_popup from '../components/Plant-upload-popup';
-import PlantIcon from '../assets/plant_icon.jpeg';
-import FilterIcon from '../assets/filter_icon.jpeg';
+import PlantIcon from '../assets/plant_icon.svg';
+import FilterIcon from '../assets/filter_icon.svg';
 import PlantViewPopup from '../components/PlantViewPopup';
 import { useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
@@ -37,7 +37,7 @@ function GalleryPage() {
         <div className={`flex flex-row p-6 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
            <div className='w-full'>
             <div className='flex flex-row items-center'>
-                <img src={PlantIcon} alt="logo" className={`w-10 max-w-xs h-10 ${darkMode ? 'filter brightness-75' : ''}`} />
+                <img src={PlantIcon} alt="logo" className={`w-10 max-w-xs h-10 ${darkMode ? 'filter invert' : ''}`} />
                 <h1 className={`Jacques-Francois text-5xl p-3 ${darkMode ? 'text-gray-100' : ''}`}>Plant gallery</h1>
             </div>
             <div className="p-3 flex flex-col">
@@ -51,7 +51,7 @@ function GalleryPage() {
                 />
                 <div className="p-3">
                     <div className="relative inline-block">
-                        <button onClick={toggleFilterMenu} className={`flex flex-row items-center gap-2 ${darkMode ? 'text-gray-200' : ''}`}>
+                        <button onClick={toggleFilterMenu} className={`cursor-pointer flex flex-row items-center gap-2 ${darkMode ? 'text-gray-200' : ''}`}>
                         <p>Sort/filter</p>
                         <img src={FilterIcon} alt="logo" className={`w-5 h-auto ${darkMode ? 'filter invert' : ''}`} />
                         </button>
@@ -105,7 +105,7 @@ function GalleryPage() {
             </div>
            </div>
            <div className="flex flex-col ml-auto p-3 gap-3">
-            <button onClick={openModal} className={`py-2 px-4 rounded-xl text-white ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
+            <button onClick={openModal} className={`cursor-pointer py-2 px-4 rounded-xl text-white ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
                 Upload plant photo
                 </button>
                 <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />

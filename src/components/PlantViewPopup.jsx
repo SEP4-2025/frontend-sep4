@@ -39,7 +39,7 @@ function PlantViewPopup ({ plant, onClose }) {
           </div>
           <div className='text-center'>
           <button
-            className={`mt-4 ${darkMode ? 'text-red-400' : 'text-red-500'} hover:underline`}
+            className={`cursor-pointer mt-4 ${darkMode ? 'text-red-400' : 'text-red-500'} hover:underline`}
             onClick={onClose}
           >
             Close

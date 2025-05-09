@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Notification_card from './Notification-card.jsx';
 import filterArrow from '../assets/filterArrow.png';
+import { useDarkMode } from '../context/DarkModeContext';
 
 function Notification_pop_up({ isOpen, onClose }) {
-    const [isFilterOpen, setIsFilterOpen] = useState(false); 
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const { darkMode } = useDarkMode(); 
 
     if (!isOpen) return null;
 
@@ -12,33 +14,33 @@ function Notification_pop_up({ isOpen, onClose }) {
     };
 
     return (
-        <div className='fixed inset-0 bg-white border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 mx-auto w-2/3 p-2 m-15 z-50'>
+        <div className={`fixed inset-0 border-1 rounded-xl pl-2 pb-2 pt-1 pr-1 mx-auto w-2/3 p-2 m-15 z-50 ${darkMode ? 'darkMode border-gray-600 bg-black' : 'bg-white border-gray-500 bg-navbar-color'}`}>
             <div className='flex flex-col p-2 gap-4'>
                 <div className='text-left'>
-                    <h1 className='Manrope text-xl text-black font-bold'>Notification Centre</h1>
-                    <p className='text-gray-400'>Here you can see old and new notifications from your plant</p>
+                    <h1 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-black'}`}>Notification Centre</h1>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-400'}`}>Here you can see old and new notifications from your plant</p>
                 </div>
 
                 {/* filter button */}
                 <div className="relative inline-block text-right">
                     <button
-                        className="bg-gray-400 text-white px-4 py-2 rounded-md focus:outline-none border border-black p-8"
+                        className={`px-4 py-2 rounded-md focus:outline-none border p-8 ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-400 text-white border-black'}`}
                         onClick={toggleFilterMenu} 
                     >
                         <div className='flex gap-4'>
                             <p>Filter</p>
-                            <img src={filterArrow} className='w-5 h-5' alt="temperature icon" width="23" height="2" />
+                            <img src={filterArrow} className={`w-5 h-5 ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
                         </div>
                     </button>
                     
                     {/* Filter menu */}
                     {isFilterOpen && (
-                        <div className="absolute right-0 bg-white border border-gray-300 rounded-md mt-2 w-48">
+                        <div className={`absolute right-0 border rounded-md mt-2 w-48 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}>
                             <ul className="py-1 text-left">
                                 <li>
                                     <a
                                         href="#"
-                                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                        className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                         onClick={(e) => e.preventDefault()}
                                     >
                                         Temperature
@@ -47,7 +49,7 @@ function Notification_pop_up({ isOpen, onClose }) {
                                 <li>
                                     <a
                                         href="#"
-                                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                        className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                         onClick={(e) => e.preventDefault()}
                                     >
                                         Water
@@ -56,7 +58,7 @@ function Notification_pop_up({ isOpen, onClose }) {
                                 <li>
                                     <a
                                         href="#"
-                                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                        className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                         onClick={(e) => e.preventDefault()}
                                     >
                                         Humidity
@@ -68,13 +70,13 @@ function Notification_pop_up({ isOpen, onClose }) {
                 </div>
 
                 {/* Notifications */}
-                <div className='text-black'>
+                <div className={`${darkMode ? 'text-gray-100' : 'text-black'}`}>
                     <Notification_card />
                     <Notification_card />
                     <Notification_card />
                     <div className="text-center">
                         <button
-                            className="text-black p-2 mt-4 rounded-md mx-auto underline"
+                            className={`p-2 mt-4 rounded-md mx-auto underline ${darkMode ? 'text-gray-100 hover:text-gray-300' : 'text-black hover:text-gray-700'}`}
                             onClick={onClose} 
                         >
                             Close

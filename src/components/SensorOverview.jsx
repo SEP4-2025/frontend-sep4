@@ -5,8 +5,10 @@ import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import soilMoistureIcon from '../assets/water-drop-svgrepo-com.svg';
+import { useDarkMode } from '../context/DarkModeContext';
 
 export function SensorOverview() {
+  const { darkMode } = useDarkMode();
   const [timeframe, setTimeframe] = useState("24h");
   const [selectedSensor, setSelectedSensor] = useState("overview");
   const [chartData, setChartData] = useState([]);
@@ -51,17 +53,18 @@ export function SensorOverview() {
   };
 
   return (
-    <div className="w-full bg-green-50 rounded-xl p-4 border border-black mt-4">
+    <div className={`w-full rounded-lg p-6 shadow-md mt-4 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+      <div className={`p-4 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-green-50'}`}>
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
         <div>
-          <h2 className="Manrope text-xl font-bold">Sensor Overview</h2>
-          <p className="Manrope text-sm text-gray-500">Overview parameters</p>
+          <h2 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>Sensor Overview</h2>
+          <p className={`Manrope text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Overview parameters</p>
         </div>
         <div className="flex items-center gap-2">
-          <img src={calendarIcon} className="w-5 h-5" alt="Calendar" />
+          <img src={calendarIcon} className={`w-5 h-5 ${darkMode ? 'filter invert' : ''}`} alt="Calendar" />
           <select
-            className="bg-white border border-green-300 rounded-md px-2 py-1 text-sm"
+            className={`border rounded-md px-2 py-1 text-sm ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white border-green-300'}`}
             value={timeframe}
             onChange={(e) => setTimeframe(e.target.value)}
           >
@@ -73,17 +76,17 @@ export function SensorOverview() {
       </div>
 
       {/* Navigation buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 border rounded-lg overflow-hidden text-sm font-medium text-center text-gray-700">
-        <button className="py-2 border-b sm:border-b-0 sm:border-r hover:bg-green-100 transition" onClick={() => setSelectedSensor("temperature")}>
+      <div className={`grid grid-cols-1 sm:grid-cols-4 border-2 rounded-lg overflow-hidden text-sm font-medium text-center ${darkMode ? 'border-gray-700 text-gray-200' : 'border-gray-400 text-gray-700'}`}>
+        <button className={`py-2 border-b-2 sm:border-b-0 sm:border-r-2 transition ${darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-400 hover:bg-green-100'}`} onClick={() => setSelectedSensor("temperature")}>
           Temperature
         </button>
-        <button className="py-2 border-b sm:border-b-0 sm:border-r hover:bg-green-100 transition" onClick={() => setSelectedSensor("humidity")}>
+        <button className={`py-2 border-b-2 sm:border-b-0 sm:border-r-2 transition ${darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-400 hover:bg-green-100'}`} onClick={() => setSelectedSensor("humidity")}>
           Humidity
         </button>
-        <button className="py-2 border-b sm:border-b-0 sm:border-r hover:bg-green-100 transition" onClick={() => setSelectedSensor("light")}>
+        <button className={`py-2 border-b-2 sm:border-b-0 sm:border-r-2 transition ${darkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-400 hover:bg-green-100'}`} onClick={() => setSelectedSensor("light")}>
           Light Intensity
         </button>
-        <button className="py-2 hover:bg-green-100 transition" onClick={() => setSelectedSensor("soilMoisture")}>
+        <button className={`py-2 transition ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-green-100'}`} onClick={() => setSelectedSensor("soilMoisture")}>
           Soil Moisture
         </button>
       </div>
@@ -92,76 +95,76 @@ export function SensorOverview() {
       {selectedSensor === "overview" && (
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Temperature */}
-          <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+          <div className={`flex flex-col items-center border rounded-lg p-4 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}>
             <div className="mb-2 flex flex-row w-full justify-between">
-              <p className="font-medium">Temperature</p>
-              <img src={temperatureIcon} alt="temperature icon" width="23" height="23" />
+              <p className={`font-medium ${darkMode ? 'text-gray-100' : ''}`}>Temperature</p>
+              <img src={temperatureIcon} alt="temperature icon" width="23" height="23" className={`${darkMode ? 'filter invert' : ''}`} />
             </div>
             <div className="relative h-32 flex justify-center items-end w-full">
-              <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+              <div className={`w-8 h-full rounded-full overflow-hidden relative ${darkMode ? 'bg-gray-600' : 'bg-gray-100'}`}>
                 <div
                   className="absolute bottom-0 w-full bg-gradient-to-t from-red-500 to-orange-300"
                   style={{ height: `${latestData.temperature ? latestData.temperature.value : 0}%` }}
                 />
               </div>
-              <div className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm text-red-600">
+              <div className={`absolute bottom-2 right-0 text-sm font-bold px-2 py-1 rounded-md shadow-sm ${darkMode ? 'bg-gray-800/90 text-red-400' : 'bg-white/80 text-red-600'}`}>
                 {latestData.temperature ? `${latestData.temperature.value}°C` : "N/A"}
               </div>
             </div>
           </div>
 
           {/* Humidity */}
-          <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+          <div className={`flex flex-col items-center border rounded-lg p-4 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}>
             <div className="mb-2 flex flex-row w-full justify-between">
-              <p className="font-medium">Humidity</p>
-              <img src={humidityIcon} alt="humidity icon" width="23" height="23" />
+              <p className={`font-medium ${darkMode ? 'text-gray-100' : ''}`}>Humidity</p>
+              <img src={humidityIcon} alt="humidity icon" width="23" height="23" className={`${darkMode ? 'filter invert' : ''}`} />
             </div>
             <div className="relative h-32 flex justify-center items-end w-full">
-              <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+              <div className={`w-8 h-full rounded-full overflow-hidden relative ${darkMode ? 'bg-gray-600' : 'bg-gray-100'}`}>
                 <div
                   className="absolute bottom-0 w-full bg-gradient-to-t from-blue-600 to-blue-300"
                   style={{ height: `${latestData.humidity ? latestData.humidity.value : 0}%` }}
                 />
               </div>
-              <div className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm text-blue-600">
+              <div className={`absolute bottom-2 right-0 text-sm font-bold px-2 py-1 rounded-md shadow-sm ${darkMode ? 'bg-gray-800/90 text-blue-400' : 'bg-white/80 text-blue-600'}`}>
                 {latestData.humidity ? `${latestData.humidity.value}%` : "N/A"}
               </div>
             </div>
           </div>
 
           {/* Light Intensity */}
-          <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+          <div className={`flex flex-col items-center border rounded-lg p-4 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}>
             <div className="mb-2 flex flex-row w-full justify-between">
-              <p className="font-medium">Light Intensity</p>
-              <img src={lightIntensityIcon} alt="light intensity icon" width="23" height="23" />
+              <p className={`font-medium ${darkMode ? 'text-gray-100' : ''}`}>Light Intensity</p>
+              <img src={lightIntensityIcon} alt="light intensity icon" width="23" height="23" className={`${darkMode ? 'filter invert' : ''}`} />
             </div>
             <div className="relative h-32 flex justify-center items-end w-full">
-              <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+              <div className={`w-8 h-full rounded-full overflow-hidden relative ${darkMode ? 'bg-gray-600' : 'bg-gray-100'}`}>
                 <div
                   className="absolute bottom-0 w-full bg-gradient-to-t from-yellow-500 to-yellow-300"
                   style={{ height: `${latestData.light ? latestData.light.value : 0}%` }}
                 />
               </div>
-              <div className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm text-yellow-600">
+              <div className={`absolute bottom-2 right-0 text-sm font-bold px-2 py-1 rounded-md shadow-sm ${darkMode ? 'bg-gray-800/90 text-yellow-400' : 'bg-white/80 text-yellow-600'}`}>
                 {latestData.light ? `${latestData.light.value} lux` : "N/A"}
               </div>
             </div>
           </div>
 
           {/* Soil Moisture */}
-          <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+          <div className={`flex flex-col items-center border rounded-lg p-4 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}>
             <div className="mb-2 flex flex-row w-full justify-between">
-              <p className="font-medium">Soil Moisture</p>
-              <img src={soilMoistureIcon} alt="soil moisture icon" width="23" height="23" />
+              <p className={`font-medium ${darkMode ? 'text-gray-100' : ''}`}>Soil Moisture</p>
+              <img src={soilMoistureIcon} alt="soil moisture icon" width="23" height="23" className={`${darkMode ? 'filter invert' : ''}`} />
             </div>
             <div className="relative h-32 flex justify-center items-end w-full">
-              <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+              <div className={`w-8 h-full rounded-full overflow-hidden relative ${darkMode ? 'bg-gray-600' : 'bg-gray-100'}`}>
                 <div
                   className="absolute bottom-0 w-full bg-gradient-to-t from-green-600 to-green-300"
                   style={{ height: `${latestData.soilMoisture ? latestData.soilMoisture.value : 0}%` }}
                 />
               </div>
-              <div className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm text-green-600">
+              <div className={`absolute bottom-2 right-0 text-sm font-bold px-2 py-1 rounded-md shadow-sm ${darkMode ? 'bg-gray-800/90 text-green-400' : 'bg-white/80 text-green-600'}`}>
                 {latestData.soilMoisture ? `${latestData.soilMoisture.value}%` : "N/A"}
               </div>
             </div>
@@ -173,33 +176,33 @@ export function SensorOverview() {
       {selectedSensor !== "overview" && (
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-md font-medium">{selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Data</h3>
+            <h3 className={`text-md font-medium ${darkMode ? 'text-gray-100' : ''}`}>{selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Data</h3>
             <button
-              className="text-xs text-green-600 border border-green-300 rounded-md px-2 py-1 hover:bg-green-50"
+              className={`text-xs rounded-md px-2 py-1 ${darkMode ? 'text-green-400 border-green-500 border hover:bg-gray-700' : 'text-green-600 border border-green-300 hover:bg-green-50'}`}
               onClick={() => setSelectedSensor("overview")}
             >
               Back to Overview
             </button>
           </div>
           <div className="h-40 flex flex-col">
-            <div className="text-sm text-center mb-2 text-gray-500">{selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time</div>
-            <div className="flex-1 border-b border-l border-gray-200 relative">
+            <div className={`text-sm text-center mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>{selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time</div>
+            <div className={`flex-1 border-b border-l relative ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
               <div className="absolute bottom-0 left-0 w-full h-full flex items-end">
-                <div className="w-full h-full bg-gray-50 relative overflow-hidden">
+                <div className={`w-full h-full relative overflow-hidden ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polyline
                       fill="none"
-                      stroke="#22c55e"
+                      stroke={darkMode ? '#4ade80' : '#22c55e'}
                       strokeWidth="2"
                       points={chartData.map((point, index) => `${index * 10},${100 - point.value}`).join(" ")}
                     />
                   </svg>
                 </div>
               </div>
-              <div className="absolute top-0 left-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
+              <div className={`absolute top-0 left-0 h-full flex flex-col justify-between text-xs pr-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 <span>Max</span><span>Mid</span><span>Min</span>
               </div>
-              <div className="absolute bottom-0 left-0 w-full flex justify-between text-xs text-gray-500 pt-1">
+              <div className={`absolute bottom-0 left-0 w-full flex justify-between text-xs pt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 {chartData.map((point, index) => (
                   <span key={index}>{point.time}</span>
                 ))}
@@ -208,6 +211,7 @@ export function SensorOverview() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

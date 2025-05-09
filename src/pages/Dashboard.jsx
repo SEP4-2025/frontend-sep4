@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useDarkMode } from '../context/DarkModeContext';
 import { compileDashboardData } from '../utils/dataCompiler';
 import Name_card from '../components/Name-card';
 import Sensor_card from '../components/Sensor-cards';
@@ -15,6 +16,7 @@ const _dummyMetrics = [
 ];
 
 function Dashboard() {
+  const { darkMode } = useDarkMode();
   const [lightSensorData, setlightSensorData,] = useState([]);
   const [temperatureSensorData, setTemperatureSensorData] = useState([]);
   const [humiditySensorData, setHumiditySensorData] = useState([]);
@@ -61,11 +63,11 @@ function Dashboard() {
   }, []);
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <LoadingScreen />; // Note: LoadingScreen will also need dark mode
   }
   // If you are annoyed about the warnings in the console just comment out the sensor-card component
   return (
-    <div className="p-4">
+    <div className={`p-4 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
       <div className='flex flex-row justify-between'>
         <Name_card greenhouseData={greenhouseData} />
         <ClockCard />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-// API imports are removed as data is passed via props
+import { useDarkMode } from '../context/DarkModeContext'; // Import useDarkMode
 import calendarIcon from '../assets/solar--calendar-linear.svg';
 import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
@@ -19,8 +19,8 @@ import {
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
-const defaultSensorHistory = []; // Default for historical data arrays
-const defaultLatestValue = null; // Default for single latest average values
+const defaultSensorHistory = [];
+const defaultLatestValue = null;
 
 export function SensorOverview({
   temperatureHistory = defaultSensorHistory,
@@ -45,7 +45,7 @@ export function SensorOverview({
 
   useEffect(() => {
     if (selectedSensor === "overview") {
-      setProcessedChartData({ labels: [], datasets: [{ data: [] }] }); // Clear chart for overview
+      setProcessedChartData({ labels: [], datasets: [{ data: [] }] });
       return;
     }
 
@@ -133,7 +133,7 @@ export function SensorOverview({
         label: `${selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time`,
         data: dataPoints,
         borderColor: getColor(selectedSensor),
-        backgroundColor: `${getColor(selectedSensor)}33`,
+        backgroundColor: `${getColor(selectedSensor)}33`, // Example: FF000033 for semi-transparent red
         tension: 0.4,
         spanGaps: true,
       }]
@@ -143,11 +143,11 @@ export function SensorOverview({
 
   const getColor = (sensorType) => {
     switch (sensorType) {
-      case "temperature": return "#FF0000";
-      case "humidity": return "#0000FF";
-      case "light": return "#FFD700";
-      case "soilMoisture": return "#008000";
-      default: return "#22c55e";
+      case "temperature": return "#FF0000"; // Red
+      case "humidity": return "#0000FF";    // Blue
+      case "light": return "#FFD700";       // Gold/Yellow
+      case "soilMoisture": return "#008000"; // Green
+      default: return "#22c55e"; // Default green
     }
   };
 
@@ -160,19 +160,22 @@ export function SensorOverview({
     }
   };
 
+  const chartTextColor = darkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+  const gridColor = darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+
   return (
     <div className={`w-full rounded-lg p-6 shadow-md mt-4 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
       <div className={`p-4 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-green-50'}`}>
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
         <div>
-          <h2 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>Sensor Overview</h2>
+          <h2 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Sensor Overview</h2>
           <p className={`Manrope text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Overview parameters</p>
         </div>
         <div className="flex items-center gap-2">
           <img src={calendarIcon} className={`w-5 h-5 ${darkMode ? 'filter invert' : ''}`} alt="Calendar" />
           <select
-            className={`border rounded-md px-2 py-1 text-sm ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white border-green-300'}`}
+            className={`border rounded-md px-2 py-1 text-sm ${darkMode ? 'bg-slate-700 text-white border-slate-600' : 'bg-white border-green-300 text-gray-700'}`}
             value={timeframe}
             onChange={(e) => setTimeframe(e.target.value)}
           >
@@ -318,28 +321,45 @@ export function SensorOverview({
         </div>
       )}
       </div>
-    </div>
   );
 }
 
-function OverviewCard({ title, icon, value, gradient, percentage, textColor }) {
+function OverviewCard({ darkMode, title, icon, value, gradient, percentage }) {
+  const getValueTextClass = () => {
+    const baseBgClass = darkMode ? 'bg-slate-900/80' : 'bg-white/80';
+    let colorClass = '';
+    const lowerTitle = title.toLowerCase();
+
+    if (darkMode) {
+      if (lowerTitle.includes('temperature')) colorClass = 'text-red-400';
+      else if (lowerTitle.includes('humidity')) colorClass = 'text-blue-400';
+      else if (lowerTitle.includes('light')) colorClass = 'text-yellow-400';
+      else if (lowerTitle.includes('soil moisture')) colorClass = 'text-green-400';
+      else colorClass = 'text-gray-300';
+    } else {
+      if (lowerTitle.includes('temperature')) colorClass = 'text-red-600';
+      else if (lowerTitle.includes('humidity')) colorClass = 'text-blue-600';
+      else if (lowerTitle.includes('light')) colorClass = 'text-yellow-600';
+      else if (lowerTitle.includes('soil moisture')) colorClass = 'text-green-600';
+      else colorClass = 'text-gray-700';
+    }
+    return `absolute bottom-2 right-0 text-sm font-bold px-2 py-1 rounded-md shadow-sm ${baseBgClass} ${colorClass}`;
+  };
+
   return (
-    <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+    <div className={`flex flex-col items-center border rounded-lg p-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-gray-300'}`}>
       <div className="mb-2 flex flex-row w-full justify-between">
-        <p className="font-medium">{title}</p>
-        <img src={icon} alt={`${title} icon`} width="23" height="23" />
+        <p className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>{title}</p>
+        <img src={icon} alt={`${title} icon`} width="23" height="23" className={`${darkMode ? 'filter invert' : ''}`} />
       </div>
       <div className="relative h-32 flex justify-center items-end w-full">
-        <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+        <div className={`w-8 h-full rounded-full overflow-hidden relative ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
           <div
             className={`absolute bottom-0 w-full bg-gradient-to-t ${gradient}`}
-            style={{ height: `${percentage}%` }} // Ensure percentage is scaled appropriately (0-100)
+            style={{ height: `${percentage}%` }} 
           />
         </div>
-        <div
-          className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm"
-          style={{ color: textColor }}
-        >
+        <div className={getValueTextClass()}>
           {value}
         </div>
       </div>

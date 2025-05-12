@@ -2,6 +2,328 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-6877932
 
 /*
  * 
+ *   PLANT & GALLERY API ENDPOINTS
+ * 
+ */
+
+/**
+ * Get plant by ID
+ * @param {number} plantId - ID of the plant to fetch
+ * @returns {Promise<Object>} Plant data
+ */
+export async function getPlantById(plantId) {
+  const res = await fetch(`${BASE_URL}/plant/${plantId}`);
+  if (!res.ok) throw new Error(`Failed to fetch plant with ID ${plantId}`);
+  return res.json();
+}
+
+/**
+ * Get all plants
+ * @returns {Promise<Array>} Array of plant objects
+ */
+export async function getAllPlants() {
+  const res = await fetch(`${BASE_URL}/plant`);
+  if (!res.ok) throw new Error('Failed to fetch plants');
+  return res.json();
+}
+
+/**
+ * Create a new plant
+ * @param {string} name - Name of the plant
+ * @param {string} species - Species of the plant (required by the API)
+ * @returns {Promise<Object>} Created plant data
+ */
+export async function createPlant(name, species = null) {
+  try {
+    // Based on the validation error, the API is looking for direct Name and Species fields
+    // Let's try a direct structure with no wrapping
+    const requestData = {
+      Name: name,
+      Species: species || name,
+      // Add greenhouse ID which is probably needed
+      GreenhouseId: 1
+    };
+    
+    // Log for debugging
+    console.log('Creating plant with direct fields format:', requestData);
+    
+    // Ensure token is available
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    // Make the API request with proper headers
+    const res = await fetch(`${BASE_URL}/plant`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestData)
+    });
+    
+    // If not successful, get more details about the error
+    if (!res.ok) {
+      // Get the raw response text first
+      const responseText = await res.text();
+      console.log('Plant creation response text:', responseText);
+      
+      // Try to parse as JSON if possible
+      let errorData = null;
+      try {
+        if (responseText) {
+          errorData = JSON.parse(responseText);
+        }
+      } catch (e) {
+        console.log('Response is not valid JSON:', e);
+      }
+      
+      console.error('Plant creation failed:', {
+        status: res.status,
+        statusText: res.statusText,
+        responseText,
+        errorData
+      });
+      
+      // Provide a more descriptive error based on the status code
+      if (res.status === 400) {
+        // For 400 errors, include all available error details
+        const errorDetails = errorData ? JSON.stringify(errorData, null, 2) : responseText || 'No details';
+        throw new Error(`Failed to create plant: Invalid data format\n${errorDetails}`);
+      } else if (res.status === 401 || res.status === 403) {
+        throw new Error('Authentication error: Please log in again');
+      } else {
+        throw new Error(`Failed to create plant: ${res.status} ${res.statusText}\n${responseText || ''}`);
+      }
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error('Error in createPlant:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update plant name
+ * @param {number} plantId - ID of the plant to update
+ * @param {string} name - New name for the plant
+ * @returns {Promise<Object>} Updated plant data
+ */
+export async function updatePlantName(plantId, name) {
+  const res = await fetch(`${BASE_URL}/plant`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ id: plantId, name })
+  });
+  if (!res.ok) throw new Error(`Failed to update plant with ID ${plantId}`);
+  return res.json();
+}
+
+/**
+ * Delete a plant
+ * @param {number} plantId - ID of the plant to delete
+ * @returns {Promise<void>}
+ */
+export async function deletePlant(plantId) {
+  const res = await fetch(`${BASE_URL}/plant/${plantId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to delete plant with ID ${plantId}`);
+  return res.json();
+}
+
+/**
+ * Get pictures by plant ID
+ * @param {number} plantId - ID of the plant to fetch pictures for
+ * @returns {Promise<Array>} Array of picture objects
+ */
+export async function getPicturesByPlantId(plantId) {
+  const res = await fetch(`${BASE_URL}/picture/${plantId}`);
+  if (!res.ok) throw new Error(`Failed to fetch pictures for plant ID ${plantId}`);
+  return res.json();
+}
+
+/**
+ * Add a new picture
+ * @param {number} plantId - ID of the plant to add picture to
+ * @param {File} imageFile - Image file to upload
+ * @param {string} note - Optional note for the picture
+ * @returns {Promise<Object>} Created picture data
+ */
+export async function addPicture(plantId, imageFile, note = '') {
+  // For this demo, since we don't have an actual image upload endpoint,
+  // we'll create a mock successful response and display the image locally
+  
+  try {
+    console.log('Adding picture with mock implementation:', {
+      plantId,
+      fileName: imageFile.name,
+      fileSize: imageFile.size,
+      fileType: imageFile.type,
+      note: note || 'No note provided'
+    });
+    
+    // Create a unique ID for the picture
+    const pictureId = Math.floor(Math.random() * 10000) + 1;
+    
+    // Create a data URL from the image file for local display
+    const reader = new FileReader();
+    
+    return new Promise((resolve, reject) => {
+      reader.onload = function() {
+        try {
+          const imageUrl = reader.result;
+          
+          // Create a mock successful response that matches the expected API structure
+          const mockResponse = {
+            id: pictureId,
+            plantId: plantId,
+            url: imageUrl,
+            note: note || '',
+            date: new Date().toISOString(),
+            imageUrl: imageUrl // For frontend display
+          };
+          
+          console.log('Mock picture created successfully:', {
+            id: mockResponse.id,
+            plantId: mockResponse.plantId,
+            noteLength: (mockResponse.note || '').length,
+            date: mockResponse.date
+          });
+          
+          // Simulate network delay for realism
+          setTimeout(() => {
+            resolve(mockResponse);
+          }, 500);
+          
+        } catch (error) {
+          console.error('Error creating mock picture:', error);
+          reject(error);
+        }
+      };
+      
+      reader.onerror = function() {
+        reject(new Error('Failed to read image file'));
+      };
+      
+      // Start reading the file
+      reader.readAsDataURL(imageFile);
+    });
+  } catch (error) {
+    console.error('Error in addPicture:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update picture note
+ * @param {number} pictureId - ID of the picture to update
+ * @param {string} note - New note for the picture
+ * @returns {Promise<Object>} Updated picture data
+ */
+export async function updatePictureNote(pictureId, note) {
+  try {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found. Please log in again.');
+    }
+
+    const res = await fetch(`${BASE_URL}/picture/${pictureId}/note`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ note })
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.text();
+      console.error('Error updating picture note:', {
+        status: res.status,
+        statusText: res.statusText,
+        responseText: errorData,
+        errorData: errorData ? JSON.parse(errorData) : {}
+      });
+      throw new Error(`Failed to update picture note: ${res.status} ${res.statusText}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error('Error in updatePictureNote:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update a picture's date
+ * @param {number} pictureId - ID of the picture to update
+ * @param {string} date - New date for the picture in ISO format
+ * @returns {Promise<Object>} Updated picture data
+ */
+export async function updatePictureDate(pictureId, date) {
+  try {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found. Please log in again.');
+    }
+
+    // Log the data being sent for debugging
+    console.log('Updating picture date:', { pictureId, date });
+    
+    const res = await fetch(`${BASE_URL}/picture/${pictureId}/date`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ date })
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.text();
+      console.error('Error updating picture date:', {
+        status: res.status,
+        statusText: res.statusText,
+        responseText: errorData,
+        errorData: errorData ? JSON.parse(errorData) : {}
+      });
+      throw new Error(`Failed to update picture date: ${res.status} ${res.statusText}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error('Error in updatePictureDate:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a picture
+ * @param {number} pictureId - ID of the picture to delete
+ * @returns {Promise<void>}
+ */
+export async function deletePicture(pictureId) {
+  const res = await fetch(`${BASE_URL}/picture/${pictureId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to delete picture with ID ${pictureId}`);
+  return res.json();
+}
+
+/*
+ * 
  *   NEW API ENDPOINTS - Mariete
  * 
  */

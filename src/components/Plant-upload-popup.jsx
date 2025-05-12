@@ -9,7 +9,7 @@ function Plant_upload_popup ({isOpen, onClose}) {
     if (!isOpen) return null;
 
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 max-h-screen overflow-y-auto ${darkMode ? 'bg-gray-900 bg-opacity-50' : 'bg-black bg-opacity-30'}`}>
+      <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 max-h-screen overflow-y-auto ${darkMode ? 'bg-gray-900/50' : 'bg-black/50'}`}>
       <div className={`w-full max-w-md p-6 rounded-xl shadow-lg flex flex-col items-center gap-4 ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
         <img src={logo} alt="logo" className={`w-full max-w-xs h-auto block mx-auto ${darkMode ? 'filter brightness-90' : ''}`} />
         <p className={`${darkMode ? 'text-gray-200' : ''}`}>Drag and upload</p>

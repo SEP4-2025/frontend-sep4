@@ -15,7 +15,7 @@ function generateDummySensorOverviewData() {
   const sensorTypes = {
     temperature: { sensorId: 1, min: 15, max: 30, unit: '°C' },
     humidity: { sensorId: 2, min: 40, max: 70, unit: '%' },
-    light: { sensorId: 3, min: 5000, max: 60000, unit: 'lux' }, // Wider range for light
+    light: { sensorId: 3, min: 100, max: 60000, unit: 'lux' }, // Adjusted min for night
     soilMoisture: { sensorId: 4, min: 30, max: 80, unit: '%' },
   };
 
@@ -26,40 +26,38 @@ function generateDummySensorOverviewData() {
     soilMoistureHistory: [],
   };
 
-  const latestAverages = {
-    latestTemperature: null,
-    latestHumidity: null,
-    latestLight: null,
-    latestSoilMoisture: null,
-  };
-
   const now = new Date();
   const todayStr = now.toISOString().split('T')[0];
-  const todayValues = { temperature: [], humidity: [], light: [], soilMoisture: [] };
+  
+  const yesterdayDt = new Date(now);
+  yesterdayDt.setDate(now.getDate() - 1);
+  const yesterdayStr = yesterdayDt.toISOString().split('T')[0];
+
+  const todayValuesForAverage = { temperature: [], humidity: [], light: [], soilMoisture: [] };
 
   // Generate historical data for the past 35 days
-  for (let dayOffset = 0; dayOffset < 35; dayOffset++) {
-    const currentDay = new Date(now);
-    currentDay.setDate(now.getDate() - dayOffset);
+  for (let dayOffset = 34; dayOffset >= 0; dayOffset--) { // Iterate from past to present for easier sorting later
+    const currentLoopDay = new Date(now);
+    currentLoopDay.setDate(now.getDate() - dayOffset);
+    currentLoopDay.setHours(0, 0, 0, 0); // Start of the day
 
     // Generate readings every 3 hours for each day
     for (let hour = 0; hour < 24; hour += 3) {
-      const readingDate = new Date(currentDay);
+      const readingDate = new Date(currentLoopDay);
       readingDate.setHours(hour, 0, 0, 0);
       const readingDateISO = readingDate.toISOString();
 
       Object.entries(sensorTypes).forEach(([key, config]) => {
         let value = Math.random() * (config.max - config.min) + config.min;
-        // Simulate day/night cycle for light
         if (key === 'light') {
-          if (hour < 6 || hour > 20) { // Night time
-            value = Math.random() * 500 + 100; // Much lower light
+          if (hour < 6 || hour >= 21) { // Night time (e.g., before 6 AM or after 9 PM)
+            value = Math.random() * (config.min + 400) + config.min; // Lower light, e.g. 100-500 lux
           } else { // Day time
-             value = Math.random() * (50000 - 10000) + 10000; // Higher light
+             value = Math.random() * (config.max - (config.min + 10000)) + (config.min + 10000); // Higher light
           }
         }
         const reading = {
-          id: Math.floor(Math.random() * 100000), // Dummy ID
+          id: Math.floor(Math.random() * 1000000), // Dummy ID
           date: readingDateISO,
           value: parseFloat(value.toFixed(2)),
           sensorId: config.sensorId,
@@ -67,49 +65,95 @@ function generateDummySensorOverviewData() {
         histories[`${key}History`].push(reading);
 
         // Collect today's values for averaging
-        if (dayOffset === 0) {
-          todayValues[key].push(reading.value);
+        if (dayOffset === 0) { // Today
+          todayValuesForAverage[key].push(reading.value);
         }
       });
     }
   }
 
-  // Calculate today's averages
-  Object.entries(sensorTypes).forEach(([key, config]) => {
-    if (todayValues[key].length > 0) {
-      const sum = todayValues[key].reduce((acc, val) => acc + val, 0);
-      const avg = sum / todayValues[key].length;
-      latestAverages[`latest${key.charAt(0).toUpperCase() + key.slice(1)}`] = {
-        // id: Math.floor(Math.random() * 10000), // Average doesn't usually have its own DB id like this
-        date: todayStr,
-        value: parseFloat(avg.toFixed(2)),
-        sensorId: config.sensorId,
-      };
-    }
+  // Sort histories chronologically (oldest to newest)
+  Object.values(histories).forEach(historyArray => {
+    historyArray.sort((a, b) => new Date(a.date) - new Date(b.date));
   });
+
+  // Get latest single sensor readings
+  const getLatestReading = (historyArray) => historyArray.length > 0 ? historyArray[historyArray.length - 1] : null;
   
-  // Dummy greenhouse data (if needed by other components, otherwise can be omitted if only for SensorOverview)
-  const dummyGreenhouseData = [{ id: 1, name: "Dummy Greenhouse", gardenerId: 1 }];
+  const lightSensorData = getLatestReading(histories.lightHistory);
+  const temperatureSensorData = getLatestReading(histories.temperatureHistory);
+  const humiditySensorData = getLatestReading(histories.humidityHistory);
+  const soilMoistureSensorData = getLatestReading(histories.soilMoistureHistory);
+
+  // Calculate today's averages
+  const calculateAverage = (values, dateString, sensorId) => {
+    if (values.length === 0) return null;
+    const sum = values.reduce((acc, val) => acc + val, 0);
+    const avg = sum / values.length;
+    return {
+      date: dateString,
+      value: parseFloat(avg.toFixed(2)),
+      sensorId: sensorId,
+    };
+  };
+
+  const lightSensorDataAverageToday = calculateAverage(todayValuesForAverage.light, todayStr, sensorTypes.light.sensorId);
+  const temperatureSensorDataAverageToday = calculateAverage(todayValuesForAverage.temperature, todayStr, sensorTypes.temperature.sensorId);
+  const humiditySensorDataAverageToday = calculateAverage(todayValuesForAverage.humidity, todayStr, sensorTypes.humidity.sensorId);
+  const soilMoistureSensorDataAverageToday = calculateAverage(todayValuesForAverage.soilMoisture, todayStr, sensorTypes.soilMoisture.sensorId);
+
+  // Derive yesterday's averages (simplified)
+  const deriveYesterdayAverage = (todayAverage, dateStr) => {
+    if (!todayAverage) return null;
+    // Simulate some variation for yesterday
+    let multiplier = 1;
+    if (todayAverage.sensorId === sensorTypes.temperature.sensorId) multiplier = 0.98; // Slightly cooler
+    else if (todayAverage.sensorId === sensorTypes.humidity.sensorId) multiplier = 1.02; // Slightly more humid
+    else if (todayAverage.sensorId === sensorTypes.light.sensorId) multiplier = 0.95; // Slightly less light
+    else if (todayAverage.sensorId === sensorTypes.soilMoisture.sensorId) multiplier = 0.97; // Slightly drier
+
+    return {
+      ...todayAverage, // spread sensorId
+      date: dateStr,
+      value: parseFloat((todayAverage.value * multiplier).toFixed(2)),
+    };
+  };
+
+  const lightSensorDataAverageYesterday = deriveYesterdayAverage(lightSensorDataAverageToday, yesterdayStr);
+  const temperatureSensorDataAverageYesterday = deriveYesterdayAverage(temperatureSensorDataAverageToday, yesterdayStr);
+  const humiditySensorDataAverageYesterday = deriveYesterdayAverage(humiditySensorDataAverageToday, yesterdayStr);
+  const soilMoistureSensorDataAverageYesterday = deriveYesterdayAverage(soilMoistureSensorDataAverageToday, yesterdayStr);
+  
+  const dummyGreenhouseData = [{ id: 1, name: "GrowGreen Test Alpha", gardenerId: 1 }];
 
   console.log("--- USING DUMMY SENSOR DATA ---");
   return {
-    ...histories,
-    ...latestAverages,
-    // Add other data pieces if compileDashboardData usually returns them and they are needed
-    lightSensorData: latestAverages.latestLight, // Or a specific "latest" reading if different from average
-    temperatureSensorData: latestAverages.latestTemperature,
-    humiditySensorData: latestAverages.latestHumidity,
-    soilMoistureSensorData: latestAverages.latestSoilMoisture,
+    // Current sensor data (latest single reading)
+    lightSensorData,
+    temperatureSensorData,
+    humiditySensorData,
+    soilMoistureSensorData,
+    
+    // Greenhouse data
     greenhouseData: dummyGreenhouseData,
-    lightSensorDataAverageToday: latestAverages.latestLight,
-    temperatureSensorDataAverageToday: latestAverages.latestTemperature,
-    humiditySensorDataAverageToday: latestAverages.latestHumidity,
-    soilMoistureSensorDataAverageToday: latestAverages.latestSoilMoisture,
-    // Dummy yesterday's averages (can be simplified or made more realistic)
-    lightSensorDataAverageYesterday: { ...latestAverages.latestLight, value: latestAverages.latestLight ? parseFloat((latestAverages.latestLight.value * 0.9).toFixed(2)) : null },
-    temperatureSensorDataAverageYesterday: { ...latestAverages.latestTemperature, value: latestAverages.latestTemperature ? parseFloat((latestAverages.latestTemperature.value * 0.95).toFixed(2)) : null },
-    humiditySensorDataAverageYesterday: { ...latestAverages.latestHumidity, value: latestAverages.latestHumidity ? parseFloat((latestAverages.latestHumidity.value * 1.05).toFixed(2)) : null },
-    soilMoistureSensorDataAverageYesterday: { ...latestAverages.latestSoilMoisture, value: latestAverages.latestSoilMoisture ? parseFloat((latestAverages.latestSoilMoisture.value * 0.98).toFixed(2)) : null },
+    
+    // Average sensor data today
+    lightSensorDataAverageToday,
+    temperatureSensorDataAverageToday,
+    humiditySensorDataAverageToday,
+    soilMoistureSensorDataAverageToday,
+    
+    // Average sensor data yesterday
+    lightSensorDataAverageYesterday,
+    temperatureSensorDataAverageYesterday,
+    humiditySensorDataAverageYesterday,
+    soilMoistureSensorDataAverageYesterday,
+    
+    // Historical sensor data for charts
+    temperatureHistory: histories.temperatureHistory,
+    humidityHistory: histories.humidityHistory,
+    lightHistory: histories.lightHistory,
+    soilMoistureHistory: histories.soilMoistureHistory,
   };
 }
 // --- END OF TEMPORARY DUMMY DATA GENERATOR ---
@@ -158,6 +202,9 @@ function Dashboard() {
 
     if (USE_DUMMY_DATA) {
       const dummyData = generateDummySensorOverviewData();
+      // console.log("Generated Dummy Data:", dummyData); // Optional: for debugging
+
+      // Latest single readings
       setLightSensorData(dummyData.lightSensorData);
       setTemperatureSensorData(dummyData.temperatureSensorData);
       setHumiditySensorData(dummyData.humiditySensorData);
@@ -165,16 +212,19 @@ function Dashboard() {
       
       setGreenhouseData(dummyData.greenhouseData);
       
+      // Today's averages
       setLightSensorDataAverageToday(dummyData.lightSensorDataAverageToday);
       setTemperatureSensorDataAverageToday(dummyData.temperatureSensorDataAverageToday);
       setHumiditySensorDataAverageToday(dummyData.humiditySensorDataAverageToday);
       setSoilMoistureSensorDataAverageToday(dummyData.soilMoistureSensorDataAverageToday);
       
+      // Yesterday's averages
       setLightSensorDataAverageYesterday(dummyData.lightSensorDataAverageYesterday);
       setTemperatureSensorDataAverageYesterday(dummyData.temperatureSensorDataAverageYesterday);
       setHumiditySensorDataAverageYesterday(dummyData.humiditySensorDataAverageYesterday);
       setSoilMoistureSensorDataAverageYesterday(dummyData.soilMoistureSensorDataAverageYesterday);
 
+      // Historical data
       setTemperatureHistory(dummyData.temperatureHistory || []);
       setHumidityHistory(dummyData.humidityHistory || []);
       setLightHistory(dummyData.lightHistory || []);

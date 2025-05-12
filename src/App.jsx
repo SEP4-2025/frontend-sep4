@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
 import StartPage from './pages/StartPage';
 import GalleryPage from './pages/GalleryPage';
+import WaterManagement from './pages/WaterManagement';
 
 
 function App() {
@@ -73,10 +74,7 @@ function AppContent() {
             path="/water-management"
             element={
               isAuthenticated ? (
-                <div className="p-4">
-                  <h1>Water Managment</h1>
-                  <p>Water managment page coming soon</p>
-                </div>
+                <WaterManagement />
               ) : (
                 <Navigate to="/loginPage" replace />
               )

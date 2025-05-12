@@ -16,6 +16,7 @@
     "chart.js": "^4.4.9",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^4.1.0",
+    "flowbite": "^3.1.2",
     "flowbite-react": "^0.11.7",
     "lineicons-react": "^2.0.0",
     "react": "^19.0.0",

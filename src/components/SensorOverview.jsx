@@ -1,54 +1,162 @@
 import { useState, useEffect } from 'react';
-import { getSensorData, getSensorDataLastest } from '../api';
+// API imports are removed as data is passed via props
 import calendarIcon from '../assets/solar--calendar-linear.svg';
 import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import soilMoistureIcon from '../assets/water-drop-svgrepo-com.svg';
 import { useDarkMode } from '../context/DarkModeContext';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-export function SensorOverview() {
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
+
+const defaultSensorHistory = []; // Default for historical data arrays
+const defaultLatestValue = null; // Default for single latest average values
+
+export function SensorOverview({
+  temperatureHistory = defaultSensorHistory,
+  humidityHistory = defaultSensorHistory,
+  lightHistory = defaultSensorHistory,
+  soilMoistureHistory = defaultSensorHistory,
+  latestTemperature = defaultLatestValue,
+  latestHumidity = defaultLatestValue,
+  latestLight = defaultLatestValue,
+  latestSoilMoisture = defaultLatestValue,
+}) {
   const { darkMode } = useDarkMode();
   const [timeframe, setTimeframe] = useState("24h");
   const [selectedSensor, setSelectedSensor] = useState("overview");
-  const [chartData, setChartData] = useState([]);
-  const [latestData, setLatestData] = useState({
-    temperature: null,
-    humidity: null,
-    light: null,
-    soilMoisture: null,
+  
+  const [processedChartData, setProcessedChartData] = useState({
+    labels: [],
+    datasets: [{
+      label: '', data: [], borderColor: '', backgroundColor: '', tension: 0.4, spanGaps: true,
+    }]
   });
 
   useEffect(() => {
     if (selectedSensor === "overview") {
-      fetchLatestData();
-    } else {
-      fetchSensorData(selectedSensor);
+      setProcessedChartData({ labels: [], datasets: [{ data: [] }] }); // Clear chart for overview
+      return;
     }
-  }, [selectedSensor]);
 
-  const fetchLatestData = async () => {
-    try {
-      const temperature = await getSensorDataLastest("temperature");
-      const humidity = await getSensorDataLastest("humidity");
-      const light = await getSensorDataLastest("light");
-      const soilMoisture = await getSensorDataLastest("soilMoisture");
-      setLatestData({ temperature, humidity, light, soilMoisture });
-    } catch (error) {
-      console.error("Error fetching latest data:", error);
+    let sourceData;
+    switch (selectedSensor) {
+      case "temperature": sourceData = temperatureHistory; break;
+      case "humidity":    sourceData = humidityHistory;    break;
+      case "light":       sourceData = lightHistory;       break;
+      case "soilMoisture":sourceData = soilMoistureHistory;break;
+      default:            sourceData = [];
+    }
+
+    if (!sourceData || sourceData.length === 0) {
+      setProcessedChartData({
+        labels: [],
+        datasets: [{
+          label: `${selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time`,
+          data: [],
+          borderColor: getColor(selectedSensor),
+          backgroundColor: `${getColor(selectedSensor)}33`,
+          tension: 0.4,
+          spanGaps: true,
+        }]
+      });
+      return;
+    }
+    
+    const now = new Date();
+    let displayLabels = [];
+    let dataPoints = [];
+
+    if (timeframe === "30d" || timeframe === "7d") {
+      const numDays = timeframe === "30d" ? 30 : 7;
+      for (let i = 0; i < numDays; i++) {
+        const dayDate = new Date(now);
+        dayDate.setDate(now.getDate() - (numDays - 1 - i));
+        dayDate.setHours(0, 0, 0, 0); 
+        displayLabels.push(dayDate.toISOString().split('T')[0]); 
+
+        const dayEnd = new Date(dayDate);
+        dayEnd.setDate(dayDate.getDate() + 1);
+
+        const valuesInDay = sourceData
+          .filter(item => {
+            const itemDate = new Date(item.date);
+            return itemDate >= dayDate && itemDate < dayEnd;
+          })
+          .map(item => item.value);
+
+        if (valuesInDay.length > 0) {
+          const avg = valuesInDay.reduce((a, b) => a + b, 0) / valuesInDay.length;
+          dataPoints.push(parseFloat(avg.toFixed(2)));
+        } else {
+          dataPoints.push(null); 
+        }
+      }
+    } else if (timeframe === "24h") {
+      for (let i = 0; i < 24; i++) {
+        const hourDate = new Date(now);
+        hourDate.setHours(now.getHours() - (23 - i), 0, 0, 0);
+        displayLabels.push(hourDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+
+        const hourEnd = new Date(hourDate);
+        hourEnd.setHours(hourDate.getHours() + 1);
+
+        const valuesInHour = sourceData
+          .filter(item => {
+            const itemDate = new Date(item.date);
+            return itemDate >= hourDate && itemDate < hourEnd;
+          })
+          .map(item => item.value);
+
+        if (valuesInHour.length > 0) {
+          const avg = valuesInHour.reduce((a, b) => a + b, 0) / valuesInHour.length;
+          dataPoints.push(parseFloat(avg.toFixed(2)));
+        } else {
+          dataPoints.push(null); 
+        }
+      }
+    }
+
+    setProcessedChartData({
+      labels: displayLabels,
+      datasets: [{
+        label: `${selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time`,
+        data: dataPoints,
+        borderColor: getColor(selectedSensor),
+        backgroundColor: `${getColor(selectedSensor)}33`,
+        tension: 0.4,
+        spanGaps: true,
+      }]
+    });
+
+  }, [selectedSensor, timeframe, temperatureHistory, humidityHistory, lightHistory, soilMoistureHistory]);
+
+  const getColor = (sensorType) => {
+    switch (sensorType) {
+      case "temperature": return "#FF0000";
+      case "humidity": return "#0000FF";
+      case "light": return "#FFD700";
+      case "soilMoisture": return "#008000";
+      default: return "#22c55e";
     }
   };
 
-  const fetchSensorData = async (sensorType) => {
-    try {
-      const data = await getSensorData(sensorType);
-      const formattedData = data.map((item) => ({
-        time: new Date(item.date).toLocaleTimeString(),
-        value: item.value,
-      }));
-      setChartData(formattedData);
-    } catch (error) {
-      console.error(`Error fetching data for ${sensorType}:`, error);
+  const getUnit = (sensorType) => {
+    switch (sensorType) {
+      case "temperature": return "°C";
+      case "humidity": case "soilMoisture": return "%";
+      case "light": return "lux";
+      default: return "";
     }
   };
 
@@ -91,7 +199,6 @@ export function SensorOverview() {
         </button>
       </div>
 
-      {/* Overview mode */}
       {selectedSensor === "overview" && (
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Temperature */}
@@ -172,7 +279,6 @@ export function SensorOverview() {
         </div>
       )}
 
-      {/* Chart view */}
       {selectedSensor !== "overview" && (
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
@@ -211,6 +317,31 @@ export function SensorOverview() {
           </div>
         </div>
       )}
+      </div>
+    </div>
+  );
+}
+
+function OverviewCard({ title, icon, value, gradient, percentage, textColor }) {
+  return (
+    <div className="flex flex-col items-center border rounded-lg p-4 bg-white">
+      <div className="mb-2 flex flex-row w-full justify-between">
+        <p className="font-medium">{title}</p>
+        <img src={icon} alt={`${title} icon`} width="23" height="23" />
+      </div>
+      <div className="relative h-32 flex justify-center items-end w-full">
+        <div className="w-8 h-full bg-gray-100 rounded-full overflow-hidden relative">
+          <div
+            className={`absolute bottom-0 w-full bg-gradient-to-t ${gradient}`}
+            style={{ height: `${percentage}%` }} // Ensure percentage is scaled appropriately (0-100)
+          />
+        </div>
+        <div
+          className="absolute bottom-2 right-0 text-sm font-bold px-2 py-1 bg-white/80 rounded-md shadow-sm"
+          style={{ color: textColor }}
+        >
+          {value}
+        </div>
       </div>
     </div>
   );

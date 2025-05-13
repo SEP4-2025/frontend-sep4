@@ -379,7 +379,7 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
   return data;
 }
 
-export async function getNotificationPreferences(){ // apparenttly no gardenerId is needed
+export async function getNotificationPreferences(){ // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notificationpref`);
   if (!res.ok) throw new Error(`Failed to load notification preferences`);
   const data = await res.json();

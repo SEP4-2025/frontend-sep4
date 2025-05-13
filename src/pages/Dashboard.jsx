@@ -28,7 +28,7 @@ function generateDummySensorOverviewData() {
 
   const now = new Date();
   const todayStr = now.toISOString().split('T')[0];
-  
+
   const yesterdayDt = new Date(now);
   yesterdayDt.setDate(now.getDate() - 1);
   const yesterdayStr = yesterdayDt.toISOString().split('T')[0];
@@ -53,7 +53,7 @@ function generateDummySensorOverviewData() {
           if (hour < 6 || hour >= 21) { // Night time (e.g., before 6 AM or after 9 PM)
             value = Math.random() * (config.min + 400) + config.min; // Lower light, e.g. 100-500 lux
           } else { // Day time
-             value = Math.random() * (config.max - (config.min + 10000)) + (config.min + 10000); // Higher light
+            value = Math.random() * (config.max - (config.min + 10000)) + (config.min + 10000); // Higher light
           }
         }
         const reading = {
@@ -79,7 +79,7 @@ function generateDummySensorOverviewData() {
 
   // Get latest single sensor readings
   const getLatestReading = (historyArray) => historyArray.length > 0 ? historyArray[historyArray.length - 1] : null;
-  
+
   const lightSensorData = getLatestReading(histories.lightHistory);
   const temperatureSensorData = getLatestReading(histories.temperatureHistory);
   const humiditySensorData = getLatestReading(histories.humidityHistory);
@@ -123,7 +123,7 @@ function generateDummySensorOverviewData() {
   const temperatureSensorDataAverageYesterday = deriveYesterdayAverage(temperatureSensorDataAverageToday, yesterdayStr);
   const humiditySensorDataAverageYesterday = deriveYesterdayAverage(humiditySensorDataAverageToday, yesterdayStr);
   const soilMoistureSensorDataAverageYesterday = deriveYesterdayAverage(soilMoistureSensorDataAverageToday, yesterdayStr);
-  
+
   const dummyGreenhouseData = [{ id: 1, name: "Dummy's greenhouse", gardenerId: 1 }];
 
   console.log("--- USING DUMMY SENSOR DATA ---");
@@ -133,22 +133,22 @@ function generateDummySensorOverviewData() {
     temperatureSensorData,
     humiditySensorData,
     soilMoistureSensorData,
-    
+
     // Greenhouse data
     greenhouseData: dummyGreenhouseData,
-    
+
     // Average sensor data today
     lightSensorDataAverageToday,
     temperatureSensorDataAverageToday,
     humiditySensorDataAverageToday,
     soilMoistureSensorDataAverageToday,
-    
+
     // Average sensor data yesterday
     lightSensorDataAverageYesterday,
     temperatureSensorDataAverageYesterday,
     humiditySensorDataAverageYesterday,
     soilMoistureSensorDataAverageYesterday,
-    
+
     // Historical sensor data for charts
     temperatureHistory: histories.temperatureHistory,
     humidityHistory: histories.humidityHistory,
@@ -171,15 +171,15 @@ function Dashboard() {
   const [temperatureSensorData, setTemperatureSensorData] = useState(null);
   const [humiditySensorData, setHumiditySensorData] = useState(null);
   const [soilMoistureSensorData, setSoilMoistureSensorData] = useState(null);
-  
+
   const [greenhouseData, setGreenhouseData] = useState([]);
-  
+
   // States for today's averages (used by Sensor_card and SensorOverview overview cards)
   const [lightSensorDataAverageToday, setLightSensorDataAverageToday] = useState(null);
   const [temperatureSensorDataAverageToday, setTemperatureSensorDataAverageToday] = useState(null);
   const [humiditySensorDataAverageToday, setHumiditySensorDataAverageToday] = useState(null);
   const [soilMoistureSensorDataAverageToday, setSoilMoistureSensorDataAverageToday] = useState(null);
-  
+
   // States for yesterday's averages (used by Sensor_card)
   const [lightSensorDataAverageYesterday, setLightSensorDataAverageYesterday] = useState(null);
   const [temperatureSensorDataAverageYesterday, setTemperatureSensorDataAverageYesterday] = useState(null);
@@ -191,6 +191,9 @@ function Dashboard() {
   const [humidityHistory, setHumidityHistory] = useState([]);
   const [lightHistory, setLightHistory] = useState([]);
   const [soilMoistureHistory, setSoilMoistureHistory] = useState([]);
+
+  const [notificationData, setNotificationData] = useState([]);
+  const [notificationPreferences, setNotificationPreferences] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -209,15 +212,15 @@ function Dashboard() {
       setTemperatureSensorData(dummyData.temperatureSensorData);
       setHumiditySensorData(dummyData.humiditySensorData);
       setSoilMoistureSensorData(dummyData.soilMoistureSensorData);
-      
+
       setGreenhouseData(dummyData.greenhouseData);
-      
+
       // Today's averages
       setLightSensorDataAverageToday(dummyData.lightSensorDataAverageToday);
       setTemperatureSensorDataAverageToday(dummyData.temperatureSensorDataAverageToday);
       setHumiditySensorDataAverageToday(dummyData.humiditySensorDataAverageToday);
       setSoilMoistureSensorDataAverageToday(dummyData.soilMoistureSensorDataAverageToday);
-      
+
       // Yesterday's averages
       setLightSensorDataAverageYesterday(dummyData.lightSensorDataAverageYesterday);
       setTemperatureSensorDataAverageYesterday(dummyData.temperatureSensorDataAverageYesterday);
@@ -238,14 +241,14 @@ function Dashboard() {
           setTemperatureSensorData(data.temperatureSensorData);
           setHumiditySensorData(data.humiditySensorData);
           setSoilMoistureSensorData(data.soilMoistureSensorData);
-          
+
           setGreenhouseData(data.greenhouseData);
-          
+
           setLightSensorDataAverageToday(data.lightSensorDataAverageToday);
           setTemperatureSensorDataAverageToday(data.temperatureSensorDataAverageToday);
           setHumiditySensorDataAverageToday(data.humiditySensorDataAverageToday);
           setSoilMoistureSensorDataAverageToday(data.soilMoistureSensorDataAverageToday);
-          
+
           setLightSensorDataAverageYesterday(data.lightSensorDataAverageYesterday);
           setTemperatureSensorDataAverageYesterday(data.temperatureSensorDataAverageYesterday);
           setHumiditySensorDataAverageYesterday(data.humiditySensorDataAverageYesterday);
@@ -255,6 +258,10 @@ function Dashboard() {
           setHumidityHistory(data.humidityHistory || []);
           setLightHistory(data.lightHistory || []);
           setSoilMoistureHistory(data.soilMoistureHistory || []);
+
+          // Set the notification data
+          setNotificationData(data.notificationData);
+          setNotificationPreferences(data.notificationPreferences);
 
           setIsLoading(false);
         })
@@ -275,7 +282,7 @@ function Dashboard() {
         <Name_card greenhouseData={greenhouseData} />
         <ClockCard />
       </div>
-      <Sensor_card 
+      <Sensor_card
         lightSensorData={lightSensorData}
         temperatureSensorData={temperatureSensorData}
         humiditySensorData={humiditySensorData}
@@ -287,9 +294,9 @@ function Dashboard() {
         lightSensorDataAverageYesterday={lightSensorDataAverageYesterday}
         temperatureSensorDataAverageYesterday={temperatureSensorDataAverageYesterday}
         humiditySensorDataAverageYesterday={humiditySensorDataAverageYesterday}
-        soilMoistureSensorDataAverageYesterday={soilMoistureSensorDataAverageYesterday} 
+        soilMoistureSensorDataAverageYesterday={soilMoistureSensorDataAverageYesterday}
       />
-      <SensorOverview 
+      <SensorOverview
         temperatureHistory={temperatureHistory}
         humidityHistory={humidityHistory}
         lightHistory={lightHistory}
@@ -300,7 +307,7 @@ function Dashboard() {
         latestSoilMoisture={soilMoistureSensorDataAverageToday}
       />
       <div className="flex ">
-        <Notification_centre />
+        <Notification_centre notificationData={notificationData} notificationPreferences={notificationPreferences} />
         <AIModelPredictions metrics={_dummyAiMetrics} />
       </div>
     </div>

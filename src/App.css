@@ -64,7 +64,21 @@
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
+/* Dropdown animation for the notification centre */
+@keyframes dropdownAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+.dropdown-animation {
+  animation: dropdownAnimation 0.6s ease-out forwards;
+}
 /* Idk */
 @keyframes logo-spin {
   from {

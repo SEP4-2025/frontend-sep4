@@ -56,13 +56,13 @@ export function AIModelPredictions({ metrics }) {
               <span className={color}>{label}</span>
             </div>
             
-            <div className={`relative h-[1vh] min-h-[8px] rounded-full mt-[1%] overflow-hidden ${darkMode ? 'bg-gray-600' : 'bg-gray-200'}`}>
+            <div className={`relative h-[1vh] min-h-[8px] rounded-full mt-[1%] overflow-hidden z-0 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'}`}>
               <div
-                className={`absolute top-0 left-0 bottom-0 rounded-full ${darkMode ? 'bg-blue-500' : 'bg-blue-400'}`}
+                className={`absolute top-0 left-0 bottom-0 rounded-full z-10 ${darkMode ? 'bg-blue-500' : 'bg-blue-400'}`}
                 style={{ width: `${fillPct}%` }}
               />
               <div
-                className={`absolute top-0 bottom-0 w-0.5 ${darkMode ? 'bg-blue-400' : 'bg-blue-700'}`}
+                className={`absolute top-0 bottom-0 w-0.5 z-20 ${darkMode ? 'bg-blue-400' : 'bg-blue-700'}`}
                 style={{ left: `${optimalPos}%` }}
               />
             </div>

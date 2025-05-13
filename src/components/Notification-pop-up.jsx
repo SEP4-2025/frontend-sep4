@@ -1,11 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Notification_card from './Notification-card.jsx';
 import filterArrow from '../assets/filterArrow.png';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
+import { useNotificationHub } from '../context/NotificationHubContext.jsx';
 
 function Notification_pop_up({ isOpen, onClose, title, description, notificationData, notificationPreferences }) {
+function Notification_pop_up({ isOpen, onClose, title, description, notificationData, notificationPreferences }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const { darkMode } = useDarkMode();
+    const { notifications } = useNotificationHub()
+    const [notificationList, setNotificationList] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState(null);
+
+    const allNotifications = [...(notifications || []), ...(notificationData || [])]; // All notifications with duplicates
+    const combinedNotifications = allNotifications.filter((notification, index, self) =>     // Remove duplicates
+        index === self.findIndex((n) => n.id === notification.id)
+    );
+
+    useEffect(() => {
+        // Filter notifications based on preferences section
+        let result = combinedNotifications;
+        if (notificationPreferences) {
+            result = result.filter(notification => {
+                const matchingPreference = notificationPreferences.find(
+                    preference => preference.type?.toLowerCase() === notification.type?.toLowerCase()
+                );
+                return !matchingPreference || matchingPreference.isEnabled === true;
+            })
+        }
+
+        // Filter notifications based on selected filter
+        if (selectedFilter) {
+            result = result.filter(notification => notification.type?.toLowerCase() === selectedFilter.toLowerCase());
+        }
+
+        result.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+        setNotificationList(result);
+
+    }, [notificationData, notificationPreferences, notifications, selectedFilter]);
+
     const { darkMode } = useDarkMode();
     const { notifications } = useNotificationHub()
     const [notificationList, setNotificationList] = useState([]);
@@ -112,7 +147,7 @@ function Notification_pop_up({ isOpen, onClose, title, description, notification
                                                 setIsFilterOpen(false);
                                             }}
                                         >
-                                            Light Intensity
+                                            Light Intensivity
                                         </li>
                                         <li
                                             className={`px-4 py-2 cursor-pointer ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
@@ -140,7 +175,21 @@ function Notification_pop_up({ isOpen, onClose, title, description, notification
                         <p className="text-center py-4">No notifications available</p>
                     )}
                     <div className="text-center mt-auto pt-2">
+                <div className={`flex-1 overflow-y-auto pr-2 max-h-[60vh] ${darkMode ? 'text-gray-100' : 'text-black'}`}>
+                    {notificationList.length > 0 ? (
+                        notificationList.map((notification, index) => (
+                            <Notification_card key={index} notification={notification} />
+                        ))
+                    ) : (
+                        <p className="text-center py-4">No notifications available</p>
+                    )}
+                    <div className="text-center mt-auto pt-2">
                         <button
+                            className={`p-2 mt-4 rounded-md mx-auto underline cursor-pointer ${darkMode ? 'text-gray-100 hover:text-gray-300' : 'text-black hover:text-gray-700'}`}
+                            onClick={() => {
+                                onClose();
+                                setIsFilterOpen(false);
+                            }}
                             className={`p-2 mt-4 rounded-md mx-auto underline cursor-pointer ${darkMode ? 'text-gray-100 hover:text-gray-300' : 'text-black hover:text-gray-700'}`}
                             onClick={() => {
                                 onClose();

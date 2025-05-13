@@ -371,3 +371,19 @@ export async function getSensorStatus(type) {
     return minutesDifference <= 15; // Modify this value to change the threshold (minutes)
   }
 }
+export async function getAllNotifications() { // apparenttly no gardenerId is needed
+  const res = await fetch(`${BASE_URL}/notification/all`);
+  if (!res.ok) throw new Error(`Failed to load notifications`);
+  const data = await res.json();
+  console.log("Notifications data:", data); 
+  return data;
+}
+
+export async function getNotificationPreferences(){ // apparenttly no gardenerId is needed
+  const res = await fetch(`${BASE_URL}/notificationpref`);
+  if (!res.ok) throw new Error(`Failed to load notification preferences`);
+  const data = await res.json();
+  console.log("Notification preferences data:", data); 
+  return data;
+}
+

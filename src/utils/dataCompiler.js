@@ -1,8 +1,10 @@
 import {
   fetchGrenhouseDataByGardenerId,
   getSensorDataLastest,
-  getSensorData, // Used for historical data
-  getSensorAverageByDate
+  getSensorData,
+  getSensorAverageByDate,
+  getAllNotifications,
+  getNotificationPreferences
 } from '../api';
 
 function formatDate(date){
@@ -43,6 +45,12 @@ export async function compileDashboardData(gardenerId) {
   const humidityHistory = await getSensorData('humidity');
   const lightHistory = await getSensorData('light');
   const soilMoistureHistory = await getSensorData('soilMoisture');
+  // Getting the notification data
+  const notificationData = await getAllNotifications();
+  const notificationPreferences = await getNotificationPreferences(); 
+
+
+
 
   return {
     // Current sensor data
@@ -61,7 +69,10 @@ export async function compileDashboardData(gardenerId) {
     lightSensorDataAverageYesterday,
     temperatureSensorDataAverageYesterday,
     humiditySensorDataAverageYesterday,
-    soilMoistureSensorDataAverageYesterday
+    soilMoistureSensorDataAverageYesterday,
+    // Notification data
+    notificationData,
+    notificationPreferences
   };
 
   function formatDate(date){

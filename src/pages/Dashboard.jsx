@@ -124,7 +124,7 @@ function generateDummySensorOverviewData() {
   const humiditySensorDataAverageYesterday = deriveYesterdayAverage(humiditySensorDataAverageToday, yesterdayStr);
   const soilMoistureSensorDataAverageYesterday = deriveYesterdayAverage(soilMoistureSensorDataAverageToday, yesterdayStr);
   
-  const dummyGreenhouseData = [{ id: 1, name: "GrowGreen Test Alpha", gardenerId: 1 }];
+  const dummyGreenhouseData = [{ id: 1, name: "Dummy's greenhouse", gardenerId: 1 }];
 
   console.log("--- USING DUMMY SENSOR DATA ---");
   return {
@@ -202,7 +202,7 @@ function Dashboard() {
 
     if (USE_DUMMY_DATA) {
       const dummyData = generateDummySensorOverviewData();
-      // console.log("Generated Dummy Data:", dummyData); // Optional: for debugging
+      console.log("Generated Dummy Data:", dummyData);
 
       // Latest single readings
       setLightSensorData(dummyData.lightSensorData);

@@ -116,7 +116,7 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
                                                 setIsFilterOpen(false);
                                             }}
                                         >
-                                            Light Intensivity
+                                            Light Intensity
                                         </li>
                                         <li
                                             className={`px-4 py-2 cursor-pointer ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}

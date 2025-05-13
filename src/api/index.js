@@ -371,7 +371,7 @@ export async function getSensorStatus(type) {
     return minutesDifference <= 15; // Modify this value to change the threshold (minutes)
   }
 }
-export async function getAllNotifications() { // apparenttly no gardenerId is needed
+export async function getAllNotifications() { // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notification/all`);
   if (!res.ok) throw new Error(`Failed to load notifications`);
   const data = await res.json();

@@ -13,6 +13,7 @@ import SettingsPage from './pages/SettingsPage';
 import StartPage from './pages/StartPage';
 import GalleryPage from './pages/GalleryPage';
 import WaterManagement from './pages/WaterManagement';
+import AboutUsPage from './pages/AboutUsPage';
 
 
 function App() {
@@ -118,8 +119,7 @@ function AppContent() {
             element={
               isAuthenticated ? (
                 <div className="p-4">
-                  <h1>About Us</h1>
-                  <p>About us page coming soon</p>
+                  <AboutUsPage />
                 </div>
               ) : (
                 <Navigate to="/loginPage" replace />

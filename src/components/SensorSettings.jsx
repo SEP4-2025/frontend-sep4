@@ -26,7 +26,7 @@ function SensorSettings () {
                             />
                         </div>
                         <button
-                            className={`rounded-lg p-2 mt-2 bg-gray-800 text-white`}
+                            className={`rounded-lg p-2 mt-2 text-white ${darkMode ? 'text-white bg-slate-800' : 'bg-gray-600'}`}
                         >
                             Update
                         </button>

@@ -129,10 +129,10 @@ function SensorViewGraph (idealValue, inputData, status, lastMeasurement, select
                 <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
                     <div className='flex lg:flex-row flex-col'>
 
-                        <div className="relative flex items-center h-full">
+                        <div className="relative flex items-center h-12 mb-3">
                             <button
                                 onClick={() => setOpen(!open)}
-                                className={`h-full flex justify-center items-center w-full rounded-md shadow-sm px-4 py-2 text-sm font-medium ${darkMode ? 'bg-slate-700 text-white hover:slate-50' : 'bg-navbar-color, text-gray-700 hover:bg-gray-50'}`}
+                                className={`h-full flex justify-center items-center w-full rounded-md shadow-sm px-4 py-2 ${darkMode ? 'bg-slate-700 text-white hover:slate-50' : 'bg-navbar-color, text-gray-700 hover:bg-gray-50'}`}
                             >
                                 Selected sensor: {selectedSensor}
                                 <svg
@@ -162,10 +162,10 @@ function SensorViewGraph (idealValue, inputData, status, lastMeasurement, select
                             </div>
 
 
-                        <div className='flex flex-row h-full rounded-lg items-center justify-center mx-auto bg-slate-700 p-3'>
+                        <div className={`flex flex-row h-full rounded-lg items-center justify-center shadow-sm mx-auto p-3 ${darkMode ? 'bg-slate-700 text-white' : 'bg-navbar-color, text-gray-700'}`}>
                             <p>Status: {status}</p>
                         </div>
-                        <div className='flex flex-row h-full items-center justify-center rounded-lg bg-slate-700 p-3'>
+                        <div className={`flex flex-row h-full items-center justify-center rounded-lg shadow-sm p-3 ${darkMode ? 'bg-slate-700 text-white' : 'bg-navbar-color, text-gray-700'}`}>
                             <p>Last measurement: {lastMeasurement}ºC</p>
                         </div>
                     </div>

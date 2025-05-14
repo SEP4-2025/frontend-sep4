@@ -10,6 +10,7 @@ import Plant_upload_popup from './components/Plant-upload-popup';
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
+
 import StartPage from './pages/StartPage';
 import GalleryPage from './pages/GalleryPage';
 import WaterManagement from './pages/WaterManagement';

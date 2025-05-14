@@ -2,60 +2,98 @@ import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import waterLevelIcon from '../assets/hugeicons--humidity.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
+import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
+import { useDarkMode } from '../context/DarkModeContext';
 
-function Sensor_card({ lightSensorData}) {
-    // const getSensorData = (sensorType) => {
-    //     if (!Array.isArray(overviewData)) {
-    //         return {
-    //             current: { value: 0 },
-    //             difference: 0
-    //         };
-    //     }
-    //     const sensor = overviewData.find(data => data.type === sensorType);
-    //     return{
-    //         current : sensor.current.value || 0,
-    //         difference: sensor.history.length > 1
-    //         ? sensor.current.value - sensor.history[1].value
-    //         : 0
-    //     };
-    // };
-    // const temperatureData = getSensorData('temperature');
-    // const humidityData = getSensorData('humidity');
-    // const lightIntensityData = getSensorData('lightIntensity');
-    // we need to somehow get the water level data from the database, for now we will just use a dummy value
+function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorData, soilMoistureSensorData,
+    lightSensorDataAverageToday, temperatureSensorDataAverageToday, humiditySensorDataAverageToday, soilMoistureSensorDataAverageToday,
+    lightSensorDataAverageYesterday, temperatureSensorDataAverageYesterday, humiditySensorDataAverageYesterday, soilMoistureSensorDataAverageYesterday }) {
+    
+    const { darkMode } = useDarkMode();
+
+    const formatComparisonText = (todayData, yesterdayData, unit, precision = 1) => {
+        if (todayData && typeof todayData.value === 'number' &&
+            yesterdayData && typeof yesterdayData.value === 'number') {
+            
+            const diff = todayData.value - yesterdayData.value;
+            const displayDiffString = diff.toFixed(precision);
+            const sign = diff > 0 ? '+' : '';
+            return `${sign}${displayDiffString}${unit} from yesterday`;
+        }
+        return 'No comparison data';
+    };
+
     return (
-        <div className='flex flex-row justify-evenly '>
-            <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/5'>
-                <div className='flex flex-row'>
-                    <p className='Manrope text-xl'>Temperature</p>
-                    <img src={temperatureIcon} className="ml-auto" alt="temperature icon" width="23" height="2" />
+        <div className="flex flex-row justify-evenly">
+            <div className={`rounded-lg p-4 shadow-md w-1/6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+                <div className={`flex flex-col h-full p-2 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
+                    <div className='flex flex-row'>
+                        <p className={`Manrope text-xl ${darkMode ? 'text-gray-100' : ''}`}>Temperature</p>
+                        <img src={temperatureIcon} className={`ml-auto ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
+                    </div>
+                    <p className={`Manrope text-l font-bold ${darkMode ? 'text-gray-100' : ''}`}>
+                        {temperatureSensorData && typeof temperatureSensorData.value === 'number' ? `${temperatureSensorData.value.toFixed(1)}°C` : 'N/A'}
+                    </p>
+                    <p className='Manrope text-xs text-gray-400'>
+                        {formatComparisonText(temperatureSensorDataAverageToday, temperatureSensorDataAverageYesterday, '°C', 1)}
+                    </p>
                 </div>
-                <p className='Manrope text-l font-bold'>24.6°C</p>
-                <p className='Manrope text-xs text-gray-400'>-2.2°C from yesterday</p>
-            </div >
-            <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/5'>
-                <div className='flex flex-row'>
-                    <p className='Manrope text-xl'>Humidity</p>
-                    <img src={humidityIcon} className="ml-auto" alt="humidity icon" width="23" height="2" />
-                </div>
-                <p className='Manrope text-l font-bold'>55%</p>
-                <p className='Manrope text-xs text-gray-400'>+4% from yesterday</p>
             </div>
-            <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/5'>
-                <div className='flex flex-row'>
-                    <p className='Manrope text-xl'>Water Level</p>
-                    <img src={waterLevelIcon} className="ml-auto" alt="water level icon" width="23" height="2" />
+            
+            <div className={`rounded-lg p-4 shadow-md w-1/6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+                <div className={`flex flex-col h-full p-2 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
+                    <div className='flex flex-row'>
+                        <p className={`Manrope text-xl ${darkMode ? 'text-gray-100' : ''}`}>Humidity</p>
+                        <img src={humidityIcon} className={`ml-auto ${darkMode ? 'filter invert' : ''}`} alt="humidity icon" width="23" height="2" />
+                    </div>
+                    <p className={`Manrope text-l font-bold ${darkMode ? 'text-gray-100' : ''}`}>
+                        {humiditySensorData && typeof humiditySensorData.value === 'number' ? `${humiditySensorData.value.toFixed(1)}%` : 'N/A'}
+                    </p>
+                    <p className='Manrope text-xs text-gray-400'>
+                        {formatComparisonText(humiditySensorDataAverageToday, humiditySensorDataAverageYesterday, '%', 1)}
+                    </p>
                 </div>
-                <p className='Manrope text-l font-bold'>88%</p>
-                <p className='Manrope text-xs text-gray-400'>Last watered 6 h ago</p>
             </div>
-            <div className='border-1 border-gray-500 rounded-xl pl-2 bg-navbar-color pb-2 pt-1 pr-1 w-1/5'>
-                <div className='flex flex-row'>
-                    <p className='Manrope text-xl'>Light intensity</p>
-                    <img src={lightIntensityIcon} className="ml-auto" alt="light intensity icon" width="23" height="2" />
+            
+            <div className={`rounded-lg p-4 shadow-md w-1/6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+                <div className={`flex flex-col h-full p-2 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
+                    <div className='flex flex-row'>
+                        <p className={`Manrope text-xl ${darkMode ? 'text-gray-100' : ''}`}>Soil Moisture</p>
+                        <img src={soilMoistureIcon} className={`ml-auto ${darkMode ? 'filter invert' : ''}`} alt="soil moisture icon" width="23" height="2" />
+                    </div>
+                    <p className={`Manrope text-l font-bold ${darkMode ? 'text-gray-100' : ''}`}>
+                        {soilMoistureSensorData && typeof soilMoistureSensorData.value === 'number' ? `${soilMoistureSensorData.value.toFixed(1)}%` : 'N/A'}
+                    </p>
+                    <p className='Manrope text-xs text-gray-400'>
+                        {formatComparisonText(soilMoistureSensorDataAverageToday, soilMoistureSensorDataAverageYesterday, '%', 1)}
+                    </p>
                 </div>
-                <p className='Manrope text-l font-bold'>{lightSensorData.value} lux</p>
-                <p className='Manrope text-xs text-gray-400'>Optimal Range</p>
+            </div>
+            
+            <div className={`rounded-lg p-4 shadow-md w-1/6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+                <div className={`flex flex-col h-full p-2 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
+                    <div className='flex flex-row'>
+                        <p className={`Manrope text-xl ${darkMode ? 'text-gray-100' : ''}`}>Water Level</p>
+                        <img src={waterLevelIcon} className={`ml-auto ${darkMode ? 'filter invert' : ''}`} alt="water level icon" width="23" height="2" />
+                    </div>
+                    <p className={`Manrope text-l font-bold ${darkMode ? 'text-gray-100' : ''}`}>88%</p>
+                    <p className='Manrope text-xs text-gray-400'>Last watered 6 h ago</p>
+                </div>
+            </div>
+            
+            <div className={`rounded-lg p-4 shadow-md w-1/6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
+                <div className={`flex flex-col h-full p-2 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
+                    <div className='flex flex-row'>
+                        <p className={`Manrope text-xl ${darkMode ? 'text-gray-100' : ''}`}>Light intensity</p>
+                        <img src={lightIntensityIcon} className={`ml-auto ${darkMode ? 'filter invert' : ''}`} alt="light intensity icon" width="23" height="2" />
+                    </div>
+                    <p className={`Manrope text-l font-bold ${darkMode ? 'text-gray-100' : ''}`}>
+                        {lightSensorData && typeof lightSensorData.value === 'number' ? `${lightSensorData.value.toFixed(0)} lux` : 'N/A'}
+                    </p>
+                    <p className='Manrope text-xs text-gray-400'>
+                        {formatComparisonText(lightSensorDataAverageToday, lightSensorDataAverageYesterday, 'lux', 0)}
+                    </p>
+                </div>
             </div>
         </div>
     );

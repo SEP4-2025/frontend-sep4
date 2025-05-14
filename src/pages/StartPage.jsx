@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+
 import background from '../assets/start-page-background.jpg';
 import logo from '../assets/GrowMate_Logo_Transparent.png';
 import x from '../assets/twitter-icon.svg';

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+
 @theme{
   --color-navbar-color: #E8F5E9 ;
   --color-support-icon-color: #B6F2D0 ;
@@ -18,4 +21,17 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Font Size Classes */
+html.font-size-small {
+  font-size: 14px; /* Small */
+}
+
+html.font-size-medium {
+  font-size: 16px; /* Default/Medium */
+}
+
+html.font-size-large {
+  font-size: 18px; /* Large */
 }

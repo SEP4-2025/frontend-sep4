@@ -4,7 +4,8 @@ import {
   getSensorData,
   getSensorAverageByDate,
   getAllNotifications,
-  getNotificationPreferences
+  getNotificationPreferences,
+  toggleNotificationPreference
 } from '../api';
 
 function formatDate(date){
@@ -49,9 +50,6 @@ export async function compileDashboardData(gardenerId) {
   const notificationData = await getAllNotifications();
   const notificationPreferences = await getNotificationPreferences(); 
 
-
-
-
   return {
     // Current sensor data
     lightSensorData,
@@ -75,11 +73,32 @@ export async function compileDashboardData(gardenerId) {
     notificationPreferences
   };
 
-  function formatDate(date){
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // padStart adds the zerio in front so for example 1 becomes 01 to match the format
-    const day = String(date.getDate()).padStart(2, '0'); // padStart(2, '0') 2 is the lenght of the string and '0' is the character that goes in front
+}
 
-    return `${year}-${month}-${day}`;
+/**
+ * Get notification preferences from the API
+ * @returns {Promise<Array>} - Array of notification preferences
+ */
+export async function getNotificationPreferencesData() {
+  try {
+    return await getNotificationPreferences();
+  } catch (error) {
+    console.error('Error fetching notification preferences:', error);
+    throw error;
+  }
+}
+
+/**
+ * Toggle notification preference status
+ * @param {number} gardenerId - ID of the gardener
+ * @param {string} type - Type of notification preference
+ * @returns {Promise<string>} - Success message
+ */
+export async function toggleNotificationPreferenceData(gardenerId, type) {
+  try {
+    return await toggleNotificationPreference(gardenerId, type);
+  } catch (error) {
+    console.error(`Error toggling notification preference for gardener ${gardenerId} and type ${type}:`, error);
+    throw error;
   }
 }

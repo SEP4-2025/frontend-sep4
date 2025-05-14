@@ -37,7 +37,7 @@ function GalleryPage() {
         <div className={`flex flex-row p-6 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
            <div className='w-full'>
             <div className='flex flex-row items-center'>
-                <img src={PlantIcon} alt="logo" className={`w-10 max-w-xs h-10 ${darkMode ? 'filter brightness-75' : ''}`} />
+                <img src={PlantIcon} alt="logo" className={`w-10 max-w-xs h-10 ${darkMode ? 'invert' : ''}`} />
                 <h1 className={`Jacques-Francois text-5xl p-3 ${darkMode ? 'text-gray-100' : ''}`}>Plant gallery</h1>
             </div>
             <div className="p-3 flex flex-col">

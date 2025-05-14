@@ -67,7 +67,7 @@ const SettingsPage = () => {
     <div className={`flex-1 p-8 min-h-screen ${darkMode ? 'darkMode' : ''} `}>
       <header className="mb-10">
         <h1 className={`text-4xl font-bold flex items-center ${darkMode ? '' : ''}`}> 
-          <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'filter invert' : ''}`} /></IconWrapper> <span className="Jacques-Francois ml-3">Settings</span>
+          <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper> <span className="Jacques-Francois ml-3">Settings</span>
         </h1>
       </header>
 
@@ -84,7 +84,7 @@ const SettingsPage = () => {
           
           {loading ? (
             <div className="flex items-center justify-center p-4 border rounded-lg">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500"></div>
+              <div className={`animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 ${darkMode ? 'border-slate-300' : 'border-green-500'}`}></div>
               <span className="ml-2">Loading preferences...</span>
             </div>
           ) : notificationPrefs.length > 0 ? (
@@ -92,7 +92,7 @@ const SettingsPage = () => {
               {notificationPrefs.map((pref) => (
                 <div key={`${pref.gardenerId}-${pref.type}`} className={`flex items-center justify-between p-4 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-700' : 'border-gray-300 bg-gray-50'}`}>
                   <div className="flex items-center">
-                    <IconWrapper><img src={bellIconPath} alt="Notifications" className="w-full h-full" /></IconWrapper>
+                    <IconWrapper><img src={bellIconPath} alt="Notifications" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
                     <div className="ml-4">
                       <p className={`text-lg font-medium ${darkMode ? 'text-slate-100' : 'text-gray-800'}`}>{pref.type} notifications</p>
                       <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{pref.isEnabled ? 'Enabled' : 'Disabled'}</p>
@@ -126,7 +126,7 @@ const SettingsPage = () => {
           <h2 className={`text-2xl font-semibold mb-4 ${darkMode ? 'text-slate-200' : 'text-gray-700'}`}>Color mode</h2>
           <div className={`flex items-center justify-between p-4 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-700' : 'border-gray-300 bg-gray-50'}`}>
             <div className="flex items-center">
-              <IconWrapper><img src={moonIconPath} alt="Color Mode" className="w-full h-full" /></IconWrapper>
+              <IconWrapper><img src={moonIconPath} alt="Color Mode" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
               <div className="ml-4">
                 <p className={`text-lg font-medium ${darkMode ? 'text-slate-100' : 'text-gray-800'}`}>Dark mode: {darkMode ? 'On' : 'Off'}</p>
                 <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Toggle dark mode for a better low-light experience</p>
@@ -153,7 +153,7 @@ const SettingsPage = () => {
           <h2 className={`text-2xl font-semibold mb-4 ${darkMode ? 'text-slate-200' : 'text-gray-700'}`}>Font preferences</h2>
           <div className={`flex items-center justify-between p-4 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-700' : 'border-gray-300 bg-gray-50'}`}>
             <div className="flex items-center">
-              <IconWrapper><img src={fontIconPath} alt="Font Size" className="w-full h-full" /></IconWrapper>
+              <IconWrapper><img src={fontIconPath} alt="Font Size" className={`w-full h-full ${darkMode ? 'invert' : ''}`}  /></IconWrapper>
               <div className="ml-4">
                 <p className={`text-lg font-medium ${darkMode ? 'text-slate-100' : 'text-gray-800'}`}>Font size: {fontSizeKey}</p>
                 <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Adjust the font size to improve readability and comfort.</p>

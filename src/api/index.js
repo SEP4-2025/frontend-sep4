@@ -139,6 +139,9 @@ export async function getSensorAverageByDate(type, date) {
     return null; 
   }
 
+  const sum = filteredData.reduce((total, item) => total + item.value, 0);
+  const averageValue = sum / filteredData.length;
+
   /* Construct the average data object, which is a single .json element averaging the "res" data:
    *   date (date-time) - date of the sensor data
    *   value (int) - averaged value of the sensor data for the specified date

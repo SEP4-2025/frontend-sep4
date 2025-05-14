@@ -30,7 +30,7 @@ export function AIModelPredictions({ metrics }) {
       </div>
       <p className="text-xs text-gray-500 mb-4">Optimal growth metrics for your plant</p>
 
-      <div className="space-y-4 flex-grow overflow-y-auto">
+      <div className="space-y-4 flex-grow overflow-y-auto z-10">
         {metrics.map((m) => {
           const min = m.min ?? (m.name === 'Light Intensity' ? 4000 : 0);
           const max = m.max ?? (m.name === 'Temperature'

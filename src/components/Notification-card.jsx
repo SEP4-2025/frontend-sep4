@@ -27,23 +27,23 @@ function Notification_card({notification}) {
         const type = notification?.type.toLowerCase();
         
         if (type.includes('temperature')) {
-            return <img src={temperatureIcon} alt="Temperature" className="w-5 h-5" />;
+            return <img src={temperatureIcon} alt="Temperature" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('humidity')) {
-            return <img src={humidityIcon} alt="Humidity" className="w-5 h-5" />;
+            return <img src={humidityIcon} alt="Humidity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('soil') || type.includes('moisture')) {
-            return <img src={soilMoistureIcon} alt="Soil Moisture" className="w-5 h-5" />;
+            return <img src={soilMoistureIcon} alt="Soil Moisture" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('watering')) {
-            return <img src={waterLevelIcon} alt="Water Level" className="w-5 h-5" />;
+            return <img src={waterLevelIcon} alt="Water Level" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('light')) {
-            return <img src={lightIntensityIcon} alt="Light Intensity" className="w-5 h-5" />;
+            return <img src={lightIntensityIcon} alt="Light Intensity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
 
         // Default notification icon
-        return <img src={notificationIcon} alt="Notification" className="w-5 h-5" />;
+        return <img src={notificationIcon} alt="Notification" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
     };
     
     return (

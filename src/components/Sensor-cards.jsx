@@ -11,11 +11,11 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
     
     const { darkMode } = useDarkMode();
 
-    const formatComparisonText = (currentData, yesterdayData, unit, precision = 1) => {
-        if (currentData && typeof currentData.value === 'number' &&
+    const formatComparisonText = (todayData, yesterdayData, unit, precision = 1) => {
+        if (todayData && typeof todayData.value === 'number' &&
             yesterdayData && typeof yesterdayData.value === 'number') {
             
-            const diff = currentData.value - yesterdayData.value;
+            const diff = todayData.value - yesterdayData.value;
             const displayDiffString = diff.toFixed(precision);
             const sign = diff > 0 ? '+' : '';
             return `${sign}${displayDiffString}${unit} from yesterday`;
@@ -25,23 +25,23 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
 
     // Using imported icon assets instead of SVG paths
     const TemperatureIcon = () => (
-        <img src={temperatureIcon} alt="Temperature" className="w-6 h-6" />
+        <img src={temperatureIcon} alt="Temperature" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
     
     const HumidityIcon = () => (
-        <img src={humidityIcon} alt="Humidity" className="w-6 h-6" />
+        <img src={humidityIcon} alt="Humidity" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`}/>
     );
     
     const SoilMoistureIcon = () => (
-        <img src={soilMoistureIcon} alt="Soil Moisture" className="w-6 h-6" />
+        <img src={soilMoistureIcon} alt="Soil Moisture" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
     
     const WaterLevelIcon = () => (
-        <img src={waterLevelIcon} alt="Water Level" className="w-6 h-6" />
+        <img src={waterLevelIcon} alt="Water Level" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
     
     const LightIntensityIcon = () => (
-        <img src={lightIntensityIcon} alt="Light Intensity" className="w-6 h-6" />
+        <img src={lightIntensityIcon} alt="Light Intensity" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
 
     return (
@@ -58,7 +58,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                             `${temperatureSensorData.value.toFixed(1)}°C` : 'N/A'}
                     </span>
                     <span className="text-xs text-gray-500">
-                        {formatComparisonText(temperatureSensorData, temperatureSensorDataAverageYesterday, '°C', 1)}
+                        {formatComparisonText(temperatureSensorDataAverageToday, temperatureSensorDataAverageYesterday, '°C', 1)}
                     </span>
                 </div>
             </div>
@@ -75,7 +75,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                             `${humiditySensorData.value.toFixed(1)}%` : 'N/A'}
                     </span>
                     <span className="text-xs text-gray-500">
-                        {formatComparisonText(humiditySensorData, humiditySensorDataAverageYesterday, '%', 1)}
+                        {formatComparisonText(humiditySensorDataAverageToday, humiditySensorDataAverageYesterday, '%', 1)}
                     </span>
                 </div>
             </div>
@@ -92,7 +92,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                             `${soilMoistureSensorData.value.toFixed(1)}%` : 'N/A'}
                     </span>
                     <span className="text-xs text-gray-500">
-                        {formatComparisonText(soilMoistureSensorData, soilMoistureSensorDataAverageYesterday, '%', 1)}
+                        {formatComparisonText(soilMoistureSensorDataAverageToday, soilMoistureSensorDataAverageYesterday, '%', 1)}
                     </span>
                 </div>
             </div>
@@ -121,7 +121,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                             `${lightSensorData.value.toFixed(0)} lux` : 'N/A'}
                     </span>
                     <span className="text-xs text-gray-500">
-                        {formatComparisonText(lightSensorData, lightSensorDataAverageYesterday, ' lux', 0)}
+                        {formatComparisonText(lightSensorDataAverageToday, lightSensorDataAverageYesterday, ' lux', 0)}
                     </span>
                 </div>
             </div>

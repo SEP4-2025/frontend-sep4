@@ -1,7 +1,7 @@
 import Plant_gallery_card from '../components/Plant-gallery-card';
 import Plant_upload_popup from '../components/Plant-upload-popup';
-import PlantIcon from '../assets/plant_icon.jpeg';
-import FilterIcon from '../assets/filter_icon.jpeg';
+import PlantIcon from '../assets/plant_icon.svg';
+import FilterIcon from '../assets/filter_icon.svg';
 import PlantViewPopup from '../components/PlantViewPopup';
 import { useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';

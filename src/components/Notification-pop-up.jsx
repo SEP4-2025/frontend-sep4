@@ -4,7 +4,7 @@ import filterArrow from '../assets/filterArrow.png';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
 
-function Notification_pop_up({ isOpen, onClose, notificationData, notificationPreferences }) {
+function Notification_pop_up({ isOpen, onClose, title, description, notificationData, notificationPreferences }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const { darkMode } = useDarkMode();
     const { notifications } = useNotificationHub()
@@ -50,12 +50,8 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
             <div className={`border-1 rounded-xl pl-2 pb-2 pt-1 pr-1 mx-auto w-4/5 h-3/5 p-2 m-15 flex flex-col overflow-hidden    ${darkMode ? 'darkMode border-gray-600 bg-black' : 'bg-white border-gray-500 bg-navbar-color'}`}>
                 <div className='flex flex-col p-2 gap-4'>
                     <div className='text-left'>
-                        <h1 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-black'}`}>
-                            Notification Centre
-                        </h1>
-                        <p className={`${darkMode ? 'text-gray-300' : 'text-gray-400'}`}>
-                            Here you can see old and new notifications from your plant
-                        </p>
+                        <h1 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-black'}`}>{title || 'Notification Center'}</h1>
+                        <p className={`${darkMode ? 'text-gray-300' : 'text-gray-400'}`}>{description || 'Here you can see old and new notifications from your plant'}</p>
                     </div>
                     {/* filter button */}
                     <div className="flex justify-end w-full">

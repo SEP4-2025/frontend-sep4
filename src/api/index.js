@@ -402,3 +402,4 @@ export async function toggleNotificationPreference(gardenerId, type) {
   if (!res.ok) throw new Error(`Failed to toggle notification preference for gardener ${gardenerId} and type ${type}`);
   return await res.text(); // Return the success message
 }
+

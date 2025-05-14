@@ -81,8 +81,8 @@ function Notification_pop_up({ isOpen, onClose, title, description, notification
     };
 
     return (
-        <div className={`fixed inset-0 flex items-center justify-center p-4 max-h-screen pl-[10%] ${darkMode ? 'bg-gray-900/50' : 'bg-black/50'}`}>
-            <div className={`border-1 rounded-xl pl-2 pb-2 pt-1 pr-1 mx-auto w-4/5 h-3/5 p-2 m-15 flex flex-col overflow-hidden    ${darkMode ? 'darkMode border-gray-600 bg-black' : 'bg-white border-gray-500 bg-navbar-color'}`}>
+        <div className={`fixed inset-0 flex items-center justify-center p-4 max-h-screen pl-[10%] z-50 ${darkMode ? 'bg-gray-900/50' : 'bg-black/50'}`}>
+            <div className={`border-1 rounded-xl pl-2 pb-2 pt-1 pr-1 mx-auto w-4/5 h-3/5 p-2 m-15 flex flex-col overflow-hidden z-50 relative ${darkMode ? 'darkMode border-gray-600 bg-black' : 'bg-white border-gray-300'}`}>
                 <div className='flex flex-col p-2 gap-4'>
                     <div className='text-left'>
                         <h1 className={`Manrope text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-black'}`}>{title || 'Notification Center'}</h1>

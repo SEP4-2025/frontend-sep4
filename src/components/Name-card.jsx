@@ -2,10 +2,11 @@ import PenLogo from '../assets/pen-icon.svg';
 import SaveLogo from '../assets/saveIcon.svg';
 import React, { useState, useRef, useEffect } from 'react';
 import { updateGreenhouseData } from '../api';
+
 function NameCard({ greenhouseData }) {
   const [name, setName] = useState(greenhouseData?.name);
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  
   const inputReference = useRef(null);
 
   useEffect(() => {
@@ -27,7 +28,6 @@ function NameCard({ greenhouseData }) {
       return;
     }
     else{
-      setIsSaving(true);
       try{
         await updateGreenhouseData(greenhouseData.id, name);
         setIsEditing(false);
@@ -36,7 +36,6 @@ function NameCard({ greenhouseData }) {
         console.error("Error updating greenhouse data in the name-card:", error);
       }
     }
-    setIsSaving(false);
   }
 
   const handleEditToggle = () => {

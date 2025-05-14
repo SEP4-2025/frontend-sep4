@@ -1,13 +1,16 @@
-import './App.css'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import './App.css';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // Components
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar';
 
 // Pages
-import Dashboard from './pages/Dashboard'
-import LoginPage from './pages/loginPage'
+import Dashboard from './pages/Dashboard';
+import LoginPage from './pages/LoginPage';
+import SettingsPage from './pages/SettingsPage';
 import StartPage from './pages/StartPage'
+
 
 function App() {
   return (
@@ -19,31 +22,117 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
 
   const hideNavbarRoutes = ["/", "/loginPage"];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (
-      <div className="flex min-h-screen">
-      {!shouldHideNavbar && (
-          <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
-            <Navbar />
-          </div>
-        )}
-        <main className="flex-1 overflow-y-auto h-screen">
-            <Routes>
-              <Route path="/" element={<StartPage />} />
-              <Route path="/loginPage" element={<LoginPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/water-management" element={<div className="p-4"><h1>Water Managment</h1><p>Water managment page coming soon</p></div>} />
-              <Route path="/sensor-view" element={<div className="p-4"><h1>Sensor View</h1><p>Sensor view page coming soon</p></div>} />
-              <Route path="/gallery" element={<div className="p-4"><h1>Gallery</h1><p>Gallery page coming soon</p></div>} />
-              <Route path="/settings" element={<div className="p-4"><h1>Settings</h1><p>Settings page coming soon</p></div>} />
-              <Route path="/about" element={<div className="p-4"><h1>About Us</h1><p>About us page coming soon</p></div>} />
-            </Routes>
-        </main>
-      </div>
-  )
+
+    <div className="flex min-h-screen">
+      {!shouldHideNavbar && isAuthenticated && (
+        <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
+          <Navbar />
+        </div>
+      )}
+      <main className="flex-1 overflow-y-auto h-screen">
+        <Routes>
+        <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/loginPage" replace />
+              ) : (
+                <StartPage/>
+              )
+            }
+          />
+          <Route
+            path="/loginPage"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <LoginPage setIsAuthenticated={setIsAuthenticated} />
+              )
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              isAuthenticated ? (
+                <Dashboard />
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/water-management"
+            element={
+              isAuthenticated ? (
+                <div className="p-4">
+                  <h1>Water Managment</h1>
+                  <p>Water managment page coming soon</p>
+                </div>
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/sensor-view"
+            element={
+              isAuthenticated ? (
+                <div className="p-4">
+                  <h1>Sensor View</h1>
+                  <p>Sensor view page coming soon</p>
+                </div>
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/gallery"
+            element={
+              isAuthenticated ? (
+                <div className="p-4">
+                  <h1>Gallery</h1>
+                  <p>Gallery page coming soon</p>
+                </div>
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              isAuthenticated ? (
+                <SettingsPage />
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              isAuthenticated ? (
+                <div className="p-4">
+                  <h1>About Us</h1>
+                  <p>About us page coming soon</p>
+                </div>
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+        </Routes>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;

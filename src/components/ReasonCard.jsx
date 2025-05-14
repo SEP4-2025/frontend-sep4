@@ -10,7 +10,7 @@ function ReasonCard({icon, title, description}) {
                 <div className="flex flex-col items-center justify-between gap-2 p-3">
                     <img src={icon} alt="icon" className={`w-1/8 h-auto ${darkMode ? 'filter invert' : ''}`} />
                     <h1 className='Manrope text-xl font-bold'>{title}</h1>
-                    <p className='Manrope text-l'>{description}</p>
+                    <p className='Manrope text-base'>{description}</p>
                 </div>
             </div>
         </div>

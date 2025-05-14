@@ -45,7 +45,7 @@ function AboutUsPage() {
             <TeamCarouselCard />
             <div className='flex flex-col items-center justify-center w-3/5 mt-4 mb-6'>
                 <h1 className='Jacques-Francois text-3xl font-bold my-4'>Contact Us!</h1>
-                <p className='Manrope text-xl text-center'>Have questions about our smart greenhouse solution? Reach out to our team for support, partnership opportunities, or to learn more about how GrowMate can transform your gardening experience</p>
+                <p className='Manrope text-lg text-center'>Have questions about our smart greenhouse solution? Reach out to our team for support, partnership opportunities, or to learn more about how GrowMate can transform your gardening experience</p>
             </div>
         </div>
     );

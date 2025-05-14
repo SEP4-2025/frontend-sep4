@@ -13,19 +13,19 @@ function ImpactCard() {
                <div className='flex flex-row justify-between gap-6 mt-2'>
                 <div className='flex flex-col items-center justify-center gap-2 p-3'>
                     <h2 className='Manrope text-2xl'>{inView && <CountUp start={0} end={1} duration={15} />}</h2>
-                    <p className='Jacques-Francois text-m'>Active Users</p>
+                    <p className='Jacques-Francois'>Active Users</p>
                 </div>
                 <div className='flex flex-col items-center justify-center gap-2 p-3'>
                     <h2 className='Manrope text-2xl'>{inView && <CountUp start={0} end={530} duration={3} suffix="L+" />}</h2>
-                    <p className='Jacques-Francois text-m'>Water Saved</p>
+                    <p className='Jacques-Francois'>Water Saved</p>
                 </div>
                 <div className='flex flex-col items-center justify-center gap-2 p-3'>
                     <h2 className='Manrope text-2xl'>{inView && <CountUp start={0} end={230} duration={3} suffix="%" />}</h2>
-                    <p className='Jacques-Francois text-m'>Co₂ Emissions Reduced</p>
+                    <p className='Jacques-Francois'>Co₂ Emissions Reduced</p>
                 </div>
                 <div className='flex flex-col items-center justify-center gap-2 p-3'>
                     <h2 className='Manrope text-2xl'>{inView && <CountUp start={0} end={20000} duration={3} suffix="+" />}</h2>
-                    <p className='Jacques-Francois text-m'>Plants Grown</p>
+                    <p className='Jacques-Francois'>Plants Grown</p>
                 </div>
                </div>
             </div>

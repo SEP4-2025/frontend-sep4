@@ -14,6 +14,7 @@ import StartPage from './pages/StartPage';
 import GalleryPage from './pages/GalleryPage';
 import WaterManagement from './pages/WaterManagement';
 import AboutUsPage from './pages/AboutUsPage';
+import SensorViewPage from './pages/SensorViewPage';
 
 
 function App() {
@@ -85,10 +86,7 @@ function AppContent() {
             path="/sensor-view"
             element={
               isAuthenticated ? (
-                <div className="p-4">
-                  <h1>Sensor View</h1>
-                  <p>Sensor view page coming soon</p>
-                </div>
+                  <SensorViewPage/>
               ) : (
                 <Navigate to="/loginPage" replace />
               )

@@ -387,3 +387,18 @@ export async function getNotificationPreferences(){ // apparently no gardenerId 
   return data;
 }
 
+export async function toggleNotificationPreference(gardenerId, type) {
+  const res = await fetch(`${BASE_URL}/notificationpref/toggle`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      gardenerId: gardenerId,
+      type: type
+    })
+  });
+  
+  if (!res.ok) throw new Error(`Failed to toggle notification preference for gardener ${gardenerId} and type ${type}`);
+  return await res.text(); // Return the success message
+}

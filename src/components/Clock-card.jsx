@@ -18,10 +18,13 @@ function ClockCard(){
 
 
     return (
-        <div className={`rounded-full p-4 shadow-md w-1/6 mb-6 ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
-            <div className={`flex flex-col h-full p-3 border rounded-full text-center ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-                <p className={`Manrope text-2xl ${darkMode ? 'text-gray-100' : ''}`}>{formattedTime}</p>
-                <p className={`Manrope text-l ${darkMode ? 'text-gray-300' : ''}`}>{formattedDate}</p>
+        <div className={`p-4 rounded-lg shadow-sm ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+            <div className="flex items-center mb-2">
+                <h3 className="text-sm font-medium text-gray-500">Local Time</h3>
+            </div>
+            <div className="flex flex-col">
+                <span className="text-3xl font-bold">{formattedTime}</span>
+                <span className="text-xs text-gray-500">{formattedDate}</span>
             </div>
         </div>
     );

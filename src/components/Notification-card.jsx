@@ -23,17 +23,50 @@ function Notification_card({notification}) {
         return notificationIcon; // Default icon 
     }
     
+    const getNotificationIconSVG = () => {
+        const type = notification?.type.toLowerCase();
+        
+        if (type.includes('temperature')) {
+            return <img src={temperatureIcon} alt="Temperature" className="w-5 h-5" />;
+        }
+        if (type.includes('humidity')) {
+            return <img src={humidityIcon} alt="Humidity" className="w-5 h-5" />;
+        }
+        if (type.includes('soil') || type.includes('moisture')) {
+            return <img src={soilMoistureIcon} alt="Soil Moisture" className="w-5 h-5" />;
+        }
+        if (type.includes('watering')) {
+            return <img src={waterLevelIcon} alt="Water Level" className="w-5 h-5" />;
+        }
+        if (type.includes('light')) {
+            return <img src={lightIntensityIcon} alt="Light Intensity" className="w-5 h-5" />;
+        }
+
+        // Default notification icon
+        return <img src={notificationIcon} alt="Notification" className="w-5 h-5" />;
+    };
+    
     return (
-    <div className={`border rounded-xl p-2 w-full flex flex-col z-51 mb-2 ${darkMode ? 'darkMode border-gray-600 bg-black' : 'border-gray-400 bg-white'}`}>
-        <div className="flex justify_start">
-            <img src={getNotificationIcon()} alt="notification icon" width="23" height="2" className={`${darkMode ? 'filter invert' : ''}`} />
-                <div className='text-left pl-2'>
-                    <p className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-black'}`}>{notification?.type || "No type available"}</p>
-                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{notification?.message || "No message available"}</p>
+        <div className="py-3 px-1">
+            <div className="flex items-start gap-3">
+                <div className={`p-1.5 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+                    {getNotificationIconSVG()}
                 </div>
+                <div className="flex-1 min-w-0">
+                    <div className="flex justify-between">
+                        <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {notification?.type || "No type available"}
+                        </p>
+                        <span className="text-xs text-gray-500">
+                            {notification?.timeStamp || "No time available"}
+                        </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                        {notification?.message || "No message available"}
+                    </p>
+                </div>
+            </div>
         </div>
-        <div className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>{notification?.timeStamp || "No time available"}</div>
-    </div>
     
     )}
 

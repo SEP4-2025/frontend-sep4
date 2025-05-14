@@ -198,7 +198,7 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Dummy data flag (for testing purposes)
-  const USE_DUMMY_DATA = false; // Set to true to use dummy data, false to fetch real data
+  const USE_DUMMY_DATA = true; // Set to true to use dummy data, false to fetch real data
   useEffect(() => {
     const gardenerId = 1; //TODO: Get this from the logged-in user context or props
     setIsLoading(true);
@@ -277,38 +277,58 @@ function Dashboard() {
   }
   // If you are annoyed about the warnings in the console just comment out the sensor-card component
   return (
-    <div className={`p-4 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
-      <div className='flex flex-row justify-between'>
-        <Name_card greenhouseData={greenhouseData} />
-        <ClockCard />
-      </div>
-      <Sensor_card
-        lightSensorData={lightSensorData}
-        temperatureSensorData={temperatureSensorData}
-        humiditySensorData={humiditySensorData}
-        soilMoistureSensorData={soilMoistureSensorData}
-        lightSensorDataAverageToday={lightSensorDataAverageToday}
-        temperatureSensorDataAverageToday={temperatureSensorDataAverageToday}
-        humiditySensorDataAverageToday={humiditySensorDataAverageToday}
-        soilMoistureSensorDataAverageToday={soilMoistureSensorDataAverageToday}
-        lightSensorDataAverageYesterday={lightSensorDataAverageYesterday}
-        temperatureSensorDataAverageYesterday={temperatureSensorDataAverageYesterday}
-        humiditySensorDataAverageYesterday={humiditySensorDataAverageYesterday}
-        soilMoistureSensorDataAverageYesterday={soilMoistureSensorDataAverageYesterday}
-      />
-      <SensorOverview
-        temperatureHistory={temperatureHistory}
-        humidityHistory={humidityHistory}
-        lightHistory={lightHistory}
-        soilMoistureHistory={soilMoistureHistory}
-        latestTemperature={temperatureSensorDataAverageToday}
-        latestHumidity={humiditySensorDataAverageToday}
-        latestLight={lightSensorDataAverageToday}
-        latestSoilMoisture={soilMoistureSensorDataAverageToday}
-      />
-      <div className="flex ">
-        <Notification_centre notificationData={notificationData} notificationPreferences={notificationPreferences} />
-        <AIModelPredictions metrics={_dummyAiMetrics} />
+    <div className={`mx-auto px-4 py-6 ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-2">
+        {/* Top row - Name Card and Clock */}
+        <div className="lg:col-span-5">
+          <Name_card greenhouseData={greenhouseData} />
+        </div>
+        <div className="lg:col-span-1">
+          <ClockCard />
+        </div>
+        
+        {/* Sensor Cards row - spans all columns */}
+        <div className="lg:col-span-6 mt-1">
+          <Sensor_card
+            lightSensorData={lightSensorData}
+            temperatureSensorData={temperatureSensorData}
+            humiditySensorData={humiditySensorData}
+            soilMoistureSensorData={soilMoistureSensorData}
+            lightSensorDataAverageToday={lightSensorDataAverageToday}
+            temperatureSensorDataAverageToday={temperatureSensorDataAverageToday}
+            humiditySensorDataAverageToday={humiditySensorDataAverageToday}
+            soilMoistureSensorDataAverageToday={soilMoistureSensorDataAverageToday}
+            lightSensorDataAverageYesterday={lightSensorDataAverageYesterday}
+            temperatureSensorDataAverageYesterday={temperatureSensorDataAverageYesterday}
+            humiditySensorDataAverageYesterday={humiditySensorDataAverageYesterday}
+            soilMoistureSensorDataAverageYesterday={soilMoistureSensorDataAverageYesterday}
+          />
+        </div>
+        
+        {/* Sensor Overview */}
+        <div className="lg:col-span-6 mb-5">
+          <SensorOverview
+            temperatureHistory={temperatureHistory}
+            humidityHistory={humidityHistory}
+            lightHistory={lightHistory}
+            soilMoistureHistory={soilMoistureHistory}
+            latestTemperature={temperatureSensorDataAverageToday}
+            latestHumidity={humiditySensorDataAverageToday}
+            latestLight={lightSensorDataAverageToday}
+            latestSoilMoisture={soilMoistureSensorDataAverageToday}
+          />
+        </div>
+        
+        {/* Bottom row - Notifications and AI Predictions */}
+        <div className="lg:col-span-3 mt-1">
+          <Notification_centre 
+            notificationData={notificationData} 
+            notificationPreferences={notificationPreferences} 
+          />
+        </div>
+        <div className="lg:col-span-3 mt-1">
+          <AIModelPredictions metrics={_dummyAiMetrics} />
+        </div>
       </div>
     </div>
   );

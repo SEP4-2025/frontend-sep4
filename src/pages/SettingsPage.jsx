@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useFontSize } from '../context/FontSizeContext'; // Import useFontSize
 import { useDarkMode } from '../context/DarkModeContext'; // Import useDarkMode
-import { getNotificationPreferences, toggleNotificationPreference } from '../api'; // Import API functions
+import { getNotificationPreferencesData, toggleNotificationPreferenceData } from '../utils/dataCompiler'; // Import data compiler functions
 
 // Import SVG paths
 import gearIconPath from '../assets/akar-icons--gear.svg'; // Using a known good icon for header
@@ -27,7 +27,7 @@ const SettingsPage = () => {
     const fetchNotificationPrefs = async () => {
       setLoading(true);
       try {
-        const data = await getNotificationPreferences();
+        const data = await getNotificationPreferencesData();
         setNotificationPrefs(data);
         setError(null);
       } catch (err) {
@@ -44,7 +44,7 @@ const SettingsPage = () => {
   // Handle toggling a notification preference
   const handleToggleNotification = async (gardenerId, type) => {
     try {
-      await toggleNotificationPreference(gardenerId, type);
+      await toggleNotificationPreferenceData(gardenerId, type);
       // Update the local state after successful toggle
       setNotificationPrefs(prevPrefs => {
         return prevPrefs.map(pref => {

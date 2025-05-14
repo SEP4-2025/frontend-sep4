@@ -198,7 +198,7 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Dummy data flag (for testing purposes)
-  const USE_DUMMY_DATA = true; // Set to true to use dummy data, false to fetch real data
+  const USE_DUMMY_DATA = false; // Set to true to use dummy data, false to fetch real data
   useEffect(() => {
     const gardenerId = 1; //TODO: Get this from the logged-in user context or props
     setIsLoading(true);

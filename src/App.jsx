@@ -118,9 +118,7 @@ function AppContent() {
             path="/about"
             element={
               isAuthenticated ? (
-                <div className="p-4">
                   <AboutUsPage />
-                </div>
               ) : (
                 <Navigate to="/loginPage" replace />
               )

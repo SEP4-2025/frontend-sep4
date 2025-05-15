@@ -3,21 +3,23 @@ import { useDarkMode } from '../context/DarkModeContext.jsx';
 import NotificationCard from './Notification-card.jsx';
 import Notification_pop_up from './Notification-pop-up.jsx';
 
-function SensorLog ({ notifications, sensorName }) { 
+// Removed sensorName from props
+function SensorLog ({ notifications }) { 
     const { darkMode } = useDarkMode();
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+    // Ensure notifications is an array before trying to slice or check length
     const displayNotifications = Array.isArray(notifications) ? notifications : [];
 
     return (
         <div className={`w-full ${darkMode ? 'darkMode' : ''}`}>
             <div className={`rounded-lg p-4 mb-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
                 <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-                    <p className='Manrope font-bold text-center text-lg mb-3'>{sensorName || 'Sensor'} Log</p>
+                    {/* Changed title to "Log" */}
+                    <p className='Manrope font-bold text-center text-lg mb-3'>Log</p>
                     <div>
                         {displayNotifications.length > 0 ? (
                             displayNotifications.slice(0, 2).map((n, index) => (
@@ -37,8 +39,9 @@ function SensorLog ({ notifications, sensorName }) {
                         <Notification_pop_up 
                             isOpen={isModalOpen} 
                             onClose={closeModal} 
-                            title={`${sensorName || 'Sensor'} Log History`} 
-                            description="Here you can see the history of all log readings for this sensor from the last 30 days."
+                            title="Log History" 
+                            description="Here you can see the history of all log readings from the last 30 days."
+                            // Pass all (already date-filtered and sorted) notifications
                             notifications={displayNotifications} 
                         />
                     </div>

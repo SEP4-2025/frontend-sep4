@@ -131,18 +131,14 @@ export async function toggleNotificationPreferenceData(gardenerId, type) {
   }
 }
 
-export async function compileSensorLogs(sensorApiType, signal) {
+export async function compileSensorLogs(requestedApiType, signal) {
   try {
-    // getLogs expects sensorType like "temperature", "humidity", etc.
-    // It fetches all logs for that type if date is null.
-    // The getLogs function in api/index.js does not currently accept a signal.
-    const rawLogs = await getLogs(sensorApiType, null);
+    const rawLogs = await getLogs(requestedApiType, null); // Fetch logs (all or specific + untagged)
 
-    //print the raw logs for debugging
-    console.log(`➡️ Raw logs for ${sensorApiType}:`, rawLogs);
+    // console.log(`➡️ Raw logs for ${requestedApiType}:`, rawLogs);
 
     if (!rawLogs || !Array.isArray(rawLogs)) {
-      console.warn(`No logs returned or invalid format for ${sensorApiType} from getLogs.`);
+      console.warn(`No logs returned or invalid format for ${requestedApiType} from getLogs.`);
       return [];
     }
 
@@ -150,36 +146,43 @@ export async function compileSensorLogs(sensorApiType, signal) {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     thirtyDaysAgo.setHours(0, 0, 0, 0);
 
-    const filteredLogs = rawLogs.filter(log => {
-      if (!log || !log.date) { // API log object has 'date'
+    const filteredLogsByDate = rawLogs.filter(log => {
+      // Use log.timestamp instead of log.date
+      if (!log || !log.timestamp) { 
         return false;
       }
-      const logDate = new Date(log.date);
-      // Check if the date is valid and within the last 30 days
+      const logDate = new Date(log.timestamp); // Use log.timestamp
       return !isNaN(logDate.getTime()) && logDate >= thirtyDaysAgo;
     });
 
-    // Map to the structure expected by NotificationCard/SensorLog component
-    // The API log has: date, message, waterpumpid, sensorreadingid, greenhouseid
-    // SensorLog (via NotificationCard) expects: type, message, timeStamp
-    return filteredLogs.map(log => ({
-      type: "Log Entry", // API logs don't have a 'type' like "Warning", "Info". Using a generic one.
+    // Helper function to map sensorReadingId to a readable type string
+    function mapSensorIdToText(sensorId) {
+        if (sensorId === 1) return 'Temperature';
+        if (sensorId === 2) return 'Humidity';
+        if (sensorId === 3) return 'Light';
+        if (sensorId === 4) return 'Soil Moisture';
+        if (sensorId == null) return 'General'; // For untagged logs
+        return 'Unknown';
+    }
+
+    return filteredLogsByDate.map(log => ({
+      type: "Log Entry", 
       message: log.message,
-      timeStamp: new Date(log.date).toLocaleString(), // Format for display
-      // You can include original log data if needed elsewhere
-      // originalData: log 
-    })).sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp)); // Sort by most recent first for display
+      // Use log.timestamp instead of log.date
+      timeStamp: new Date(log.timestamp).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      sensorType: mapSensorIdToText(log.sensorReadingId), // Added for filtering in popup
+      // Use log.timestamp instead of log.date
+      originalLogDate: new Date(log.timestamp) // Keep original date for robust sorting
+      // originalLog: log // You can include the full original log if needed
+    })).sort((a, b) => b.originalLogDate - a.originalLogDate); // Sort by most recent first
 
   } catch (error) {
-    // Handle AbortError if the main page's signal caused an abort elsewhere that affects this.
     if (error.name === 'AbortError' && signal && signal.aborted) {
-      console.log(`Log fetching operation possibly affected by abort signal for ${sensorApiType}.`);
-      // Rethrow if the signal passed to this function (if it were used by getLogs) was aborted.
-      // Since getLogs doesn't use it, this is more for consistency if the page aborts.
+      console.log(`Log fetching operation possibly affected by abort signal for ${requestedApiType}.`);
       throw error;
     }
-    console.error(`Error compiling sensor logs for ${sensorApiType}:`, error);
-    return []; // Return empty array on error to prevent UI crashing
+    console.error(`Error compiling sensor logs for ${requestedApiType}:`, error);
+    return []; 
   }
 }
 

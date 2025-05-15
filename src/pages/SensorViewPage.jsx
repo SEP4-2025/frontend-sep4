@@ -11,7 +11,7 @@ import { compileSensorViewGraphData, compileSensorLogs } from '../utils/dataComp
 function SensorViewPage () {
     const { darkMode } = useDarkMode();
     const [selectedSensorKey, setSelectedSensorKey] = useState(SENSOR_TYPES[0]);
-    const [sensorLogs, setSensorLogs] = useState([]); // New state for logs
+    const [allDisplayLogs, setAllDisplayLogs] = useState([]); // New state for all logs for the SensorLog component
     
     const initialSensorConfig = SENSOR_CONFIG[selectedSensorKey];
     const [graphData, setGraphData] = useState({
@@ -46,22 +46,23 @@ function SensorViewPage () {
                 name: currentSensorConfig.name,
                 error: null,
             }));
-            setSensorLogs([]); // Clear previous logs
+            setAllDisplayLogs([]); // Clear previous all logs
 
             try {
-                // Fetch graph data and logs concurrently
-                const [compiledGraphData, compiledLogsData] = await Promise.all([
+                // Fetch graph data and ALL logs concurrently
+                const [compiledGraphData, compiledAllLogsData] = await Promise.all([
                     compileSensorViewGraphData(
                         currentSensorConfig.apiType,
                         currentSensorConfig,
                         signal
                     ),
-                    compileSensorLogs(currentSensorConfig.apiType, signal)
+                    // Fetch ALL logs for the SensorLog component by passing 'all'
+                    compileSensorLogs('all', signal) 
                 ]);
 
                 if (!signal.aborted) {
                     setGraphData(compiledGraphData);
-                    setSensorLogs(compiledLogsData);
+                    setAllDisplayLogs(compiledAllLogsData); // Set the new state with all logs
                 }
             } catch (err) {
                 if (err.name !== 'AbortError' && !signal.aborted) {
@@ -75,7 +76,7 @@ function SensorViewPage () {
                         name: currentSensorConfig.name,
                         error: `Failed to load data. Please try again.`,
                     });
-                    setSensorLogs([]); // Ensure logs are empty on error too
+                    setAllDisplayLogs([]); // Ensure all logs are empty on error too
                 } else if (err.name === 'AbortError') {
                     console.log("Fetch aborted in SensorViewPage useEffect.");
                 }
@@ -123,7 +124,8 @@ function SensorViewPage () {
                     /> 
                 </div>
                 <div className='flex flex-col w-full lg:w-1/3 p-5 gap-5'>
-                    <SensorLog notifications={sensorLogs} sensorName={graphData.name || "Selected Sensor"} />
+                    {/* Pass allDisplayLogs to SensorLog. */}
+                    <SensorLog notifications={allDisplayLogs} />
                     <SensorSettings 
                         selectedSensorKey={selectedSensorKey}
                         sensorConfig={SENSOR_CONFIG}

@@ -59,6 +59,7 @@ function WaterManagementGraph () {
 
     const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         legend: {
         position: 'bottom',
@@ -83,7 +84,7 @@ function WaterManagementGraph () {
     return (
       <div className="w-full">
         <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
-          <div className="p-6">
+          <div className="p-6 h-full">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
               <h2 className="font-bold text-2xl mb-4 md:mb-0">Water Usage Overview</h2>
               <div className={`rounded-lg p-4 ${darkMode ? 'bg-slate-600 border-slate-500' : 'bg-gray-50 border border-gray-200'} w-full md:w-1/4`}>
@@ -100,7 +101,7 @@ function WaterManagementGraph () {
                 </div>
               </div>
             </div>
-            <div className={`${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4 rounded-lg`}>
+            <div className={`${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4 rounded-lg h-full`}>
               <Line data={data} options={options} />
             </div>
           </div>

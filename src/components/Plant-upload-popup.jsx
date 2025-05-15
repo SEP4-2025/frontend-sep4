@@ -21,6 +21,7 @@ function Plant_upload_popup ({isOpen, onClose}) {
             className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-600 text-white border-gray-600 placeholder-gray-400' : 'border-gray-300'}`}
             placeholder="Add a note..."
           />
+          
           <button className={`text-white py-2 px-4 rounded-xl ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
             Upload plant photo
           </button>

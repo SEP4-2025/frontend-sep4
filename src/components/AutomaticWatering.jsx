@@ -1,13 +1,35 @@
 import React, { useState } from 'react';
 import waterLevelIcon from '../assets/hugeicons--humidity.svg';
 import { useDarkMode } from '../context/DarkModeContext';
+import { toggleAutomationStatus } from '../api';
 
-function AutomaticWatering () {
-
-    //dummy data
-        const [automaticWatering, setAutomaticWatering] = useState(true);
+function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
+    const [automaticWatering, setAutomaticWatering] = useState(isAutomatic || false);
+    const [isToggling, setIsToggling] = useState(false);
+    const { darkMode } = useDarkMode();
     
-        const { darkMode } = useDarkMode();
+    // Update state when props change
+    React.useEffect(() => {
+        setAutomaticWatering(isAutomatic || false);
+    }, [isAutomatic]);
+    
+    const handleToggleAutomaticWatering = async () => {
+        try {
+            setIsToggling(true);
+            // Toggle automatic watering via API
+            await toggleAutomationStatus(pumpId, !automaticWatering);
+            // Update local state
+            setAutomaticWatering(prev => !prev);
+            // Notify parent component to refresh data
+            if (onUpdate) onUpdate();
+        } catch (error) {
+            console.error('Error toggling automatic watering:', error);
+            // Revert local state if API call fails
+            setAutomaticWatering(isAutomatic || false);
+        } finally {
+            setIsToggling(false);
+        }
+    };
 
     return (
         <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
@@ -31,19 +53,26 @@ function AutomaticWatering () {
                                 </p>
                             </div>
                         </div>
-                        <label htmlFor="wateringToggle" className="flex items-center cursor-pointer">
-                            <div className="relative">
-                                <input 
-                                    type="checkbox" 
-                                    id="wateringToggle" 
-                                    className="sr-only peer" 
-                                    checked={automaticWatering} 
-                                    onChange={() => setAutomaticWatering(prev => !prev)} 
-                                />
-                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500"></div>
-                                <div className={`absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform ${automaticWatering ? 'translate-x-5' : ''}`}></div>
+                        
+                        {isLoading || isToggling ? (
+                            <div className="flex items-center justify-center w-11">
+                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
                             </div>
-                        </label>
+                        ) : (
+                            <label htmlFor="wateringToggle" className="flex items-center cursor-pointer">
+                                <div className="relative">
+                                    <input 
+                                        type="checkbox" 
+                                        id="wateringToggle" 
+                                        className="sr-only peer" 
+                                        checked={automaticWatering} 
+                                        onChange={handleToggleAutomaticWatering} 
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500"></div>
+                                    <div className={`absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform ${automaticWatering ? 'translate-x-5' : ''}`}></div>
+                                </div>
+                            </label>
+                        )}
                     </div>
                 </div>
             </div>

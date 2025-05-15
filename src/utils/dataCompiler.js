@@ -8,7 +8,14 @@ import {
   toggleNotificationPreference,
   getSensorStatus,
   getSensorThresholds,
-  getLogs
+  getLogs,
+  getWaterPumpById,
+  getWaterPumpWaterLevel,
+  toggleAutomationStatus,
+  triggerManualWatering,
+  updateCurrentWaterLevel,
+  updateWaterPumpThreshold,
+  getWaterUsageHistory
 } from '../api';
 
 function formatDate(date){
@@ -183,6 +190,97 @@ export async function compileSensorLogs(requestedApiType, signal) {
     }
     console.error(`Error compiling sensor logs for ${requestedApiType}:`, error);
     return []; 
+  }
+}
+
+/**
+ * Fetch and compile water pump data
+ * @param {number} pumpId - ID of the water pump to fetch
+ * @returns {Promise<Object>} - Compiled water pump data
+ */
+export async function compileWaterPumpData(pumpId = 1) {
+  try {
+    // Fetch water pump data
+    const waterPump = await getWaterPumpById(pumpId);
+    const waterLevel = await getWaterPumpWaterLevel(pumpId);
+    
+    // Return compiled data
+    return {
+      pumpData: waterPump,
+      waterLevel: waterLevel,
+      lastWatered: waterPump.lastWatered || new Date().toISOString(),
+      autoWatering: waterPump.autoWatering || false,
+      thresholdValue: waterPump.thresholdValue || 50,
+      waterTankCapacity: waterPump.waterTankCapacity || 1000
+    };
+  } catch (error) {
+    console.error('Error compiling water pump data:', error);
+    // Return default values if API fails
+    return {
+      pumpData: {},
+      waterLevel: 0,
+      lastWatered: new Date().toISOString(),
+      autoWatering: false,
+      thresholdValue: 50,
+      waterTankCapacity: 1000
+    };
+  }
+}
+
+/**
+ * Fetch and compile water usage history data for the graph
+ * @param {number} pumpId - ID of the water pump to fetch history for
+ * @returns {Promise<Object>} - Compiled water usage history data
+ */
+export async function compileWaterUsageHistory(pumpId = 1) {
+  try {
+    // Fetch water usage history from the API
+    const waterUsageHistory = await getWaterUsageHistory(pumpId);
+    
+    console.log('Water usage API response:', waterUsageHistory);
+    
+    // Process the data for the chart
+    if (!waterUsageHistory || !Array.isArray(waterUsageHistory) || waterUsageHistory.length === 0) {
+      throw new Error('No water usage history available');
+    }
+    
+    // Sort by date if needed
+    const sortedHistory = [...waterUsageHistory].sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+    
+    // Extract dates and consumption values
+    const labels = sortedHistory.map(item => {
+      if (!item.date) return '';
+      const date = new Date(item.date);
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    }).filter(label => label !== '');
+    
+    const consumption = sortedHistory.map(item => item.dailyWaterUsage || 0);
+    
+    // Calculate current water level percentage based on latest data
+    let waterLevelPercentage = 0;
+    const latestData = await getWaterPumpById(pumpId);
+    if (latestData && latestData.waterLevel && latestData.waterTankCapacity) {
+      waterLevelPercentage = Math.round((latestData.waterLevel / latestData.waterTankCapacity) * 100);
+    }
+    
+    // For debugging
+    console.log('Processed chart data:', { labels, consumption, waterLevelPercentage });
+    
+    return {
+      labels,
+      consumption,
+      waterLevelPercentage
+    };
+  } catch (error) {
+    console.error('Error compiling water usage history:', error);
+    // Return default dummy data if API fails
+    return {
+      labels: ['5/12', '5/13', '5/14', '5/15'],
+      consumption: [0, 100, 250, 500],
+      waterLevelPercentage: 30
+    };
   }
 }
 

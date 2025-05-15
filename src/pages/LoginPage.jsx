@@ -52,10 +52,20 @@ function LoginPage({ setIsAuthenticated }) {
 
     return (
         <div className={`flex flex-col md:flex-row min-h-screen ${darkMode ? 'bg-[#0D3444]' : 'bg-[#28463a]'}`}>
-            <div className="w-full md:w-2/3 max-h-screen relative ">
-                <img src={darkMode ? loginBackgroundDark : loginBackground}  alt="login_background" className='top-0 left-0 w-full h-full object-cover' />
+            <div
+                className="block md:hidden absolute inset-0 z-0 bg-cover bg-center"
+                style={{
+                    backgroundImage: `url(${darkMode ? loginBackgroundDark : loginBackground})`
+                }}
+            ></div>
+            <div className="hidden md:block w-full md:w-2/3 max-h-screen relative">
+                <img
+                    src={darkMode ? loginBackgroundDark : loginBackground}
+                    alt="login_background"
+                    className="top-0 left-0 w-full h-full object-cover"
+                />
             </div>
-            <div className='w-full md:w-1/3 flex flex-col justify-center items-center p-6'>
+            <div className='w-full md:w-1/3 flex flex-col justify-center items-center p-6 relative z-10'>
                 <div className='text-center flex items-center flex-col justify-center mb-4'>
                     <div className={`rounded-full mb-5 ${darkMode ? 'bg-[#1b3a31]' : 'bg-[#ddefe5]'}`}>
                         <img src={logo} alt="logo" className='h-40 w-40' />

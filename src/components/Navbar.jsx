@@ -23,7 +23,7 @@ function Navbar() {
   };
 
   return (
-    <div className={`w-64 flex flex-col h-full ${darkMode ? 'bg-[#28463a]' : 'bg-[#28463a]'} shadow-md`}>
+    <div className={`w-64 flex flex-col h-full ${darkMode ? 'bg-slate-800' : 'bg-[#28463a]'} shadow-md`}>
       {/* Logo and Brand */}
       <div className="py-6 px-4 flex flex-col items-center">
         <img src={growMateLogo} className="w-12 h-12 mb-2" alt="GrowMate Logo" />
@@ -35,7 +35,7 @@ function Navbar() {
         {/* Dashboard Link */}
         <Link 
           to="/dashboard" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/dashboard') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/dashboard') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={homeIcon} alt="Dashboard-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>Dashboard</span>
@@ -44,7 +44,7 @@ function Navbar() {
         {/* Water Management Link */}
         <Link 
           to="/water-management" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/water-management') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/water-management') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={waterIcon} alt="Water-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>Water Management</span>
@@ -53,7 +53,7 @@ function Navbar() {
         {/* Sensor View Link */}
         <Link 
           to="/sensor-view" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/sensor-view') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/sensor-view') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={sensorIcon} alt="Sensor-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>Sensor View</span>
@@ -62,7 +62,7 @@ function Navbar() {
         {/* Gallery Link */}
         <Link 
           to="/gallery" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/gallery') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/gallery') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={galleryIcon} alt="Gallery-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>Gallery</span>
@@ -71,7 +71,7 @@ function Navbar() {
         {/* Settings Link */}
         <Link 
           to="/settings" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/settings') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/settings') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={settingsIcon} alt="Settings-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>Settings</span>
@@ -80,7 +80,7 @@ function Navbar() {
         {/* About Link */}
         <Link 
           to="/about" 
-          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/about') ? 'bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+          className={`flex items-center px-2 py-2 text-white rounded transition-colors ${isActive('/about') ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')}`}
         >
           <img src={aboutIcon} alt="About-us-icon" width="20" height="20" className="mr-3 filter invert" />
           <span>About us</span>
@@ -90,7 +90,7 @@ function Navbar() {
       {/* Bottom Section with Support and Logout */}
       <div className="mt-auto p-4">
         {/* Support Section */}
-        <div className="flex items-center mb-4 p-2">
+        <div className={`flex items-center mb-4 p-2 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-[#345c4e]'}`}>
           <img src={supportIcon} alt="Support" width="30" height="30" className="rounded-full mr-3 filter invert" />
           <div>
             <p className="text-sm text-white">Need help?</p>
@@ -101,7 +101,7 @@ function Navbar() {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="flex items-center px-2 py-2 text-white hover:bg-[#345c4e] rounded transition-colors w-full"
+          className={`flex items-center px-2 py-2 text-white ${darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]'} rounded transition-colors w-full`}
         >
           <span>Logout</span>
         </button>

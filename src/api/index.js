@@ -249,37 +249,38 @@ export async function getLogs(sensorType, date) {
     throw new Error(`Invalid sensor type: ${sensorType}`);
   }
 
-  // Transform type to lowercase
   const lowerType = sensorType.toLowerCase();
+  const dateUrl = date ? `date/${date}` : '';
 
-  // Translate type into int for filtering
-  let typeId = -1; // Default to an invalid ID
+  // Fetch data from the API
+  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`);
+  if (!res.ok) throw new Error(`Failed to load logs (url: ${BASE_URL}/Log/${dateUrl})`);
+  
+  const allLogsForPeriod = await res.json();
+
+  if (!Array.isArray(allLogsForPeriod)) {
+      console.warn(`Expected an array of logs from ${BASE_URL}/Log/${dateUrl}, but received:`, allLogsForPeriod);
+      return []; // Return empty array if data is not as expected
+  }
+
+  if (lowerType === 'all') {
+    return allLogsForPeriod; // Return all logs fetched for the period if 'all' is requested
+  }
+
+  // Specific sensor type requested, so filter
+  let typeId = -1;
   if (lowerType === 'temperature') typeId = 1;
   else if (lowerType === 'humidity') typeId = 2;
   else if (lowerType === 'light') typeId = 3;
   else if (lowerType === 'soilmoisture') typeId = 4;
-  else if (lowerType === 'all') {
-      console.warn("getLogs called with type 'all'. This function is designed to fetch logs for a specific sensor type. Returning null.");
-      return null;
-  }
 
-  // Prepare the URL for fetching logs based on date
-  const dateUrl = date ? `date/${date}` : '';
+  // Filter by specific sensorId. Also include logs where sensorReadingId is null or undefined.
+  const filteredData = allLogsForPeriod.filter(item => item.sensorReadingId === typeId || item.sensorReadingId == null);
 
-  // Fetch data from the API for the given date
-  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`);
-  if (!res.ok) throw new Error(`Failed to load logs for sensor type ${sensorType}`);
-  
-  const data = await res.json();
-
-  // Filter the data by the specific sensorId
-  const filteredData = data.filter(item => item.sensorReadingId === typeId);
   if (filteredData.length === 0) {
-    console.warn(`No logs found for type ${sensorType} (ID: ${typeId})`);
-    return null; 
+    // console.warn(`No logs found matching type ${lowerType} (ID: ${typeId}) or untagged logs. Total logs for period: ${allLogsForPeriod.length}`);
   }
-  
-  return filteredData;
+  return filteredData; // Can be an empty array if no matches
 }
 
 /*

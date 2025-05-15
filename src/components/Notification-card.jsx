@@ -1,49 +1,32 @@
 import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
-import waterLevelIcon from '../assets/hugeicons--humidity.svg';
+// import waterLevelIcon from '../assets/hugeicons--humidity.svg'; // This was for 'Watering', can be removed or kept if 'General' might use it.
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
-import notificationIcon from '../assets/notification-icon.svg';
+import notificationIcon from '../assets/notification-icon.svg'; // Default/General icon
 import { useDarkMode } from '../context/DarkModeContext';
 
 function Notification_card({notification}) {
     const { darkMode } = useDarkMode();
 
-    // Helper function to get the notification icon based on the type
-    const getNotificationIcon = () => {
-        const type = notification?.type.toLowerCase();
-
-        if (type.includes('temperature')) return temperatureIcon;
-        if (type.includes('humidity')) return humidityIcon;
-        if (type.includes('soil')) return soilMoistureIcon;
-        if (type.includes('moisture')) return soilMoistureIcon;
-        if (type.includes('watering')) return waterLevelIcon;
-        if (type.includes('light')) return lightIntensityIcon;
-
-        return notificationIcon; // Default icon 
-    }
-    
+    // Helper function to get the notification icon based on the sensorType
     const getNotificationIconSVG = () => {
-        const type = notification?.type.toLowerCase();
-        
-        if (type.includes('temperature')) {
+        const type = notification?.sensorType?.toLowerCase(); // Use sensorType
+
+        if (type === 'temperature') {
             return <img src={temperatureIcon} alt="Temperature" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
-        if (type.includes('humidity')) {
+        if (type === 'humidity') {
             return <img src={humidityIcon} alt="Humidity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
-        if (type.includes('soil') || type.includes('moisture')) {
+        if (type === 'soil moisture') { // Matches 'Soil Moisture' from mapSensorIdToText
             return <img src={soilMoistureIcon} alt="Soil Moisture" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
-        if (type.includes('watering')) {
-            return <img src={waterLevelIcon} alt="Water Level" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+        if (type === 'light') {
+            return <img src={lightIntensityIcon} alt="Light" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
         }
-        if (type.includes('light')) {
-            return <img src={lightIntensityIcon} alt="Light Intensity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
-        }
-
-        // Default notification icon
-        return <img src={notificationIcon} alt="Notification" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+        // For 'General', 'Unknown', or any other type
+        return <img src={notificationIcon} alt="Log Entry" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
     };
     
     return (
@@ -55,13 +38,14 @@ function Notification_card({notification}) {
                 <div className="flex-1 min-w-0">
                     <div className="flex justify-between">
                         <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {notification?.type || "No type available"}
+                            {/* Display sensorType as the title of the card */}
+                            {notification?.sensorType || "Log Entry"} 
                         </p>
-                        <span className="text-xs text-gray-500">
+                        <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {notification?.timeStamp || "No time available"}
                         </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                         {notification?.message || "No message available"}
                     </p>
                 </div>
@@ -71,4 +55,3 @@ function Notification_card({notification}) {
     )}
 
 export default Notification_card;
-

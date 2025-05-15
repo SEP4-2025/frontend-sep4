@@ -57,20 +57,41 @@ function SensorInfo ({ lastMeasurementValue, idealValue, unit, sensorName, senso
         : 'N/A';
 
     return (
-        <div className={`w-full ${darkMode ? 'darkMode' : ''}`}>
-            <div className={`rounded-lg p-4 mb-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
-                <div className={`Manrope flex flex-row h-full p-3 gap-3 items-start border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-                    <img src={infoIcon} alt="logo" className={`w-7 max-w-xs h-10 ${darkMode ? 'filter invert' : ''}`} />
-                    <div className='flex flex-col'>
-                        <p className='font-bold'>{currentDate}</p>
-                        <p>{sensorName || 'Sensor'}: {displayValue}</p>
-                        <p>Current deviation: {deviationText}</p>
-                        <p>Recommended action: {recommendedAction}</p>
+        <div className="w-full">
+            <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+                <div className="p-6">
+                    <h2 className="font-bold text-xl mb-4">Current Status</h2>
+                    <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
+                        <div className="flex items-start gap-3">
+                            <div className="text-info-500 mt-1">
+                                <img src={infoIcon} alt="Info" className={`w-5 h-5 ${darkMode ? 'filter invert' : ''}`} />
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                        {currentDate}
+                                    </span>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <p className={`text-base font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        {sensorName || 'Sensor'}: {displayValue}
+                                    </p>
+                                    
+                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Current deviation: {deviationText}
+                                    </p>
+                                    
+                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Recommended action: {recommendedAction}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-                
     )
 }
 export default SensorInfo;

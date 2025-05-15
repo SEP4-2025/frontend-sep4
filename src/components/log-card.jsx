@@ -29,23 +29,33 @@ function LogCard({ log }) {
     };
 
     return (
-        <div className="py-3 px-1">
+        <div className={`rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-gray-50'} p-4 mb-2 last:mb-0`}>
             <div className="flex items-start gap-3">
-                <div className={`p-1.5 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+                <div className="text-info-500">
                     {getLogIconSVG()}
                 </div>
-                <div className="flex-1 min-w-0">
-                    <div className="flex justify-between">
-                        <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {log?.sensorType || "Log Entry"}
-                        </p>
-                        <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                             {log?.timeStamp || "No time available"}
                         </span>
                     </div>
-                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-                        {log?.message || "No message available"}
-                    </p>
+                    
+                    <div className="space-y-1">
+                        <p className={`text-base font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {log?.sensorType}: {log?.value || "N/A"}{log?.unit || ""}
+                        </p>
+                        
+                        {log?.deviation && (
+                            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                Current deviation: {log.deviation}
+                            </p>
+                        )}
+                        
+                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            Recommended action: {log?.message || "No action needed"}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

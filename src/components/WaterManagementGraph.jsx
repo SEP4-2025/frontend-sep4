@@ -81,29 +81,29 @@ function WaterManagementGraph () {
         },
     };
     return (
-      <div className={`w-full ${darkMode ? 'darkMode' : ''}`}>
-        <div className={`rounded-lg p-4 mb-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
-          <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-            <div className="flex flex-row p-5">
-              <p className="Manrope font-bold text-3xl">Water usage overview</p>
-                <div className="ml-auto border border-black rounded-lg p-3 w-1/4">
-                  <p>Water level</p>
-                    <div className="w-full bg-gray-300 h-2 rounded-xl mt-2">
-                      <div
-                          className="bg-black h-full rounded-xl"
-                          style={{ width: `${percentage}%` }}
-                      ></div>
-                    </div>
-                    <div className='flex flex-row'>
-                      <p className={`${darkMode ? 'text-white' : 'text-gray-400'}`}>0%</p>
-                      <p className={`ml-auto ${darkMode ? 'text-white' : 'text-gray-400'}`}>100%</p>
-                    </div>
+      <div className="w-full">
+        <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+              <h2 className="font-bold text-2xl mb-4 md:mb-0">Water Usage Overview</h2>
+              <div className={`rounded-lg p-4 ${darkMode ? 'bg-slate-600 border-slate-500' : 'bg-gray-50 border border-gray-200'} w-full md:w-1/4`}>
+                <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Water Level</p>
+                <div className={`w-full ${darkMode ? 'bg-slate-700' : 'bg-gray-200'} h-2 rounded-full mt-1`}>
+                  <div
+                    className={`${darkMode ? 'bg-blue-400' : 'bg-blue-500'} h-full rounded-full`}
+                    style={{ width: `${percentage}%` }}
+                  ></div>
                 </div>
+                <div className='flex justify-between mt-1'>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>0%</p>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>100%</p>
+                </div>
+              </div>
             </div>
+            <div className={`${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4 rounded-lg`}>
               <Line data={data} options={options} />
-          </div>
-            <div className=" flex flex-row justify-center p-3 gap-3">
             </div>
+          </div>
         </div>
       </div>
     )

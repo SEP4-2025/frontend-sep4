@@ -15,11 +15,11 @@ import GalleryPage from './pages/GalleryPage';
 import WaterManagement from './pages/WaterManagement';
 import AboutUsPage from './pages/AboutUsPage';
 import SensorViewPage from './pages/SensorViewPage';
-
+// import { useDarkMode } from './context/DarkModeContext'; // If needed for App level dark mode
 
 function App() {
   return (
-    <Router>
+    <Router> {/* This is the single Router for your application */}
       <AppContent />
     </Router>
   );
@@ -28,27 +28,32 @@ function App() {
 function AppContent() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false); // State for mobile navbar
+
+  // const { darkMode } = useDarkMode(); // Uncomment if you use darkMode for the root app background
+
+  const toggleMobileNav = () => {
+    setIsMobileNavOpen(!isMobileNavOpen);
+  };
 
   const hideNavbarRoutes = ["/", "/loginPage"];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   return (
-
     <div className="flex min-h-screen">
       {!shouldHideNavbar && isAuthenticated && (
-        <div className="h-screen overflow-y-auto flex-shrink-0 border-r border-black">
-          <Navbar />
-        </div>
+        // Navbar is now passed the necessary props for mobile functionality
+        <Navbar isMobileNavOpen={isMobileNavOpen} toggleMobileNav={toggleMobileNav} />
       )}
       <main className="flex-1 overflow-y-auto h-screen">
         <Routes>
-        <Route
+          <Route
             path="/"
             element={
               isAuthenticated ? (
                 <Navigate to="/loginPage" replace />
               ) : (
-                <StartPage/>
+                <StartPage />
               )
             }
           />
@@ -66,7 +71,7 @@ function AppContent() {
             path="/dashboard"
             element={
               isAuthenticated ? (
-                <Dashboard />
+                <Dashboard toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -76,7 +81,7 @@ function AppContent() {
             path="/water-management"
             element={
               isAuthenticated ? (
-                <WaterManagement />
+                <WaterManagement toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -86,7 +91,7 @@ function AppContent() {
             path="/sensor-view"
             element={
               isAuthenticated ? (
-                  <SensorViewPage/>
+                <SensorViewPage toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -96,7 +101,7 @@ function AppContent() {
             path="/gallery"
             element={
               isAuthenticated ? (
-                <GalleryPage />
+                <GalleryPage toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -106,7 +111,7 @@ function AppContent() {
             path="/settings"
             element={
               isAuthenticated ? (
-                <SettingsPage />
+                <SettingsPage toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -116,7 +121,7 @@ function AppContent() {
             path="/about"
             element={
               isAuthenticated ? (
-                  <AboutUsPage />
+                <AboutUsPage toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )
@@ -125,13 +130,15 @@ function AppContent() {
           <Route
             path="/popup-page"
             element={
-            isAuthenticated ? (
-              <Plant_upload_popup />
-            ) : (
-              <Navigate to="/loginPage" replace />
-            )
-          }
-        />
+              isAuthenticated ? (
+                <Plant_upload_popup /> // Assuming this page doesn't need the mobile nav toggle
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          {/* Fallback route for any other paths */}
+          <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/loginPage"} />} />
         </Routes>
       </main>
     </div>

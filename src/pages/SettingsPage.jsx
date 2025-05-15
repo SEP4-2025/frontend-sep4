@@ -175,7 +175,7 @@ const SettingsPage = () => {
         </div>
 
         {/* Font Preferences */}
-        <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md`}>
+        <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-20`}>
           <div className="flex items-center gap-2 mb-1">
             <img src={fontIconPath} alt="Font Settings" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
             <h2 className="text-xl font-semibold">Font preferences</h2>

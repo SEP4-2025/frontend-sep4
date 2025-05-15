@@ -73,37 +73,43 @@ function SensorSettings ({ selectedSensorKey, sensorConfig }) {
 
 
     return (
-        <div className={`w-full ${darkMode ? 'darkMode' : ''}`}>
-            <div className={`rounded-lg p-4 mb-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
-                <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-                    <p className='Manrope font-bold text-center text-lg mb-3'>
-                        Update Threshold for: {sensorConfig && selectedSensorKey && sensorConfig[selectedSensorKey] ? sensorConfig[selectedSensorKey].name : 'Sensor'}
-                    </p>
-                    <div className='mb-3'> {/* Reduced mb-5 to mb-3 */}
-                        <p className='mb-2'>New Threshold Value ({sensorConfig && selectedSensorKey && sensorConfig[selectedSensorKey] ? sensorConfig[selectedSensorKey].unit : ''})</p>
-                        <input
-                            type="text" // Changed to text to allow for easier validation before parseInt
-                            placeholder="Enter new threshold"
-                            value={thresholdValue}
-                            onChange={handleInputChange}
-                            className={`border rounded-md p-2 focus:outline-none w-full ${darkMode ? 'bg-slate-500 border-gray-600 text-white placeholder-gray-300 focus:ring-2 focus:ring-green-400' : 'border-gray-300 text-black placeholder-gray-500 focus:ring-2 focus:ring-green-500'}`}
-                        />
-                    </div>
-                    
-                    {/* Popup Message Area */}
-                    {popupMessage.text && (
-                        <div className={getPopupClasses()}>
-                            {popupMessage.text}
+        <div className="w-full">
+            <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+                <div className="p-6">
+                    <h2 className="font-bold text-xl mb-4">Threshold Settings</h2>
+                    <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
+                        <div className="mb-4">
+                            <p className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                                {sensorConfig && selectedSensorKey && sensorConfig[selectedSensorKey] ? sensorConfig[selectedSensorKey].name : 'Sensor'} Threshold
+                            </p>
+                            <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                Set the minimum value for triggering notifications ({sensorConfig && selectedSensorKey && sensorConfig[selectedSensorKey] ? sensorConfig[selectedSensorKey].unit : ''})
+                            </p>
+                            
+                            <input
+                                type="text"
+                                placeholder="Enter threshold value"
+                                value={thresholdValue}
+                                onChange={handleInputChange}
+                                className={`border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-slate-700 text-white border-slate-500' : 'bg-white text-gray-800 border-gray-300'}`}
+                            />
                         </div>
-                    )}
+                        
+                        {/* Popup Message Area */}
+                        {popupMessage.text && (
+                            <div className={getPopupClasses()}>
+                                {popupMessage.text}
+                            </div>
+                        )}
 
-                    <button
-                        onClick={handleUpdate}
-                        className={getButtonClasses()}
-                        disabled={!selectedSensorKey} // Disable button if no sensor is selected
-                    >
-                        Update Threshold
-                    </button>
+                        <button
+                            onClick={handleUpdate}
+                            className={`w-full rounded-lg py-2.5 px-4 text-white font-medium transition-colors ${!selectedSensorKey ? 'bg-gray-400 cursor-not-allowed' : (darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700')}`}
+                            disabled={!selectedSensorKey}
+                        >
+                            Update Threshold
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

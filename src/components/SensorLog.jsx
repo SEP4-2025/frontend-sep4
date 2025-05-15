@@ -13,34 +13,38 @@ function SensorLog ({ logs }) { // Changed prop name from notifications to logs
     const displayLogs = Array.isArray(logs) ? logs : [];
 
     return (
-        <div className={`w-full ${darkMode ? 'darkMode' : ''}`}>
-            <div className={`rounded-lg p-4 mb-4 shadow-md ${darkMode ? 'bg-slate-700' : 'bg-navbar-color'}`}>
-                <div className={`Manrope flex flex-col h-full p-3 border rounded-lg ${darkMode ? 'border-gray-700 bg-slate-600' : 'border-gray-300 bg-gray-50'}`}>
-                    <p className='Manrope font-bold text-center text-lg mb-3'>Log</p>
-                    <div>
+        <div className="w-full">
+            <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+                <div className="p-6">
+                    <h2 className="font-bold text-xl mb-4">Activity Log</h2>
+                    <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
                         {displayLogs.length > 0 ? (
-                            displayLogs.slice(0, 2).map((log, index) => (
-                                // Assuming log objects have a unique 'id' or use index if not.
-                                // For stability, if logs have unique IDs from backend, prefer log.id
-                                <LogCard key={log.id || index} log={log} /> // Changed component
-                            ))
+                            <div className="space-y-3">
+                                {displayLogs.slice(0, 2).map((log, index) => (
+                                    <LogCard key={log.id || index} log={log} />
+                                ))}
+                                
+                                {displayLogs.length > 2 && (
+                                    <button 
+                                        className={`w-full mt-3 py-2 rounded-lg text-center ${darkMode ? 'bg-slate-700 hover:bg-slate-800 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} transition-colors`} 
+                                        onClick={openModal}
+                                    >
+                                        View All Logs
+                                    </button>
+                                )}
+                            </div>
                         ) : (
-                            <p className={`text-center ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>No logs available for the last 30 days.</p>
+                            <div className="py-6 text-center">
+                                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>No logs available for the last 30 days.</p>
+                            </div>
                         )}
-                        {displayLogs.length > 2 && (
-                            <button 
-                                className={`p-2 mt-4 rounded-md mx-auto text-center underline w-full ${darkMode ? 'text-gray-100 hover:text-gray-300' : 'text-black hover:text-gray-700'}`} 
-                                onClick={openModal}
-                            >
-                                View All Logs
-                            </button>
-                        )}
-                        <LogPopup // Changed component
+                        
+                        <LogPopup
                             isOpen={isModalOpen} 
                             onClose={closeModal} 
                             title="Log History" 
                             description="Here you can see the history of all log readings from the last 30 days."
-                            logs={displayLogs} // Pass all (already date-filtered and sorted) logs
+                            logs={displayLogs}
                         />
                     </div>
                 </div>

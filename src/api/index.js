@@ -461,9 +461,9 @@ export async function getSensorThresholds(type) {
   *   updateSensorThreshold(type, threshold)
   *   INPUT:
   *     type (string) - type of sensor to check || possible values: "temperature", "humidity", "light", "soilMoisture"
-  *     threshold (int) - new threshold value for the sensor
+  *     threshold (int) - new threshold value
   *   RETURNS:
-  *     Updates the database with the new threshold value for the sensor
+  *     Success message
   */
 
 export async function updateSensorThreshold(type, threshold) {
@@ -503,4 +503,262 @@ export async function updateSensorThreshold(type, threshold) {
   }
   
   return res.json(); // Return the updated sensor data object
+}
+
+/*
+ *   WATER PUMP API ENDPOINTS
+ */
+
+/**
+ * Get all water pumps
+ * @returns {Promise<Array>} - Array of water pump objects
+ */
+export async function getAllWaterPumps() {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump`);
+    if (!res.ok) {
+      throw new Error(`Failed to load water pumps. Status: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching all water pumps:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get water pump by ID
+ * @param {number} id - ID of the water pump
+ * @returns {Promise<Object>} - Water pump object
+ */
+export async function getWaterPumpById(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}`);
+    if (!res.ok) {
+      throw new Error(`Failed to load water pump with ID ${id}. Status: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching water pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get water pump's water level
+ * @param {number} id - ID of the water pump
+ * @returns {Promise<number>} - Water level value
+ */
+export async function getWaterPumpWaterLevel(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/water-level`);
+    if (!res.ok) {
+      throw new Error(`Failed to load water level for pump with ID ${id}. Status: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching water level for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Create a new water pump
+ * @param {Object} waterPumpData - Water pump data
+ * @returns {Promise<Object>} - Created water pump object
+ */
+export async function createWaterPump(waterPumpData) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(waterPumpData),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to create water pump. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error('Error creating water pump:', error);
+    throw error;
+  }
+}
+
+/**
+ * Toggle automation status for a water pump
+ * @param {number} id - ID of the water pump
+ * @param {boolean} autoWatering - New automation status
+ * @returns {Promise<Object>} - Updated water pump object
+ */
+export async function toggleAutomationStatus(id, autoWatering) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/toggle-automation`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(autoWatering),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to toggle automation status for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error toggling automation status for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Trigger manual watering for a water pump
+ * @param {number} id - ID of the water pump
+ * @returns {Promise<Object>} - Updated water pump object
+ */
+export async function triggerManualWatering(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/manual-watering`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to trigger manual watering for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error triggering manual watering for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Update current water level for a water pump
+ * @param {number} id - ID of the water pump 
+ * @param {number} addedWaterAmount - Amount of water to add
+ * @returns {Promise<Object>} - Updated water pump object
+ */
+export async function updateCurrentWaterLevel(id, addedWaterAmount) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/add-water`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(addedWaterAmount),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to update water level for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error updating water level for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Update threshold value for a water pump
+ * @param {number} id - ID of the water pump
+ * @param {number} newThresholdValue - New threshold value
+ * @returns {Promise<Object>} - Updated water pump object
+ */
+export async function updateWaterPumpThreshold(id, newThresholdValue) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/threshold`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newThresholdValue),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to update threshold for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error updating threshold for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Update water tank capacity for a water pump
+ * @param {number} id - ID of the water pump
+ * @param {number} newCapacityValue - New capacity value
+ * @returns {Promise<Object>} - Updated water pump object
+ */
+export async function updateWaterTankCapacity(id, newCapacityValue) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/capacity`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newCapacityValue),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to update water tank capacity for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error updating water tank capacity for pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a water pump
+ * @param {number} id - ID of the water pump
+ * @returns {Promise<void>}
+ */
+export async function deleteWaterPump(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}`, {
+      method: 'DELETE',
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to delete water pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return;
+  } catch (error) {
+    console.error(`Error deleting water pump with ID ${id}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get water usage history for a water pump
+ * @param {number} id - ID of the water pump
+ * @returns {Promise<Array>} - Array of water usage data objects
+ */
+export async function getWaterUsageHistory(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/Log/${id}/water-usage`);
+    
+    if (!res.ok) {
+      throw new Error(`Failed to load water usage history for pump with ID ${id}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching water usage history for pump with ID ${id}:`, error);
+    throw error;
+  }
 }

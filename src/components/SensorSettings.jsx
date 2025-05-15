@@ -3,7 +3,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 import { updateSensorThreshold } from '../api/index.js'; // Import the API function
 
 // SensorSettings now accepts props to know which sensor is selected
-function SensorSettings ({ selectedSensorKey, sensorConfig }) {
+function SensorSettings ({ selectedSensorKey, sensorConfig, onThresholdUpdate }) {
     const { darkMode } = useDarkMode();
     const [thresholdValue, setThresholdValue] = useState('');
     const [popupMessage, setPopupMessage] = useState({ text: '', type: '' }); // type can be 'success' or 'error'
@@ -41,8 +41,7 @@ function SensorSettings ({ selectedSensorKey, sensorConfig }) {
         try {
             await updateSensorThreshold(currentSensorApiType, valueAsInt);
             displayPopup(`Threshold for ${sensorConfig[selectedSensorKey].name} updated successfully to ${valueAsInt}.`, 'success');
-            // Optionally, you might want to clear the input or re-fetch data in the parent component
-            // setThresholdValue(''); // Clear input on success
+            if (onThresholdUpdate) onThresholdUpdate(); // Trigger the callback
         } catch (error) {
             console.error("Failed to update sensor threshold:", error);
             displayPopup(`Error updating threshold: ${error.message || 'Unknown error'}`, 'error');

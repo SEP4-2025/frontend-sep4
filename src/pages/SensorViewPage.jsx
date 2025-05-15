@@ -12,6 +12,7 @@ function SensorViewPage () {
     const { darkMode } = useDarkMode();
     const [selectedSensorKey, setSelectedSensorKey] = useState(SENSOR_TYPES[0]);
     const [allDisplayLogs, setAllDisplayLogs] = useState([]); 
+    const [refreshKey, setRefreshKey] = useState(0); // New state for triggering refresh
     
     const initialSensorConfig = SENSOR_CONFIG[selectedSensorKey];
     const [graphData, setGraphData] = useState({
@@ -89,10 +90,14 @@ function SensorViewPage () {
         return () => {
             controller.abort();
         };
-    }, [selectedSensorKey]);
+    }, [selectedSensorKey, refreshKey]); // Add refreshKey to dependencies
 
     const handleSensorSelect = (sensorKey) => {
         setSelectedSensorKey(sensorKey);
+    };
+
+    const handleThresholdUpdate = () => {
+        setRefreshKey(prevKey => prevKey + 1); // Increment refreshKey to trigger re-fetch
     };
 
     return (
@@ -129,6 +134,7 @@ function SensorViewPage () {
                     <SensorSettings 
                         selectedSensorKey={selectedSensorKey}
                         sensorConfig={SENSOR_CONFIG}
+                        onThresholdUpdate={handleThresholdUpdate} // Pass the callback
                     />
                 </div>
             </div>

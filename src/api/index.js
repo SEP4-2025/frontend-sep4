@@ -370,10 +370,13 @@ export async function getSensorStatus(type) {
     const timeDifferenceMs = Math.abs(currentDate - lastLogDate);
     const minutesDifference = Math.floor(timeDifferenceMs / (1000 * 60));
     
-    // Sensor is on if the last log entry is not older than 15 minutes
-    return minutesDifference <= 15; // Modify this value to change the threshold (minutes)
+    // Sensor is on if the last log entry is not older than 60 minutes
+    return minutesDifference <= 60; // Modify this value to change the threshold (minutes)
   }
 }
+
+//TODO: make a detailed comment for this function
+
 export async function getAllNotifications() { // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notification/all`);
   if (!res.ok) throw new Error(`Failed to load notifications`);
@@ -382,6 +385,8 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
   return data;
 }
 
+//TODO: make a detailed comment for this function
+
 export async function getNotificationPreferences(){ // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notificationpref`);
   if (!res.ok) throw new Error(`Failed to load notification preferences`);
@@ -389,6 +394,8 @@ export async function getNotificationPreferences(){ // apparently no gardenerId 
   console.log("Notification preferences data:", data); 
   return data;
 }
+
+//TODO: make a detailed comment for this function
 
 export async function toggleNotificationPreference(gardenerId, type) {
   const res = await fetch(`${BASE_URL}/notificationpref/toggle`, {
@@ -406,3 +413,93 @@ export async function toggleNotificationPreference(gardenerId, type) {
   return await res.text(); // Return the success message
 }
 
+/*
+ *   getSensorThresholds(type)
+ *   INPUT:
+ *     type (string) - type of sensor to check || possible values: "temperature", "humidity", "light", "soilMoisture"
+ *   RETURNS:
+ *     threshold (int) - threshold value for the sensor
+ */
+
+export async function getSensorThresholds(type) {
+  // Validate the type parameter
+  if (!['temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
+    throw new Error(`Invalid sensor type: ${type}`);
+  }
+
+  // Transform type to lowercase
+  const lowerType = type.toLowerCase();
+
+  // Translate type into int for filtering
+  let typeId = -1; // Default to an invalid ID
+  if (lowerType === 'temperature') typeId = 1;
+  else if (lowerType === 'humidity') typeId = 2;
+  else if (lowerType === 'light') typeId = 3;
+  else if (lowerType === 'soilmoisture') typeId = 4;
+
+  // Fetch data from the API for the given date
+  const res = await fetch(`${BASE_URL}/Sensor/${typeId}`);
+  if (!res.ok) throw new Error(`Failed to load sensor thresholds for type ${type}`);
+  
+  const data = await res.json();
+
+  // Retrieve the threshold value from the response, which is a json object originally
+  // The response is a single object, not an array
+  if (!data || typeof data.thresholdValue === 'undefined') {
+    console.error(`No threshold data found for type ${type}`);
+    return null; 
+  }
+  // Return the threshold value
+  const threshold = data.thresholdValue;
+  console.log(`Threshold for ${type} is ${threshold}`);
+  
+  return threshold; // Return the threshold value, this is a number
+  }
+
+/*
+  *   updateSensorThreshold(type, threshold)
+  *   INPUT:
+  *     type (string) - type of sensor to check || possible values: "temperature", "humidity", "light", "soilMoisture"
+  *     threshold (int) - new threshold value for the sensor
+  *   RETURNS:
+  *     Updates the database with the new threshold value for the sensor
+  */
+
+export async function updateSensorThreshold(type, threshold) {
+  // Validate the type parameter
+  if (!['temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
+    throw new Error(`Invalid sensor type: ${type}`);
+  }
+
+  // Transform type to lowercase
+  const lowerType = type.toLowerCase();
+
+  // Translate type into int for filtering
+  let typeId = -1; // Default to an invalid ID
+  if (lowerType === 'temperature') typeId = 1;
+  else if (lowerType === 'humidity') typeId = 2;
+  else if (lowerType === 'light') typeId = 3;
+  else if (lowerType === 'soilmoisture') typeId = 4;
+
+  // Fetch data from the API for the given date
+  const res = await fetch(`${BASE_URL}/Sensor/update/${typeId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ thresholdValue: threshold }),
+  });
+  
+  if (!res.ok) {
+    let errorBody = 'Could not retrieve error body.';
+    try {
+      errorBody = await res.text(); // Try to get more info from the response
+    } catch (e) {
+      console.error("Error trying to read error response body:", e);
+    }
+    console.error(`Backend error details for type ${type}: ${res.status} - ${res.statusText}. Body: ${errorBody}`);
+    throw new Error(`Failed to update sensor thresholds for type ${type}. Status: ${res.status}`);
+  }
+  
+  return res.json(); // Return the updated sensor data object
+}

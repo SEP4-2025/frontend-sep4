@@ -29,6 +29,7 @@ export function SensorOverview({
   const { darkMode } = useDarkMode();
   const [timeframe, setTimeframe] = useState("24h");
   const [selectedSensor, setSelectedSensor] = useState("temperature"); // Default to temperature graph
+  const [yAxisConfig, setYAxisConfig] = useState({ min: -30, max: 70 }); // Initial for temperature
   
   const [processedChartData, setProcessedChartData] = useState({
     labels: [],
@@ -59,11 +60,16 @@ export function SensorOverview({
           label: `${selectedSensor.charAt(0).toUpperCase() + selectedSensor.slice(1)} Over Time`,
           data: [],
           borderColor: getColor(selectedSensor),
-          backgroundColor: `${getColor(selectedSensor)}33`,
+          backgroundColor: `${getColor(selectedSensor)}33`, // 33 for ~20% opacity
           tension: 0.4,
           spanGaps: true,
         }]
       });
+      // Set y-axis to defaults for the selected sensor when no data
+      let defaultMin = 0, defaultMax = 100;
+      if (selectedSensor === "temperature") { defaultMin = -30; defaultMax = 70; }
+      else if (selectedSensor === "light") { defaultMax = 100000; } // min is 0
+      setYAxisConfig({ min: defaultMin, max: defaultMax });
       return;
     }
     
@@ -84,24 +90,22 @@ export function SensorOverview({
 
         const valuesInDay = sourceData
           .filter(item => {
-            const itemDate = new Date(item.date);
+            const itemDate = new Date(item.date); // Assuming item.date is a valid date string or Date object
             return itemDate >= dayDate && itemDate < dayEnd;
           })
           .map(item => item.value);
-
-
 
         if (valuesInDay.length > 0) {
           const avg = valuesInDay.reduce((a, b) => a + b, 0) / valuesInDay.length;
           dataPoints.push(parseFloat(avg.toFixed(2)));
         } else {
-          dataPoints.push(null); 
+          dataPoints.push(null); // Use null for Chart.js to represent missing data
         }
       }
     } else if (timeframe === "24h") {
       for (let i = 0; i < 24; i++) {
         const hourDate = new Date(now);
-        hourDate.setHours(now.getHours() - (23 - i), 0, 0, 0);
+        hourDate.setHours(now.getHours() - (23 - i), 0, 0, 0); // Start from 23 hours ago up to current hour start
         displayLabels.push(hourDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
 
         const hourEnd = new Date(hourDate);
@@ -118,7 +122,7 @@ export function SensorOverview({
           const avg = valuesInHour.reduce((a, b) => a + b, 0) / valuesInHour.length;
           dataPoints.push(parseFloat(avg.toFixed(2)));
         } else {
-          dataPoints.push(null); 
+          dataPoints.push(null);
         }
       }
     }
@@ -131,8 +135,79 @@ export function SensorOverview({
         borderColor: getColor(selectedSensor),
         backgroundColor: `${getColor(selectedSensor)}33`,
         tension: 0.4,
-        spanGaps: true,
+        spanGaps: true, // This will draw lines between points with null data in between
       }]
+    });
+
+    // Calculate Y-axis min/max
+    let baseMin = 0;
+    let baseMax = 100; // Default for humidity and soil moisture
+    if (selectedSensor === "temperature") { baseMin = -30; baseMax = 70; }
+    else if (selectedSensor === "light") { baseMax = 100000; } // min is 0
+
+    let currentYMin = baseMin;
+    let currentYMax = baseMax;
+
+    const validDataPoints = dataPoints.filter(p => p !== null && !isNaN(p));
+
+    if (validDataPoints.length > 0) {
+      const dataMin = Math.min(...validDataPoints);
+      const dataMax = Math.max(...validDataPoints);
+
+      let useDataMin = false;
+      let useDataMax = false;
+
+      if (dataMin < currentYMin) {
+        currentYMin = dataMin;
+        useDataMin = true;
+      }
+      if (dataMax > currentYMax) {
+        currentYMax = dataMax;
+        useDataMax = true;
+      }
+      
+      const actualDataRange = dataMax - dataMin;
+
+      // Add padding if data exceeds base range
+      if (useDataMin) {
+        const padding = (actualDataRange > 0) ? actualDataRange * 0.1 : (Math.abs(currentYMin * 0.1) || 5);
+        currentYMin -= padding;
+      }
+      if (useDataMax) {
+        const padding = (actualDataRange > 0) ? actualDataRange * 0.1 : (Math.abs(currentYMax * 0.1) || 5);
+        currentYMax += padding;
+      }
+
+      // Ensure a minimum visual span if the calculated range is too small or all points are same
+      if (currentYMax - currentYMin < 10 && validDataPoints.length > 0) {
+        const dataMidpoint = (dataMin + dataMax) / 2;
+        currentYMin = dataMidpoint - 5;
+        currentYMax = dataMidpoint + 5;
+        if (baseMin === 0 && currentYMin < 0 && selectedSensor !== "temperature") { // Don't go below 0 for non-temp sensors if baseMin was 0
+          currentYMin = 0;
+        }
+      }
+    }
+    // else, currentYMin and currentYMax remain baseMin and baseMax
+
+    // Final safety check to prevent min >= max
+    if (currentYMin >= currentYMax) {
+        if (validDataPoints.length > 0) {
+            const val = validDataPoints[0]; // Use the first valid point as a reference
+            currentYMin = val - 5;
+            currentYMax = val + 5;
+        } else { // No valid data points, use base with a small span
+            currentYMin = baseMin;
+            currentYMax = baseMin + 10; // Default span if baseMin === baseMax
+        }
+        if (baseMin === 0 && currentYMin < 0 && selectedSensor !== "temperature") {
+          currentYMin = 0;
+        }
+    }
+    
+    setYAxisConfig({
+      min: Math.floor(currentYMin), // Use Math.floor and Math.ceil for cleaner axis values
+      max: Math.ceil(currentYMax),
     });
 
   }, [selectedSensor, timeframe, temperatureHistory, humidityHistory, lightHistory, soilMoistureHistory]);
@@ -143,7 +218,7 @@ export function SensorOverview({
       case "humidity": return "#0000FF";    // Blue
       case "light": return "#FFD700";       // Gold/Yellow
       case "soilMoisture": return "#008000"; // Green
-      default: return "#22c55e"; // Default green
+      default: return "#22c55e"; // Default green (Tailwind green-500)
     }
   };
 
@@ -166,7 +241,7 @@ export function SensorOverview({
       const ctx = chart.canvas.getContext('2d');
       ctx.save();
       ctx.globalCompositeOperation = 'destination-over';
-      ctx.fillStyle = darkMode ? '#1e293b' : '#ffffff';
+      ctx.fillStyle = darkMode ? '#1e293b' : '#ffffff'; // slate-800 or white
       ctx.fillRect(0, 0, chart.width, chart.height);
       ctx.restore();
     }
@@ -253,8 +328,8 @@ export function SensorOverview({
               },
               y: {
                 title: { display: true, text: `Value (${getUnit(selectedSensor)})`, color: chartTextColor },
-                min: selectedSensor === "temperature" ? -30 : 0, // Set min for temperature
-                max: selectedSensor === "temperature" ? 70 : (selectedSensor === "light" ? 100000 : 100),
+                min: yAxisConfig.min,
+                max: yAxisConfig.max,
                 ticks: { color: chartTextColor },
                 grid: { color: gridColor },
               },
@@ -264,17 +339,16 @@ export function SensorOverview({
                 labels: { color: chartTextColor }
               },
               tooltip: {
-                backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-                titleColor: darkMode ? '#e2e8f0' : '#1f2937',
+                backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.8)', // slate-800 or white with opacity
+                titleColor: darkMode ? '#e2e8f0' : '#1f2937', // slate-200 or gray-800
                 bodyColor: darkMode ? '#e2e8f0' : '#1f2937',
-                borderColor: darkMode ? 'rgba(100, 116, 139, 0.2)' : 'rgba(156, 163, 175, 0.2)',
+                borderColor: darkMode ? 'rgba(100, 116, 139, 0.2)' : 'rgba(156, 163, 175, 0.2)', // slate-500 or gray-400 with opacity
                 borderWidth: 1
               }
             }
           }}
         />
       </div>
-
       {/* Current Stats */}
       <div className="grid grid-cols-4 gap-4 mt-4 text-center">
         <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>

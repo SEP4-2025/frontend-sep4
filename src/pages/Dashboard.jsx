@@ -79,10 +79,12 @@ function Dashboard({ toggleMobileNav }) {
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
       {/* Mobile Header: Hidden on lg screens and up */}
-      <div className={`lg:hidden p-4 ${darkMode ? 'bg-slate-700 text-white' : 'bg-white text-gray-900'} flex items-center justify-between shadow-md sticky top-0 z-20`}>
-        <button 
+      <div
+        className={`lg:hidden p-4 bg-[#28463a] text-white flex items-center justify-between shadow-md sticky top-0 z-20`}
+      >
+        <button
           onClick={toggleMobileNav}
-          className="text-2xl p-1" 
+          className="text-2xl p-1"
           aria-label="Open navigation menu"
         >
           &#9776; {/* Hamburger icon */}

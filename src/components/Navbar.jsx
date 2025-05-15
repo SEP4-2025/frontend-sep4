@@ -52,7 +52,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
       {/* Overlay for mobile, shown when nav is open */}
       {isMobileNavOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden" // Modified classes
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden"
           onClick={toggleMobileNav}
           aria-hidden="true"
         ></div>
@@ -61,17 +61,17 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
       {/* Navbar container */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-40  /* Base for mobile: fixed, full height via inset-y-0 */
-          flex flex-col h-full           /* Ensure it's a flex column and respects height */
+          fixed inset-y-0 left-0 z-40
+          flex flex-col h-full
           w-64 
           ${darkMode ? 'bg-[#28463a]' : 'bg-[#28463a]'}
           text-white
           shadow-md
           transform transition-transform duration-300 ease-in-out
-          ${isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'} /* Mobile slide */
-          lg:translate-x-0 lg:static    /* Desktop: static, reset transform */
-          lg:h-screen                   /* Desktop: explicitly set height to screen height */
-          lg:flex-shrink-0              /* Desktop: prevent shrinking */
+          ${isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0 lg:static
+          lg:h-screen
+          lg:flex-shrink-0
         `}
       >
         {/* Mobile Header with Close Button - only on mobile */}
@@ -87,8 +87,8 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
 
         {/* Logo and Brand - hidden on mobile when nav is open, shown on desktop */}
         <div className="hidden lg:flex py-6 px-4 flex-col items-center">
-          <img src={growMateLogo} className="w-12 h-12 mb-2" alt="GrowMate Logo" />
-          <h1 className="text-xl font-medium">GrowMate</h1>
+          <img src={growMateLogo} className="w-20 h-20 mb-2" alt="GrowMate Logo" /> {/* Increased size */}
+          <h1 className="text-3xl font-medium">GrowMate</h1> {/* Adjusted font size */}
         </div>
         
         {/* Navigation Links: flex-1 allows this to grow and push footer down */}
@@ -122,7 +122,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className={`flex items-center justify-center px-2 py-2 rounded transition-colors w-full ${darkMode ? 'hover:bg-[#345c4e]' : 'hover:bg-[#345c4e]'}`}
+            className="flex items-center justify-center px-2 py-2 rounded transition-colors w-full text-white bg-red-500 hover:bg-red-600"
           >
             <span>Logout</span>
           </button>

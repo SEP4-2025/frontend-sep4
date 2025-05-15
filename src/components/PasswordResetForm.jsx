@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDarkMode } from '../context/DarkModeContext'; 
 
 function PasswordResetForm({ onShowLogin }) { 
     const [username, setUsername] = useState("");
@@ -7,6 +8,7 @@ function PasswordResetForm({ onShowLogin }) {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [message, setMessage] = useState(""); 
     const [isLoading, setIsLoading] = useState(false); 
+    const { darkMode } = useDarkMode();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -63,8 +65,8 @@ function PasswordResetForm({ onShowLogin }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col bg-white gap-4 p-6 rounded-lg w-full max-w-sm'> 
-            <h2 className="text-xl font-semibold text-center mb-4">Change Password</h2> 
+        <form onSubmit={handleSubmit} className={`flex flex-col gap-4 p-6 rounded-lg w-full max-w-sm ${darkMode ? 'bg-[#1b3a31] border-[#355e4b] placeholder-[#a3bfb3] ' : 'bg-[#ddefe5] border-[#d0c7b7] placeholder-[#7a8678]'}`}> 
+            <h2 className={`text-xl font-semibold text-center mb-1 ${darkMode ? 'text-white' : ''}`}>Change Password</h2> 
             
             {message && (
                 <p className={`text-sm p-3 rounded-md mb-2 ${message.startsWith('Error:') || message.startsWith('Could not connect') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
@@ -73,13 +75,13 @@ function PasswordResetForm({ onShowLogin }) {
             )}
 
             <div>
-                <label htmlFor="change-username" className="block text-sm font-medium text-gray-700">Username</label> 
+                <label htmlFor="change-username" className={`block text-sm font-medium text-gray-700 ${darkMode ? 'text-white' : ''}`}>Username</label> 
                 <input
                     type="text"
                     id="change-username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${darkMode ? 'placeholder-[#a3bfb3] text-white ' : 'placeholder-[#7a8678]'}`}
                     placeholder="Enter your username"
                     required
                     disabled={isLoading}
@@ -87,13 +89,13 @@ function PasswordResetForm({ onShowLogin }) {
             </div>
 
             <div>
-                <label htmlFor="old-password" className="block text-sm font-medium text-gray-700">Current Password</label> 
+                <label htmlFor="old-password" className={`block text-sm font-medium text-gray-700 ${darkMode ? 'text-white' : ''}`}>Current Password</label> 
                 <input
                     type="password"
                     id="old-password"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${darkMode ? 'placeholder-[#a3bfb3] text-white ' : 'placeholder-[#7a8678]'}`}
                     placeholder="Enter your current password"
                     required
                     disabled={isLoading}
@@ -101,13 +103,13 @@ function PasswordResetForm({ onShowLogin }) {
             </div>
             
             <div>
-                <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">New Password</label>
+                <label htmlFor="new-password" className={`block text-sm font-medium text-gray-700 ${darkMode ? 'text-white' : ''}`}>New Password</label>
                 <input
                     type="password"
                     id="new-password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${darkMode ? 'placeholder-[#a3bfb3] text-white ' : 'placeholder-[#7a8678]'}`}
                     placeholder="Enter new password"
                     required
                     disabled={isLoading}
@@ -115,13 +117,13 @@ function PasswordResetForm({ onShowLogin }) {
             </div>
 
             <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                <label htmlFor="confirm-password" className={`block text-sm font-medium text-gray-700 ${darkMode ? 'text-white' : ''}`}>Confirm New Password</label>
                 <input
                     type="password"
                     id="confirm-password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${darkMode ? 'placeholder-[#a3bfb3] text-white ' : 'placeholder-[#7a8678]'}`}
                     placeholder="Confirm new password"
                     required
                     disabled={isLoading}

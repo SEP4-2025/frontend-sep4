@@ -484,7 +484,7 @@ export async function updateSensorThreshold(type, threshold) {
 
   // Fetch data from the API for the given date
   const res = await fetch(`${BASE_URL}/Sensor/update/${typeId}`, {
-    method: 'PUT',
+    method: 'PATCH', // Changed from PUT to PATCH
     headers: {
       'Content-Type': 'application/json',
     },

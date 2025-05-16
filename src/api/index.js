@@ -176,7 +176,6 @@ export async function getLastestPrediction() {
   const res = await fetch(`${BASE_URL}/Prediction/`);
   if (!res.ok) throw new Error(`Failed to load lastest prediction`);
   const data = await res.json();
-  console.log("Lastest prediction data:", data); 
 
   // Get the latest data from the response's array (last element)
   const latestData = data[data.length - 1];
@@ -200,7 +199,6 @@ export async function fetchGrenhouseDataByGardenerId(gardenerId) {
   const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`);
   if (!res.ok) throw new Error(`Failed to load greenhouse data for gardener ${gardenerId}`);
   const data = await res.json();
-  console.log("Greenhouse data:", data); 
   return data;
 }
 
@@ -278,7 +276,7 @@ export async function getLogs(sensorType, date) {
   const filteredData = allLogsForPeriod.filter(item => item.sensorReadingId === typeId || item.sensorReadingId == null);
 
   if (filteredData.length === 0) {
-    // console.warn(`No logs found matching type ${lowerType} (ID: ${typeId}) or untagged logs. Total logs for period: ${allLogsForPeriod.length}`);
+// console.warn(`No logs found matching type ${lowerType} (ID: ${typeId}) or untagged logs. Total logs for period: ${allLogsForPeriod.length}`);
   }
   return filteredData; // Can be an empty array if no matches
 }
@@ -382,7 +380,6 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
   const res = await fetch(`${BASE_URL}/notification/all`);
   if (!res.ok) throw new Error(`Failed to load notifications`);
   const data = await res.json();
-  console.log("Notifications data:", data); 
   return data;
 }
 
@@ -392,7 +389,6 @@ export async function getNotificationPreferences(){ // apparently no gardenerId 
   const res = await fetch(`${BASE_URL}/notificationpref`);
   if (!res.ok) throw new Error(`Failed to load notification preferences`);
   const data = await res.json();
-  console.log("Notification preferences data:", data); 
   return data;
 }
 
@@ -452,7 +448,6 @@ export async function getSensorThresholds(type) {
   }
   // Return the threshold value
   const threshold = data.thresholdValue;
-  console.log(`Threshold for ${type} is ${threshold}`);
   
   return threshold; // Return the threshold value, this is a number
   }

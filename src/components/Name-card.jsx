@@ -15,7 +15,7 @@ function NameCard({ greenhouseData }) {
       setName(greenhouseData.name);
     }
   }, [greenhouseData]); // rerenders when data arrives from the database
-  // TODO: make the loading screen to allow data to arrive before rendering the page
+// TODO: make the loading screen to allow data to arrive before rendering the page  
 
   useEffect(() => {
     if (isEditing && inputReference.current) {

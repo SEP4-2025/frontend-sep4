@@ -1,7 +1,7 @@
 import { useDarkMode } from '../context/DarkModeContext';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Line } from 'react-chartjs-2';
-import { useState, useEffect, useMemo } from 'react'; // Added useEffect and useMemo
+import { useState, useEffect, useMemo } from 'react';
 
 import {
   Chart as ChartJS,
@@ -19,7 +19,7 @@ export const SENSOR_CONFIG = {
     name: 'Temperature',
     unit: 'ºC',
     apiType: 'temperature',
-    defaultIdeal: 22, // Fallback if threshold is not available
+    defaultIdeal: 22,
   },
   humidity: {
     name: 'Humidity',
@@ -54,7 +54,7 @@ ChartJS.register(
 );
 
 function SensorViewGraph({
-    graphData, // This prop will come from SensorViewPage
+    graphData, 
     loading,
     error,
     selectedSensorKey,
@@ -63,7 +63,8 @@ function SensorViewGraph({
     sensorTypesCollection 
 }) {
     const { darkMode } = useDarkMode();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false); // For the dropdown
+    const [mobileOpen, setMobileOpen] = useState(false); // Separate state for mobile dropdown
 
     const { 
         history = [], 
@@ -77,6 +78,7 @@ function SensorViewGraph({
     const handleDropdownSelect = (sensorKey) => {
         onSensorSelect(sensorKey);
         setOpen(false);
+        setMobileOpen(false);
     };
 
     const deviationData = useMemo(() => {
@@ -96,23 +98,19 @@ function SensorViewGraph({
     const yAxisLimits = useMemo(() => {
         let minY = -100;
         let maxY = 100;
-        if (deviationData.length > 0 && deviationData.some(val => val !== 0)) { // Check if there's actual data
+        if (deviationData.length > 0 && deviationData.some(val => val !== 0)) {
             const dataMin = Math.min(...deviationData);
             const dataMax = Math.max(...deviationData);
-            minY = Math.min(minY, Math.floor(dataMin / 10) * 10); // Round down to nearest 10 for cleaner scale
-            maxY = Math.max(maxY, Math.ceil(dataMax / 10) * 10);   // Round up to nearest 10
+            minY = Math.min(minY, Math.floor(dataMin / 10) * 10); 
+            maxY = Math.max(maxY, Math.ceil(dataMax / 10) * 10);   
         }
-        // Ensure a minimum span if values are very close or within default
-        if (maxY - minY < 20) { // e.g. if all data is between -5 and 5
+        if (maxY - minY < 20) { 
             const mid = (minY + maxY) / 2;
-            minY = Math.min(-100, mid - 50); // Ensure it covers at least -100 to 100 if possible
+            minY = Math.min(-100, mid - 50); 
             maxY = Math.max(100, mid + 50);
-             // Re-check default bounds
             minY = Math.min(-100, minY);
             maxY = Math.max(100, maxY);
         }
-
-
         return { min: minY, max: maxY };
     }, [deviationData]);
 
@@ -166,13 +164,13 @@ function SensorViewGraph({
                     dangerZoneTop: { 
                         type: 'box', 
                         yMin: 50, 
-                        yMax: yAxisLimits.max, // Extend to the top of the Y-axis
+                        yMax: yAxisLimits.max, 
                         backgroundColor: 'rgba(255, 99, 132, 0.2)' 
                     },
                     warningZoneBottom: { type: 'box', yMin: -50, yMax: -20, backgroundColor: 'rgba(255, 255, 0, 0.2)' },
                     dangerZoneBottom: { 
                         type: 'box', 
-                        yMin: yAxisLimits.min, // Extend to the bottom of the Y-axis
+                        yMin: yAxisLimits.min, 
                         yMax: -50, 
                         backgroundColor: 'rgba(255, 99, 132, 0.2)' 
                     },
@@ -208,44 +206,65 @@ function SensorViewGraph({
 
     const displayName = loading ? 'Loading...' : (name || 'Sensor');
 
+    const sensorSelectorDropdown = (isMobile = false) => (
+        <div className="relative">
+            <button
+                onClick={() => isMobile ? setMobileOpen(!mobileOpen) : setOpen(!open)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${darkMode ? 'bg-slate-600 border-slate-500 text-white hover:bg-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+            >
+                <span className="font-medium">Select Sensor</span>
+                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                </svg>
+            </button>
+            {(isMobile ? mobileOpen : open) && sensorTypesCollection && sensorConfigCollection && (
+                <div className={`absolute top-full ${isMobile ? 'right-0' : 'lg:right-auto lg:left-0'} mt-1 w-56 rounded-lg shadow-lg border ${darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-100 text-gray-700'} z-20`}>
+                    <div className="py-1">
+                        {sensorTypesCollection.map(sensorKey => (
+                            <button
+                                key={sensorKey}
+                                onClick={() => handleDropdownSelect(sensorKey)}
+                                className={`w-full text-left px-4 py-2 text-sm ${darkMode ? 'hover:bg-slate-600' : 'hover:bg-gray-50'} ${selectedSensorKey === sensorKey ? (darkMode ? 'bg-slate-600 font-medium' : 'bg-gray-100 font-medium') : ''}`}
+                            >
+                                {sensorConfigCollection[sensorKey]?.name || sensorKey}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
     return (
         <div className="w-full">
             <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
                 <div className="p-6">
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
-                        <h2 className="font-bold text-2xl mb-4 md:mb-0">{displayName} Monitoring</h2>
-                        
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            <div className="relative">
-                                <button
-                                    onClick={() => setOpen(!open)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${darkMode ? 'bg-slate-600 border-slate-500 text-white hover:bg-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
-                                >
-                                    <span className="font-medium">Select Sensor</span>
-                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                                {open && sensorTypesCollection && sensorConfigCollection && (
-                                    <div className={`absolute top-full right-0 mt-1 w-56 rounded-lg shadow-lg border ${darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-100 text-gray-700'} z-20`}>
-                                        <div className="py-1">
-                                            {sensorTypesCollection.map(sensorKey => (
-                                                <button
-                                                    key={sensorKey}
-                                                    onClick={() => handleDropdownSelect(sensorKey)}
-                                                    className={`w-full text-left px-4 py-2 text-sm ${darkMode ? 'hover:bg-slate-600' : 'hover:bg-gray-50'} ${selectedSensorKey === sensorKey ? (darkMode ? 'bg-slate-600 font-medium' : 'bg-gray-100 font-medium') : ''}`}
-                                                >
-                                                    {sensorConfigCollection[sensorKey]?.name || sensorKey}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                    {/* Mobile-only Title (centered) */}
+                    <h2 className="text-xl font-semibold text-center mb-4 lg:hidden">
+                        Sensor
+                    </h2>
+
+                    {/* Mobile: Status Card (left) and Sensor Selector (right) */}
+                    <div className="flex justify-between items-center mb-4 lg:hidden">
+                        {/* Status Card for Mobile - Adjusted for height matching */}
+                        <div className={`flex items-center rounded-lg px-3 py-2 border ${darkMode ? 'border-slate-500 bg-slate-600' : 'border-gray-200 bg-gray-50'}`}>
+                            <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} mr-2`}>Status:</span>
+                            <span className="font-bold">{loading ? "..." : (status || 'N/A')}</span>
                         </div>
+                        {/* Sensor Selector for Mobile */}
+                        {sensorSelectorDropdown(true)}
+                    </div>
+
+                    {/* Desktop: Title (left) and Sensor Selector (right) */}
+                    <div className="hidden lg:flex lg:flex-row items-center lg:justify-between mb-4">
+                        <h2 className="font-bold text-2xl">
+                            {displayName} Monitoring
+                        </h2>
+                        {sensorSelectorDropdown(false)}
                     </div>
                     
-                    <div className="flex flex-wrap gap-4 mb-4">
+                    {/* Desktop Info boxes - Hidden on mobile, shown on lg and up */}
+                    <div className="hidden lg:flex flex-wrap gap-4 mb-4">
                         <div className={`flex items-center rounded-lg px-4 py-2 ${darkMode ? 'bg-slate-600' : 'bg-gray-50'}`}>
                             <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} mr-2`}>Status:</span>
                             <span className="text-sm font-bold">{loading ? "..." : (status || 'N/A')}</span>
@@ -266,7 +285,8 @@ function SensorViewGraph({
 
                     {error && <div className="text-center p-4 text-red-500 mb-4">{error}</div>}
                     
-                    <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
+                    {/* Graph area - Hidden on mobile, shown on lg and up */}
+                    <div className={`hidden lg:block rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
                         <div style={{ height: '400px' }}>
                             {loading && (!history || history.length === 0) ? (
                                 <div className="flex items-center justify-center h-full">

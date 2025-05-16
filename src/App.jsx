@@ -131,7 +131,7 @@ function AppContent() {
             path="/popup-page"
             element={
               isAuthenticated ? (
-                <Plant_upload_popup /> // Assuming this page doesn't need the mobile nav toggle
+                <Plant_upload_popup />
               ) : (
                 <Navigate to="/loginPage" replace />
               )

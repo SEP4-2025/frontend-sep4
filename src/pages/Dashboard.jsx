@@ -9,6 +9,7 @@ import Notification_centre from '../components/Notification-centre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
 import ClockCard from '../components/Clock-card';
 import LoadingScreen from '../components/Loading-screen';
+import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
 
 const _dummyAiMetrics = [
   { name: 'Temperature', unit: 'ºC', value: 23, optimal: 25, min: 0, max: 50 },
@@ -78,20 +79,7 @@ function Dashboard({ toggleMobileNav }) {
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-      {/* Mobile Header: Hidden on lg screens and up */}
-      <div
-        className={`lg:hidden p-4 bg-[#28463a] text-white flex items-center justify-between shadow-md sticky top-0 z-20`}
-      >
-        <button
-          onClick={toggleMobileNav}
-          className="text-2xl p-1"
-          aria-label="Open navigation menu"
-        >
-          &#9776; {/* Hamburger icon */}
-        </button>
-        <h1 className="text-lg font-semibold">Dashboard</h1>
-        <div className="w-8"></div> {/* Spacer to balance the hamburger icon */}
-      </div>
+      <MobileHeader toggleMobileNav={toggleMobileNav} title="Dashboard" />
 
       <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'} ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">

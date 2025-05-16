@@ -106,7 +106,7 @@ function SensorViewPage({ toggleMobileNav }) {
 
             <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 {/* Title */}
-                <div className='flex flex-col mb-6'>
+                <div className='hidden sm:flex flex-col mb-6'>
                     <h1 className={darkMode ? 'Jacques-Francois text-5xl px-3 text-gray-100' : 'Jacques-Francois text-5xl px-3 text-gray-800'}>Sensor View</h1>
                     <p className={darkMode ? 'Manrope p-3 text-gray-400' : 'Manrope p-3 ml-3 text-gray-400'}>Monitor greenhouse conditions</p>
                 </div>

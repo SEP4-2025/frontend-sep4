@@ -43,7 +43,7 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
         const data = await getNotificationPreferencesData();
         setNotificationPrefs(data);
         setError(null);
-      } catch (err) { 
+      } catch (err) {
         console.error('Error fetching notification preferences:', err);
         setError('Failed to load notification preferences. Please try again later.');
       } finally {
@@ -73,10 +73,10 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
         <div className="flex flex-col lg:flex-row gap-6"> {/* Main two-column container */}
           {/* Left Column */}
           <div className="flex-1 space-y-8 max-w-3xl">
-            <header className="mb-6">
+            <header className="mb-6 hidden sm:block"> {/* Updated: Hide header on mobile, show on sm+ */}
               <h1 className="text-4xl font-bold flex items-center">
                 <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
-                <span className="Jacques-Francois ml-3">Settings</span>
+                <span className="Jacques-Francois ml-3">Settings</span> {/* Updated: Removed responsive visibility classes as parent handles it */}
               </h1>
             </header>
 
@@ -104,8 +104,8 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
                     }
                     const isLastItem = notificationPrefs.indexOf(pref) === notificationPrefs.length - 1;
                     return (
-                      <div 
-                        key={`${pref.gardenerId}-${pref.type}`} 
+                      <div
+                        key={`${pref.gardenerId}-${pref.type}`}
                         className={`flex items-center justify-between py-4 ${!isLastItem ? `${darkMode ? 'border-slate-600' : 'border-gray-100'} border-b` : ''}`}
                       >
                         <div className="flex items-center">
@@ -116,11 +116,11 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
                           </div>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input 
-                            type="checkbox" 
-                            checked={pref.isEnabled} 
-                            onChange={() => handleToggleNotification(pref.gardenerId, pref.type)} 
-                            className="sr-only peer" 
+                          <input
+                            type="checkbox"
+                            checked={pref.isEnabled}
+                            onChange={() => handleToggleNotification(pref.gardenerId, pref.type)}
+                            className="sr-only peer"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                         </label>
@@ -183,9 +183,9 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
                     <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Select your preferred text size</p>
                   </div>
                 </div>
-                <select 
-                  value={fontSizeKey} 
-                  onChange={(e) => setFontSizeKey(e.target.value)} 
+                <select
+                  value={fontSizeKey}
+                  onChange={(e) => setFontSizeKey(e.target.value)}
                   className={`border ${darkMode ? 'bg-slate-600 border-slate-500 text-white' : 'bg-white border-gray-300 text-gray-800'} rounded-md px-3 py-2 min-w-[120px]`}
                 >
                   {Object.keys(FONT_SIZES_CONFIG).map(size => (

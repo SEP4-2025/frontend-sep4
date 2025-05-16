@@ -52,7 +52,7 @@ function GalleryPage({ toggleMobileNav }) {
                     {/* Main content area: Title, Mobile Upload, Search, Filter, Grid */}
                     <div className="flex-1 flex flex-col items-center lg:items-start w-full lg:order-1">
                         {/* Title Section */}
-                        <div className='flex flex-row items-center justify-center lg:justify-start w-full'>
+                        <div className='hidden lg:flex flex-row items-center justify-center lg:justify-start w-full'>
                             <img src={PlantIcon} alt="Plant Icon" className={`w-8 h-8 sm:w-10 sm:h-10 ${darkMode ? 'invert' : ''}`} />
                             <h1 className={`Jacques-Francois text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl p-3 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>Plant gallery</h1>
                         </div>

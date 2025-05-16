@@ -1,6 +1,5 @@
-// Full updated SettingsPage.js to match the screenshot layout and features
-
 import React, { useState, useEffect } from 'react';
+import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
 import { useFontSize } from '../context/FontSizeContext';
 import { useDarkMode } from '../context/DarkModeContext';
 import {
@@ -19,18 +18,20 @@ import temperatureIconPath from '../assets/solar--temperature-bold.svg';
 import lightIconPath from '../assets/entypo--light-up.svg';
 import wateringIconPath from '../assets/lets-icons--water.svg';
 
+// ChevronDownIcon is not used in the provided selection, but kept if needed elsewhere
 const ChevronDownIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
     <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clipRule="evenodd" />
   </svg>
 );
 
-const SettingsPage = () => {
+const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
   const [notificationPrefs, setNotificationPrefs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { darkMode, setDarkMode } = useDarkMode();
   const { fontSizeKey, setFontSizeKey, FONT_SIZES_CONFIG } = useFontSize();
+  // theme, tempMin, tempMax are not used in the provided selection, but kept if part of full component
   const [theme, setTheme] = useState('green');
   const [tempMin, setTempMin] = useState(18);
   const [tempMax, setTempMax] = useState(30);
@@ -42,7 +43,7 @@ const SettingsPage = () => {
         const data = await getNotificationPreferencesData();
         setNotificationPrefs(data);
         setError(null);
-      } catch (err) {
+      } catch (err) { 
         console.error('Error fetching notification preferences:', err);
         setError('Failed to load notification preferences. Please try again later.');
       } finally {
@@ -66,146 +67,136 @@ const SettingsPage = () => {
   );
 
   return (
-    <div className={`flex flex-col lg:flex-row gap-6 p-8 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
-      <div className="flex-1 space-y-8 max-w-3xl">
-        <header className="mb-6">
-          <h1 className="text-4xl font-bold flex items-center">
-            <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
-            <span className="Jacques-Francois ml-3">Settings</span>
-          </h1>
-        </header>
+    <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <MobileHeader toggleMobileNav={toggleMobileNav} title="Settings" />
+      <main className={`flex-grow overflow-y-auto p-8`}>
+        <div className="flex flex-col lg:flex-row gap-6"> {/* Main two-column container */}
+          {/* Left Column */}
+          <div className="flex-1 space-y-8 max-w-3xl">
+            <header className="mb-6">
+              <h1 className="text-4xl font-bold flex items-center">
+                <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
+                <span className="Jacques-Francois ml-3">Settings</span>
+              </h1>
+            </header>
 
-        {/* Notification Preferences */}
-        <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-          <div className="flex items-center gap-2 mb-1">
-            <img src={bellIconPath} alt="Notifications" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
-            <h2 className="text-2xl font-semibold">Notification preferences</h2>
-          </div>
-          <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Configure which notifications you want to receive</p>
+            {/* Notification Preferences Card */}
+            <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md`}>
+              <div className="flex items-center gap-2 mb-1">
+                <img src={bellIconPath} alt="Notifications" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
+                <h2 className="text-2xl font-semibold">Notification preferences</h2>
+              </div>
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Configure which notifications you want to receive</p>
 
-          {error && <div className="text-red-600">{error}</div>}
+              {error && <div className="text-red-600">{error}</div>}
 
-          {loading ? <p>Loading...</p> : (
-            <div>
-              {notificationPrefs.map((pref) => {
-                // Determine which icon to use based on notification type
-                let iconSrc;
-                switch(pref.type.toLowerCase()) {
-                  case 'humidity':
-                    iconSrc = humidityIconPath;
-                    break;
-                  case 'soil moisture':
-                    iconSrc = soilMoistureIconPath;
-                    break;
-                  case 'temperature':
-                    iconSrc = temperatureIconPath;
-                    break;
-                  case 'light':
-                    iconSrc = lightIconPath;
-                    break;
-                  case 'watering':
-                    iconSrc = wateringIconPath;
-                    break;
-                  default:
-                    iconSrc = bellIconPath;
-                }
-                
-                // Determine if this is the last item to avoid border on last item
-                const isLastItem = notificationPrefs.indexOf(pref) === notificationPrefs.length - 1;
-                
-                return (
-                  <div 
-                    key={`${pref.gardenerId}-${pref.type}`} 
-                    className={`flex items-center justify-between py-4 ${!isLastItem ? `${darkMode ? 'border-slate-600' : 'border-gray-100'} border-b` : ''}`}
-                  >
-                    <div className="flex items-center">
-                      <img src={iconSrc} alt={pref.type} className={`w-6 h-6 ${darkMode ? 'invert' : ''}`} />
-                      <div className="ml-4">
-                        <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>{pref.type} notifications</p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>{pref.isEnabled ? 'Enabled' : 'Disabled'}</p>
+              {loading ? <p>Loading...</p> : (
+                <div>
+                  {notificationPrefs.map((pref) => {
+                    let iconSrc;
+                    switch(pref.type.toLowerCase()) {
+                      case 'humidity': iconSrc = humidityIconPath; break;
+                      case 'soil moisture': iconSrc = soilMoistureIconPath; break;
+                      case 'temperature': iconSrc = temperatureIconPath; break;
+                      case 'light': iconSrc = lightIconPath; break;
+                      case 'watering': iconSrc = wateringIconPath; break;
+                      default: iconSrc = bellIconPath;
+                    }
+                    const isLastItem = notificationPrefs.indexOf(pref) === notificationPrefs.length - 1;
+                    return (
+                      <div 
+                        key={`${pref.gardenerId}-${pref.type}`} 
+                        className={`flex items-center justify-between py-4 ${!isLastItem ? `${darkMode ? 'border-slate-600' : 'border-gray-100'} border-b` : ''}`}
+                      >
+                        <div className="flex items-center">
+                          <img src={iconSrc} alt={pref.type} className={`w-6 h-6 ${darkMode ? 'invert' : ''}`} />
+                          <div className="ml-4">
+                            <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>{pref.type} notifications</p>
+                            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>{pref.isEnabled ? 'Enabled' : 'Disabled'}</p>
+                          </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={pref.isEnabled} 
+                            onChange={() => handleToggleNotification(pref.gardenerId, pref.type)} 
+                            className="sr-only peer" 
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                        </label>
                       </div>
+                    );
+                  })}
+                  {notificationPrefs.length === 0 && (
+                    <div className="py-4 text-center">
+                      <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>No notification preferences available.</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={pref.isEnabled} 
-                        onChange={() => handleToggleNotification(pref.gardenerId, pref.type)} 
-                        className="sr-only peer" 
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                    </label>
-                  </div>
-                );
-              })}
-              
-              {/* If no notification preferences are available, show placeholder */}
-              {notificationPrefs.length === 0 && (
-                <div className="py-4 text-center">
-                  <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>No notification preferences available.</p>
+                  )}
                 </div>
               )}
             </div>
-          )}
-        </div>
-       
-      </div>
-
-      {/* Sidebar widgets */}
-      <div className="w-full lg:w-96 space-y-8">
-        {/* Color Mode */}
-        <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-16`}>
-          <div className="flex items-center gap-2 mb-1">
-            <img src={moonIconPath} alt="Dark Mode" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
-            <h2 className="text-xl font-semibold">Color mode</h2>
           </div>
-          <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Adjust visual theme for your preference</p>
-          
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center">
-              <div className="ml-1"> {/* Slight adjustment for alignment */}
-                <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>Dark mode</p>
-                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Toggle dark mode for a better low-light experience</p>
+
+          {/* Right Column: Configured for specific alignment */}
+          <div className="w-full lg:w-96 flex flex-col">
+            {/* Color Mode Card: mt-16 to align with Notification Preferences card top */}
+            <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-16`}> {/* Original mt-16 for alignment */}
+              <div className="flex items-center gap-2 mb-1">
+                <img src={moonIconPath} alt="Dark Mode" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
+                <h2 className="text-xl font-semibold">Color mode</h2>
+              </div>
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Adjust visual theme for your preference</p>
+              <div className="flex items-center justify-between py-4">
+                <div className="flex items-center">
+                  <div className="ml-1">
+                    <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>Dark mode</p>
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Toggle dark mode for a better low-light experience</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked={darkMode} onChange={() => setDarkMode(!darkMode)} className="sr-only peer" />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                </label>
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" checked={darkMode} onChange={() => setDarkMode(!darkMode)} className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-            </label>
-          </div>
-        </div>
 
-        {/* Font Preferences */}
-        <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-20`}>
-          <div className="flex items-center gap-2 mb-1">
-            <img src={fontIconPath} alt="Font Settings" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
-            <h2 className="text-xl font-semibold">Font preferences</h2>
-          </div>
-          <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Customize text appearance throughout the app</p>
-          
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center">
-              <div className={`w-6 h-6 flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
+            {/* Spacer to push Font Preferences to the bottom if Notification Preferences is taller */}
+            {/* min-h-[2rem] ensures a minimum space similar to space-y-8 */}
+            <div className="flex-grow min-h-[2rem]"></div>
+
+            {/* Font Preferences Card: No top margin here, flex-grow pushes it down */}
+            <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md`}>
+              <div className="flex items-center gap-2 mb-1">
+                <img src={fontIconPath} alt="Font Settings" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
+                <h2 className="text-xl font-semibold">Font preferences</h2>
               </div>
-              <div className="ml-4">
-                <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>Font size</p>
-                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Select your preferred text size</p>
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-4`}>Customize text appearance throughout the app</p>
+              <div className="flex items-center justify-between py-4">
+                <div className="flex items-center">
+                  <div className={`w-6 h-6 flex items-center justify-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <p className={`${darkMode ? 'text-white' : 'text-gray-800'}`}>Font size</p>
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Select your preferred text size</p>
+                  </div>
+                </div>
+                <select 
+                  value={fontSizeKey} 
+                  onChange={(e) => setFontSizeKey(e.target.value)} 
+                  className={`border ${darkMode ? 'bg-slate-600 border-slate-500 text-white' : 'bg-white border-gray-300 text-gray-800'} rounded-md px-3 py-2 min-w-[120px]`}
+                >
+                  {Object.keys(FONT_SIZES_CONFIG).map(size => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
               </div>
             </div>
-            <select 
-              value={fontSizeKey} 
-              onChange={(e) => setFontSizeKey(e.target.value)} 
-              className={`border ${darkMode ? 'bg-slate-600 border-slate-500 text-white' : 'bg-white border-gray-300 text-gray-800'} rounded-md px-3 py-2 min-w-[120px]`}
-            >
-              {Object.keys(FONT_SIZES_CONFIG).map(size => (
-                <option key={size} value={size}>{size}</option>
-              ))}
-            </select>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

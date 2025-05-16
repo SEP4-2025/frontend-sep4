@@ -6,6 +6,7 @@ import calendarIcon from '../assets/calendar-icon-gray.svg';
 import PlantViewPopup from '../components/PlantViewPopup';
 import { useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
+import MobileHeader from '../components/MobileHeader';
 
 //dummy data
 const allPlants = [
@@ -14,7 +15,7 @@ const allPlants = [
     { id: 3, name: "Rosemary" },
 ];
 
-function GalleryPage() {
+function GalleryPage({ toggleMobileNav }) {
     const { darkMode } = useDarkMode();
     const [isFilterOpen, setIsFilterOpen] = useState(false); // filter menu state
     const [isPlantMenuOpen, setIsPlantMenuOpen] = useState(false); // plant menu state
@@ -42,227 +43,113 @@ function GalleryPage() {
     );
 
     return (
-        <div className={`flex flex-col p-6 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
-            <div className='flex flex-row'>
-                <h1 className={`Jacques-Francois text-5xl px-3 ${darkMode ? 'text-gray-100' : ''}`}>Plant Gallery</h1>
-                <div className='flex flex-row justify-end ml-auto gap-3'>
-                    <input
-                        type="text"
-                        id="plantSearch"
-                        className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}
-                        placeholder="Search plants..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                    <div className="relative inline-block">
-                        <button onClick={() => {
-                            if (isFilterOpen) {
-                                setIsFilterOpen(false);
-                            }
-                            togglePlantMenu();
-                        }} className={`border-1 flex flex-row items-center gap-2 p-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
-                            <p className='Manrope '>All plants</p>
-                            <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isPlantMenuOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
-                        </button>
+        <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
+           <MobileHeader toggleMobileNav={toggleMobileNav} title="Plant Gallery" />
+           <main className="flex-grow overflow-y-auto p-4 sm:p-6">
+                {/* Overall container for gallery content and desktop upload button */}
+                <div className="flex flex-col lg:flex-row lg:gap-6">
 
-                        {isPlantMenuOpen && (
-                            <div className={`absolute top-full right-0 mt-1 w-48 rounded-md shadow-lg z-50 dropdown-animation ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'}`}>
-                                <ul className="py-1 text-left">
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 1")}
-                                        >
-                                            Basil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 2")}
-                                        >
-                                            Basil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 3")}
-                                        >
-                                            Basil
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-
-                    <button
-                        onClick={openModal}
-                        className={`border-1 flex flex-row items-center gap-2 text-white p-4 rounded-lg cursor-pointer hover:opacity-90 ${darkMode ? 'bg-slate-700 border-gray-600 hover:bg-slate-600' : 'border-gray-300 bg-[#D5A632] hover:bg-[#c4972d]'
-                            }`}
-                    >
-                        <p className='Manrope'>Upload plant photo</p>
-                    </button>
-
-                    {/* Plant upload modal */}
-                    <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />
-
-                </div>
-            </div>
-            <p className='Manrope p-3 text-gray-400'>View your plant collection</p>
-            <div className='flex flex-row mb-4'>
-                <div className='flex flex-row justify-end ml-auto gap-3'>
-                    <div className="relative inline-block">
-                        <button onClick={() => {
-                            if (isPlantMenuOpen) {
-                                setIsPlantMenuOpen(false);
-                            }
-                            toggleFilterMenu();
-                        }} className={`border-1 flex flex-row items-center gap-2 p-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
-                            <p>Sort by</p>
-                            <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isFilterOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
-                        </button>
-
-                        {isFilterOpen && (
-                            <div className={`absolute top-full right-0 mt-1 w-48 rounded-md shadow-lg z-50 dropdown-animation ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'}`}>
-                                <ul className="py-1 text-left">
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 1")}
-                                        >
-                                            Last week
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 2")}
-                                        >
-                                            Last month
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                            onClick={() => handleFilterSelect("Option 3")}
-                                        >
-                                            Condition: good
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredPlants.length > 0 ? (
-                    filteredPlants.map(plant => (
-                        <div>
-                            <Plant_gallery_card name={plant.name} time={'April 3 2025'} />
+                    {/* Main content area: Title, Mobile Upload, Search, Filter, Grid */}
+                    <div className="flex-1 flex flex-col items-center lg:items-start w-full lg:order-1">
+                        {/* Title Section */}
+                        <div className='flex flex-row items-center justify-center lg:justify-start w-full'>
+                            <img src={PlantIcon} alt="Plant Icon" className={`w-8 h-8 sm:w-10 sm:h-10 ${darkMode ? 'invert' : ''}`} />
+                            <h1 className={`Jacques-Francois text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl p-3 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>Plant gallery</h1>
                         </div>
-                    ))
-                ) : (
-                    <p className={`col-span-full text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No results</p>
-                )}
-            </div>
+
+                        {/* Upload button section - Mobile Only (Centered) */}
+                        <div className="lg:hidden flex flex-col items-center w-full gap-3 mt-4 mb-6">
+                            <button onClick={openModal} className={`py-2 px-4 rounded-xl text-white ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
+                                Upload plant photo
+                            </button>
+                        </div>
+                        
+                        {/* Search Input */}
+                        <input
+                            type="text"
+                            id="plantSearch"
+                            className={`w-full max-w-md lg:max-w-sm border rounded-lg px-4 py-2 my-4 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-700 text-white border-gray-600 placeholder-gray-400' : 'border-gray-300 placeholder-gray-500'}`}
+                            placeholder="Search plants..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+
+                        {/* Filter section */}
+                        <div className="flex justify-center lg:justify-start w-full lg:w-auto mb-4">
+                            <div className="relative inline-block text-left">
+                                <button onClick={toggleFilterMenu} className={`flex flex-row items-center gap-2 py-2 px-3 rounded-md ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}>
+                                    <p>Sort/filter</p>
+                                    <img src={FilterIcon} alt="Filter Icon" className={`w-5 h-auto ${darkMode ? 'filter invert' : ''}`} />
+                                </button>
+                                {isFilterOpen && (
+                                <div className={`origin-top-left lg:origin-top-left absolute mt-2 w-48 rounded-md shadow-lg z-50 ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'} left-1/2 -translate-x-1/2 lg:left-0 lg:-translate-x-0`}>
+                                    <ul className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    <li>
+                                        <a
+                                        href="#"
+                                        className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        onClick={() => handleFilterSelect("Last week")}
+                                        role="menuitem"
+                                        >
+                                        Last week
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                        href="#"
+                                        className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        onClick={() => handleFilterSelect("Last month")}
+                                        role="menuitem"
+                                        >
+                                        Last month
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                        href="#"
+                                        className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        onClick={() => handleFilterSelect("Condition: good")}
+                                        role="menuitem"
+                                        >
+                                        Condition: good
+                                        </a>
+                                    </li>
+                                    </ul>
+                                </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Plant Grid */}
+                        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredPlants.length > 0 ? (
+                            filteredPlants.map(plant => (
+                                <div key={plant.id} onClick={() => setSelectedPlant(plant)} className="cursor-pointer">
+                                    <Plant_gallery_card name={plant.name} />
+                                </div>
+                            ))
+                            ) : (
+                            <p className={`col-span-full text-center py-10 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No results</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Upload button section - Desktop Only (Sidebar-like) */}
+                    <div className="hidden lg:flex lg:flex-col lg:w-auto lg:ml-auto gap-3 mt-0 lg:order-2 pt-[calc(2.5rem+1.5rem)]"> {/* Adjust pt to align with title area if needed */}
+                        <button onClick={openModal} className={`py-2 px-4 rounded-xl text-white ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
+                            Upload plant photo
+                        </button>
+                    </div>
+                </div>
+                
+                <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />
+           </main>
+
+           {selectedPlant && (
+                <PlantViewPopup plant={selectedPlant} onClose={() => setSelectedPlant(null)} />
+            )}
         </div>
-
-
-
-
-
-        // <div className={`flex flex-row p-6 min-h-screen ${darkMode ? 'darkMode' : ''}`}>
-        //    <div className='w-full'>
-        //     <div className='flex flex-col'>
-        //         <h1 className={`Jacques-Francois text-5xl px-3 ${darkMode ? 'text-gray-100' : ''}`}>Plant gallery</h1>
-        //         <p className='Manrope p-3 text-gray-400'>View your plant collection</p>
-        //     </div>
-        //     <div className="p-3 flex flex-col">
-        //         <input
-        //             type="text"
-        //             id="plantSearch"
-        //             className={`w-1/3 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}
-        //             placeholder="Search plants..."
-        //             value={search}
-        //             onChange={(e) => setSearch(e.target.value)}
-        //         />
-        //         <div className="p-3">
-        //             <div className="relative inline-block">
-        //                 <button onClick={toggleFilterMenu} className={`flex flex-row items-center gap-2 ${darkMode ? 'text-gray-200' : ''}`}>
-        //                 <p>Sort/filter</p>
-        //                 <img src={FilterIcon} alt="logo" className={`w-5 h-auto ${darkMode ? 'filter invert' : ''}`} />
-        //                 </button>
-
-        //                 {isFilterOpen && (
-        //                 <div className={`absolute top-full left-0 mt-2 w-48 rounded-md shadow-lg z-50 ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'}`}>
-        //                     <ul className="py-1 text-left">
-        //                     <li>
-        //                         <a
-        //                         href="#"
-        //                         className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-        //                         onClick={() => handleFilterSelect("Option 1")}
-        //                         >
-        //                         Last week
-        //                         </a>
-        //                     </li>
-        //                     <li>
-        //                         <a
-        //                         href="#"
-        //                         className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-        //                         onClick={() => handleFilterSelect("Option 2")}
-        //                         >
-        //                         Last month
-        //                         </a>
-        //                     </li>
-        //                     <li>
-        //                         <a
-        //                         href="#"
-        //                         className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-        //                         onClick={() => handleFilterSelect("Option 3")}
-        //                         >
-        //                         Condition: good
-        //                         </a>
-        //                     </li>
-        //                     </ul>
-        //                 </div>
-        //                 )}
-        //             </div>
-        //         </div>
-        //         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        //         {filteredPlants.length > 0 ? (
-        //             filteredPlants.map(plant => (
-        //                 <div key={plant.id} onClick={() => setSelectedPlant(plant)}>
-        //                     <Plant_gallery_card name={plant.name} />
-        //                 </div>
-        //             ))
-        //             ) : (
-        //             <p className={`col-span-full text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No results</p>
-        //             )}
-        //         </div>
-        //     </div>
-        //    </div>
-        //    <div className="flex flex-col ml-auto p-3 gap-3">
-        //     <button onClick={openModal} className={`py-2 px-4 rounded-xl text-white ${darkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-[#D5A632] hover:bg-black'}`}>
-        //         Upload plant photo
-        //         </button>
-        //         <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />
-        //    </div>
-
-        //    {selectedPlant && (
-        //         <PlantViewPopup plant={selectedPlant} onClose={() => setSelectedPlant(null)} />
-        //     )}
-
-        // </div>
-    )
+    );
 }
 
 export default GalleryPage;

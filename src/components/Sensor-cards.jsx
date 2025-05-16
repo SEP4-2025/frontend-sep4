@@ -17,13 +17,12 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             
             const diff = todayData.value - yesterdayData.value;
             const displayDiffString = diff.toFixed(precision);
-            const sign = diff > 0 ? '+' : '';
+            const sign = diff > 0 ? '+' : ''; // Handles positive, negative will show its own sign
             return `${sign}${displayDiffString}${unit} from yesterday`;
         }
         return 'No comparison data';
     };
 
-    // Using imported icon assets instead of SVG paths
     const TemperatureIcon = () => (
         <img src={temperatureIcon} alt="Temperature" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
@@ -44,9 +43,10 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
         <img src={lightIntensityIcon} alt="Light Intensity" className={`w-6 h-6 ${ darkMode ? 'invert' : ''}`} />
     );
 
+    // Updated grid classes: mobile will be 2 columns, sm also 2, md 3, lg 5.
     return (
-        <div className="grid grid-cols-5 gap-4 mb-1">
-            {/* Temperature Card */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-1">
+            {/* Temperature Card (1st item) */}
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Temperature</h3>
@@ -63,7 +63,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                 </div>
             </div>
             
-            {/* Humidity Card */}
+            {/* Humidity Card (2nd item) */}
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Humidity</h3>
@@ -80,7 +80,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                 </div>
             </div>
             
-            {/* Soil Moisture Card */}
+            {/* Soil Moisture Card (3rd item) */}
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Soil Moisture</h3>
@@ -97,19 +97,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                 </div>
             </div>
             
-            {/* Water Level Card */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
-                <div className="flex justify-between items-center mb-1">
-                    <h3 className="text-sm font-medium text-gray-500">Water Level</h3>
-                    <WaterLevelIcon />
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-3xl font-bold">88%</span>
-                    <span className="text-xs text-gray-500">Last watered 6 h ago</span>
-                </div>
-            </div>
-            
-            {/* Light Intensity Card */}
+            {/* Light Intensity Card (4th item) - Moved before Water Level */}
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Light Intensity</h3>
@@ -123,6 +111,28 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
                     <span className="text-xs text-gray-500">
                         {formatComparisonText(lightSensorDataAverageToday, lightSensorDataAverageYesterday, ' lux', 0)}
                     </span>
+                </div>
+            </div>
+
+            {/* Water Level Card (5th item) - Will span full width on mobile and sm screens */}
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm col-span-2 md:col-span-1`}>
+                <div className="flex justify-between items-center mb-1">
+                    <h3 className="text-sm font-medium text-gray-500">Water Level</h3>
+                    <WaterLevelIcon />
+                </div>
+                <div className="flex flex-col">
+                    {/* Assuming waterLevelSensorData is not available, using placeholder */}
+                    <span className="text-3xl font-bold">N/A</span> 
+                    <span className="text-xs text-gray-500">Data unavailable</span>
+                    {/* If you have waterLevelSensorData, use it like other sensors:
+                    <span className="text-3xl font-bold">
+                        {waterLevelSensorData && typeof waterLevelSensorData.value === 'number' ? 
+                            `${waterLevelSensorData.value.toFixed(1)}%` : 'N/A'}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                        {formatComparisonText(waterLevelSensorDataAverageToday, waterLevelSensorDataAverageYesterday, '%', 1)}
+                    </span>
+                    */}
                 </div>
             </div>
         </div>

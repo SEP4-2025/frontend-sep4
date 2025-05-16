@@ -64,29 +64,6 @@ export async function compileDashboardData(gardenerId) {
   const notificationData = await getAllNotifications();
   const notificationPreferences = await getNotificationPreferences(); 
 
-  // Log the fetched data for debugging
-  console.log('✅➡️Fetched data:', {
-    lightSensorData,
-    temperatureSensorData,
-    humiditySensorData,
-    soilMoistureSensorData,
-    greenhouseData,
-    lightSensorDataAverageToday,
-    temperatureSensorDataAverageToday,
-    humiditySensorDataAverageToday,
-    soilMoistureSensorDataAverageToday,
-    lightSensorDataAverageYesterday,
-    temperatureSensorDataAverageYesterday,
-    humiditySensorDataAverageYesterday,
-    soilMoistureSensorDataAverageYesterday,
-    temperatureHistory,
-    humidityHistory,
-    lightHistory,
-    soilMoistureHistory,
-    notificationData,
-    notificationPreferences
-  });
-
   return {
     lightSensorData,
     temperatureSensorData,
@@ -142,7 +119,6 @@ export async function compileSensorLogs(requestedApiType, signal) {
   try {
     const rawLogs = await getLogs(requestedApiType, null); // Fetch logs (all or specific + untagged)
 
-    // console.log(`➡️ Raw logs for ${requestedApiType}:`, rawLogs);
 
     if (!rawLogs || !Array.isArray(rawLogs)) {
       console.warn(`No logs returned or invalid format for ${requestedApiType} from getLogs.`);
@@ -180,7 +156,6 @@ export async function compileSensorLogs(requestedApiType, signal) {
       sensorType: mapSensorIdToText(log.sensorReadingId), // Added for filtering in popup
       // Use log.timestamp instead of log.date
       originalLogDate: new Date(log.timestamp) // Keep original date for robust sorting
-      // originalLog: log // You can include the full original log if needed
     })).sort((a, b) => b.originalLogDate - a.originalLogDate); // Sort by most recent first
 
   } catch (error) {
@@ -301,15 +276,14 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       thirtyDaysAgo.setHours(0, 0, 0, 0);
       
-      //console.log(`[DEBUG] thirtyDaysAgo: ${thirtyDaysAgo.toISOString()} for ${sensorApiType}`);
 
       const recentData = historyDataRaw.filter((item, index) => {
         // Use item.timeStamp instead of item.date
-        //console.log(`[DEBUG ${sensorApiType}] Filtering item ${index}: Original item.timeStamp = "${item ? item.timeStamp : 'N/A'}", item.value = "${item ? item.value : 'N/A'}"`);
+        
 
         // Use item.timeStamp for checks
         if (!item || typeof item.timeStamp === 'undefined' || item.timeStamp === null || item.value === null || typeof item.value === 'undefined') {
-            //console.log(`[DEBUG ${sensorApiType}] Item ${index} invalid (missing properties, null timeStamp, or null/undefined value). Skipping.`);
+            
             return false;
         }
         
@@ -317,22 +291,20 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
         const itemDate = new Date(itemDateStr); 
         const isItemDateValid = !isNaN(itemDate.getTime()); 
 
-        //console.log(`[DEBUG ${sensorApiType}] Item ${index} - Parsed itemDate from timeStamp: ${isItemDateValid ? itemDate.toISOString() : 'Invalid Date from string: ' + itemDateStr}`);
-        
+
         if (!isItemDateValid) {
-            //console.log(`[DEBUG ${sensorApiType}] Item ${index} - Date parsing failed. Skipping.`);
+            
             return false;
         }
 
         const isWithinTimeRange = itemDate >= thirtyDaysAgo;
-        //console.log(`[DEBUG ${sensorApiType}] Item ${index} - Is itemDate (${itemDate.toISOString()}) >= thirtyDaysAgo (${thirtyDaysAgo.toISOString()})? ${isWithinTimeRange}`);
         
         if (!isWithinTimeRange) {
-            //console.log(`[DEBUG ${sensorApiType}] Item ${index} - Not within time range. Skipping.`);
+            
             return false;
         }
         
-        //console.log(`[DEBUG ${sensorApiType}] Item ${index} - Keeping item.`);
+        
         return true; 
       });
 

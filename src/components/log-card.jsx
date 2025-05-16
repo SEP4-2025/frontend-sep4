@@ -28,6 +28,12 @@ function LogCard({ log }) {
         return <img src={genericLogIcon} alt="Log Entry" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
     };
 
+    // Format the timestamp to YYYY-MM-DD
+    const formattedDate = log?.timeStamp?.split('T')[0] || "No date available";
+    // Optionally, format time if needed elsewhere or for desktop
+    // const formattedTime = log?.timeStamp ? new Date(log.timeStamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+
+
     return (
         <div className={`rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-gray-50'} p-4 mb-2 last:mb-0`}>
             <div className="flex items-start gap-3">
@@ -35,9 +41,10 @@ function LogCard({ log }) {
                     {getLogIconSVG()}
                 </div>
                 <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
+                    {/* Timestamp for Desktop */}
+                    <div className={`hidden lg:flex items-center justify-between mb-2`}>
                         <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            {log?.timeStamp || "No time available"}
+                            {formattedDate} {/* Display formatted date for desktop */}
                         </span>
                     </div>
                     
@@ -54,6 +61,11 @@ function LogCard({ log }) {
                         
                         <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                             Recommended action: {log?.message || "No action needed"}
+                        </p>
+
+                        {/* Timestamp for Mobile - appears as the last item */}
+                        <p className={`lg:hidden text-sm font-medium mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                            {formattedDate}
                         </p>
                     </div>
                 </div>

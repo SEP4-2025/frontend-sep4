@@ -1,4 +1,5 @@
 import { useDarkMode } from '../context/DarkModeContext';
+import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
 import WaterManagementGraph from '../components/WaterManagementGraph';
 import WaterManagementStatus from '../components/WaterManagementStatus';
 import AutomaticWatering from '../components/AutomaticWatering';
@@ -6,7 +7,8 @@ import WateringCard from '../components/WateringCard';
 import React, { useState, useEffect } from 'react';
 import { compileWaterPumpData } from '../utils/dataCompiler';
 
-function WaterManagement () {
+function WaterManagement ({ toggleMobileNav }) { // Added toggleMobileNav prop
+
     const { darkMode } = useDarkMode();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -60,12 +62,16 @@ function WaterManagement () {
     };
 
     return (
-        <div className={`p-8 min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
-            {/* Title */}
-            <div className='flex flex-col'>
-                <h1 className={darkMode ? 'Jacques-Francois text-5xl px-3 text-gray-100' : 'Jacques-Francois text-5xl px-3 text-gray-800'}>Water Management</h1>
-                <p className={darkMode ? 'Manrope p-3 text-gray-400' : 'Manrope p-3 ml-3 text-gray-400'}>Water your greenhouse</p>
-            </div>
+        <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
+            {/* Mobile Header */}
+            <MobileHeader toggleMobileNav={toggleMobileNav} title="Water Management" />
+
+            <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {/* Title */}
+                <div className='flex flex-col mb-6'>
+                    <h1 className={`hidden lg:block ${darkMode ? 'Jacques-Francois text-5xl px-3 text-gray-100' : 'Jacques-Francois text-5xl px-3 text-gray-800'}`}>Water Management</h1>
+                    <p className={`hidden lg:block ${darkMode ? 'Manrope p-3 text-gray-400' : 'Manrope p-3 ml-1 text-gray-400'}`}>Water your greenhouse</p>
+                </div>
 
             {error && (
                 <div className={`mt-4 p-4 rounded-lg ${darkMode ? 'bg-red-800 text-white' : 'bg-red-100 text-red-700'}`}>
@@ -84,18 +90,19 @@ function WaterManagement () {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             ) : (
-                <div className="flex flex-col lg:flex-row gap-6">
-                    <div className='w-full lg:w-2/3'>
-                        <WaterManagementGraph pumpId={pumpId} />
-                        <div className="mt-6">
-                            <AutomaticWatering 
-                                pumpId={pumpId}
-                                isAutomatic={waterPumpData.autoWatering}
-                                isLoading={loading}
-                                onUpdate={refreshData}
-                            />
+                <div className="flex flex-col lg:flex-row gap-6"> {/* Parent Flex Container */}
+                    {/* Left side panel */}
+                    <div className='w-full lg:w-2/3 flex flex-col gap-6'>
+                        <div className="hidden lg:block">
+                            <WaterManagementGraph/>
                         </div>
-                    </div>
+                        <AutomaticWatering 
+                            pumpId={pumpId}
+                            isAutomatic={waterPumpData.autoWatering}
+                            isLoading={loading}
+                            onUpdate={refreshData}
+                        />
+                    </div> {/* Closes Left Panel */}
 
                     {/* Right side panel */}
                     <div className="flex flex-col w-full lg:w-1/3 gap-6 mt-6 lg:mt-0">
@@ -122,9 +129,10 @@ function WaterManagement () {
                             onUpdate={refreshData}
                             isLoading={loading}
                         />
-                    </div>
-                </div>
+                    </div> {/* Closes Right Panel */}
+                </div> /* Closes Parent Flex Container */
             )}
+            </main>
         </div>
     )
 }

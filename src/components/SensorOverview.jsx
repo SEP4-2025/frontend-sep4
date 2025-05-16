@@ -246,136 +246,140 @@ export function SensorOverview({
       ctx.restore();
     }
   };
-
   return (
     <div className={`w-full rounded-lg p-5 shadow-sm mt-8 ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-        <div>
-          <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>Sensor History</h3>
-          <p className="text-xs text-gray-500 mt-1">Historical sensor data</p>
-        </div>
-        <div className="flex items-center space-x-4">
-          {/* Sensor Selection Buttons */}
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={() => setSelectedSensor("temperature")} 
-              className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "temperature" ? 
-                (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') : 
-                (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
-            >
-              Temperature
-            </button>
-            <button 
-              onClick={() => setSelectedSensor("humidity")} 
-              className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "humidity" ? 
-                (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') : 
-                (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
-            >
-              Humidity
-            </button>
-            <button 
-              onClick={() => setSelectedSensor("light")} 
-              className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "light" ? 
-                (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') : 
-                (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
-            >
-              Light
-            </button>
-            <button 
-              onClick={() => setSelectedSensor("soilMoisture")} 
-              className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "soilMoisture" ? 
-                (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') : 
-                (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
-            >
-              Soil
-            </button>
+      {/* Sensor History Section - Hidden on Mobile */}
+      <div className="hidden lg:block">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+          <div>
+            <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>Sensor History</h3>
+            <p className="text-xs text-gray-500 mt-1">Historical sensor data</p>
           </div>
-          
-          {/* Time Period Selector */}
-          <div className="flex items-center border-l pl-4 border-gray-200 dark:border-gray-600">
-            <select
-              className={`rounded-md px-2 py-1 text-xs ${darkMode ? 
-                'bg-slate-600 text-white border-slate-500' : 
-                'bg-gray-100 text-gray-700 border-gray-200'}`}
-              value={timeframe}
-              onChange={(e) => setTimeframe(e.target.value)}
-            >
-              <option value="24h">Last 24 Hours</option>
-              <option value="7d">Last 7 Days</option>
-              <option value="30d">Last 30 Days</option>
-            </select>
+          <div className="flex items-center space-x-4">
+            {/* Sensor Selection Buttons */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setSelectedSensor("temperature")}
+                className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "temperature" ?
+                  (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') :
+                  (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
+              >
+                Temperature
+              </button>
+              <button
+                onClick={() => setSelectedSensor("humidity")}
+                className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "humidity" ?
+                  (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') :
+                  (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
+              >
+                Humidity
+              </button>
+              <button
+                onClick={() => setSelectedSensor("light")}
+                className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "light" ?
+                  (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') :
+                  (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
+              >
+                Light
+              </button>
+              <button
+                onClick={() => setSelectedSensor("soilMoisture")}
+                className={`p-2 rounded-md text-xs transition-colors ${selectedSensor === "soilMoisture" ?
+                  (darkMode ? 'bg-slate-600 text-white' : 'bg-gray-100 text-gray-900') :
+                  (darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-500 hover:text-gray-700')}`}
+              >
+                Soil
+              </button>
+            </div>
+  
+            {/* Time Period Selector */}
+            <div className="flex items-center border-l pl-4 border-gray-200 dark:border-gray-600">
+              <select
+                className={`rounded-md px-2 py-1 text-xs ${darkMode ?
+                  'bg-slate-600 text-white border-slate-500' :
+                  'bg-gray-100 text-gray-700 border-gray-200'}`}
+                value={timeframe}
+                onChange={(e) => setTimeframe(e.target.value)}
+              >
+                <option value="24h">Last 24 Hours</option>
+                <option value="7d">Last 7 Days</option>
+                <option value="30d">Last 30 Days</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Chart */}
-      <div className={`mt-4 rounded-lg overflow-hidden p-4 h-[300px] ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-        <Line
-          data={processedChartData}
-          plugins={[chartJsPlugin]}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                title: {
-                  display: true,
-                  text: timeframe === "24h" ? "Time (HH:MM)" : "Date (YYYY-MM-DD)",
-                  color: chartTextColor,
+  
+        {/* Chart */}
+        <div className={`mt-4 rounded-lg overflow-hidden p-4 h-[300px] ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
+          <Line
+            data={processedChartData}
+            plugins={[chartJsPlugin]}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: timeframe === "24h" ? "Time (HH:MM)" : "Date (YYYY-MM-DD)",
+                    color: chartTextColor,
+                  },
+                  ticks: { display: true, autoSkip: true, color: chartTextColor },
+                  grid: { color: gridColor },
                 },
-                ticks: { display: true, autoSkip: true, color: chartTextColor },
-                grid: { color: gridColor },
+                y: {
+                  title: { display: true, text: `Value (${getUnit(selectedSensor)})`, color: chartTextColor },
+                  min: yAxisConfig.min,
+                  max: yAxisConfig.max,
+                  ticks: { color: chartTextColor },
+                  grid: { color: gridColor },
+                },
               },
-              y: {
-                title: { display: true, text: `Value (${getUnit(selectedSensor)})`, color: chartTextColor },
-                min: yAxisConfig.min,
-                max: yAxisConfig.max,
-                ticks: { color: chartTextColor },
-                grid: { color: gridColor },
-              },
-            },
-            plugins: {
-              legend: {
-                labels: { color: chartTextColor }
-              },
-              tooltip: {
-                backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.8)', // slate-800 or white with opacity
-                titleColor: darkMode ? '#e2e8f0' : '#1f2937', // slate-200 or gray-800
-                bodyColor: darkMode ? '#e2e8f0' : '#1f2937',
-                borderColor: darkMode ? 'rgba(100, 116, 139, 0.2)' : 'rgba(156, 163, 175, 0.2)', // slate-500 or gray-400 with opacity
-                borderWidth: 1
+              plugins: {
+                legend: {
+                  labels: { color: chartTextColor }
+                },
+                tooltip: {
+                  backgroundColor: darkMode ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                  titleColor: darkMode ? '#e2e8f0' : '#1f2937',
+                  bodyColor: darkMode ? '#e2e8f0' : '#1f2937',
+                  borderColor: darkMode ? 'rgba(100, 116, 139, 0.2)' : 'rgba(156, 163, 175, 0.2)',
+                  borderWidth: 1
+                }
               }
-            }
-          }}
-        />
-      </div>
-      {/* Current Stats */}
-      <div className="grid grid-cols-4 gap-4 mt-4 text-center">
-        <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
-          <p className="text-xs text-gray-500">Temperature</p>
-          <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-            {latestTemperature?.value ? `${latestTemperature.value}°C` : 'N/A'}
-          </p>
-        </div>
-        <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
-          <p className="text-xs text-gray-500">Humidity</p>
-          <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-            {latestHumidity?.value ? `${latestHumidity.value}%` : 'N/A'}
-          </p>
-        </div>
-        <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
-          <p className="text-xs text-gray-500">Light</p>
-          <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-            {latestLight?.value ? `${latestLight.value} lux` : 'N/A'}
-          </p>
-        </div>
-        <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
-          <p className="text-xs text-gray-500">Soil Moisture</p>
-          <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-            {latestSoilMoisture?.value ? `${latestSoilMoisture.value}%` : 'N/A'}
-          </p>
+            }}
+          />
         </div>
       </div>
+  
+        {/* Averages for Today - Visible on All Devices */}
+    <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'} lg:mt-6`}>Averages for today</h4>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4 text-center">
+      <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+        <p className="text-xs text-gray-500">Temperature</p>
+        <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+          {latestTemperature?.value ? `${latestTemperature.value}°C` : 'N/A'}
+        </p>
+      </div>
+      <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+        <p className="text-xs text-gray-500">Humidity</p>
+        <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+          {latestHumidity?.value ? `${latestHumidity.value}%` : 'N/A'}
+        </p>
+      </div>
+      <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+        <p className="text-xs text-gray-500">Light</p>
+        <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+          {latestLight?.value ? `${latestLight.value} lux` : 'N/A'}
+        </p>
+      </div>
+      <div className={`p-2 rounded ${darkMode ? 'bg-slate-600' : 'bg-gray-100'}`}>
+        <p className="text-xs text-gray-500">Soil Moisture</p>
+        <p className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+          {latestSoilMoisture?.value ? `${latestSoilMoisture.value}%` : 'N/A'}
+        </p>
+      </div>
+    </div>
     </div>
   );
 }

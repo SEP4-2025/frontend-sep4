@@ -6,46 +6,36 @@ import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
 import notificationIcon from '../assets/notification-icon.svg';
 import { useDarkMode } from '../context/DarkModeContext';
 
-function Notification_card({notification}) {
+function Notification_card({ notification }) {
     const { darkMode } = useDarkMode();
 
     // Helper function to get the notification icon based on the type
-    const getNotificationIcon = () => {
-        const type = notification?.type.toLowerCase();
-
-        if (type.includes('temperature')) return temperatureIcon;
-        if (type.includes('humidity')) return humidityIcon;
-        if (type.includes('soil')) return soilMoistureIcon;
-        if (type.includes('moisture')) return soilMoistureIcon;
-        if (type.includes('watering')) return waterLevelIcon;
-        if (type.includes('light')) return lightIntensityIcon;
-
-        return notificationIcon; // Default icon 
-    }
-    
     const getNotificationIconSVG = () => {
         const type = notification?.type.toLowerCase();
-        
+
         if (type.includes('temperature')) {
-            return <img src={temperatureIcon} alt="Temperature" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+            return <img src={temperatureIcon} alt="Temperature" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('humidity')) {
-            return <img src={humidityIcon} alt="Humidity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+            return <img src={humidityIcon} alt="Humidity" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('soil') || type.includes('moisture')) {
-            return <img src={soilMoistureIcon} alt="Soil Moisture" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+            return <img src={soilMoistureIcon} alt="Soil Moisture" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('watering')) {
-            return <img src={waterLevelIcon} alt="Water Level" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+            return <img src={waterLevelIcon} alt="Water Level" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
         if (type.includes('light')) {
-            return <img src={lightIntensityIcon} alt="Light Intensity" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+            return <img src={lightIntensityIcon} alt="Light Intensity" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
 
         // Default notification icon
-        return <img src={notificationIcon} alt="Notification" className={`w-5 h-5 ${ darkMode ? 'invert' : ''}`} />;
+        return <img src={notificationIcon} alt="Notification" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
     };
-    
+
+    // Format the timestamp to YYYY-MM-DD
+    const formattedDate = notification?.timeStamp?.split('T')[0] || "No date available";
+
     return (
         <div className="py-3 px-1">
             <div className="flex items-start gap-3">
@@ -53,21 +43,21 @@ function Notification_card({notification}) {
                     {getNotificationIconSVG()}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row justify-between">
                         <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {notification?.type || "No type available"}
+                            {`${notification?.type || "No type available"} Warning`}
                         </p>
-                        <span className="text-xs text-gray-500">
-                            {notification?.timeStamp || "No time available"}
-                        </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                         {notification?.message || "No message available"}
                     </p>
+                    <span className="text-xs text-gray-500 mt-1">
+                        {formattedDate}
+                    </span>
                 </div>
             </div>
         </div>
-    
-    )}
+    );
+}
 
 export default Notification_card;

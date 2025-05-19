@@ -1,13 +1,15 @@
 import Plant_gallery_card from '../components/Plant-gallery-card';
 import Plant_upload_popup from '../components/Plant-upload-popup';
+import LoadingScreen from '../components/Loading-screen';
 import PlantIcon from '../assets/plant_icon.svg';
 import filterArrow from '../assets/filterArrow.png';
 import FilterIcon from '../assets/filter_icon.svg'; // Corrected import
 import calendarIcon from '../assets/calendar-icon-gray.svg';
 import PlantViewPopup from '../components/PlantViewPopup';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
 import MobileHeader from '../components/MobileHeader';
+import { compileGalleryPageData } from '../utils/dataCompiler';
 
 //dummy data
 const allPlants = [
@@ -28,6 +30,22 @@ function GalleryPage({ toggleMobileNav }) {
     const [filterOption, setFilterOption] = useState("All"); // To store the selected filter
     const [isPlantMenuOpen, setIsPlantMenuOpen] = useState(false); // plant menu state
     const [plantMenuOption, setPlantMenuOption] = useState("All plants"); // To store the selected plant menu option
+    const [plantData, setPlantData] = useState([]); // To store plant data
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+        compileGalleryPageData()
+            .then((plants) => {
+                setPlantData(plants); 
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching Gallery page data:', error);
+                setIsLoading(false);
+            });
+    }, []);
+
 
 
     const openModal = () => setIsModalOpen(true);
@@ -69,7 +87,9 @@ function GalleryPage({ toggleMobileNav }) {
         return true; // Default to true if filter option not yet implemented for data filtering
     });
 
-
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
     return (
         <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
             <MobileHeader toggleMobileNav={toggleMobileNav} title="Plant Gallery" />
@@ -162,7 +182,7 @@ function GalleryPage({ toggleMobileNav }) {
                                         setIsPlantMenuOpen(false);
                                     }
                                     toggleFilterMenu();
-                                }}  className={`border-1 flex flex-row items-center gap-2 py-2 px-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
+                                }} className={`border-1 flex flex-row items-center gap-2 py-2 px-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
                                     <p>Sort/filter: {filterOption}</p> {/* Display current filter */}
                                     <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isFilterOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
                                 </button>

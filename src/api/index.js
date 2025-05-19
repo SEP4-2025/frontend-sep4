@@ -1,5 +1,22 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-68779328892.europe-north2.run.app'; // Override in .env for real prod URL
 
+const getAuthToken = () => {
+  return sessionStorage.getItem('token');
+};
+
+const createAuthHeaders = () => {
+  const token = getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
 /*
  * 
  *   NEW API ENDPOINTS - Mariete
@@ -39,7 +56,9 @@ export async function getSensorData(type) {
   else if (lowerType === 'soilmoisture') typeIdPath = 'sensor/4';
 
   // Fetch data from the API
-  const res = await fetch(`${BASE_URL}/SensorReading/${typeIdPath}`);
+  const res = await fetch(`${BASE_URL}/SensorReading/${typeIdPath}`, {
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load sensor data for type ${type}, which is ${typeIdPath}`);
   return res.json();
 }
@@ -120,7 +139,9 @@ export async function getSensorAverageByDate(type, date) {
 
   // Fetch data from the API for the given date
   // This endpoint is expected to return an array of all sensor readings for that date
-  const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`);
+  const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) {
     console.error(`Failed to load sensor data average for the date ${date} [type ${type}, which is ${typeId}]`);
     return null; 
@@ -173,7 +194,9 @@ export async function getSensorAverageByDate(type, date) {
  */
 
 export async function getLastestPrediction() {
-  const res = await fetch(`${BASE_URL}/Prediction/`);
+  const res = await fetch(`${BASE_URL}/Prediction/`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load lastest prediction`);
   const data = await res.json();
 
@@ -196,7 +219,9 @@ export async function getLastestPrediction() {
  */
 
 export async function fetchGrenhouseDataByGardenerId(gardenerId) {
-  const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`);
+  const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load greenhouse data for gardener ${gardenerId}`);
   const data = await res.json();
   return data;
@@ -251,7 +276,9 @@ export async function getLogs(sensorType, date) {
   const dateUrl = date ? `date/${date}` : '';
 
   // Fetch data from the API
-  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`);
+  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load logs (url: ${BASE_URL}/Log/${dateUrl})`);
   
   const allLogsForPeriod = await res.json();
@@ -377,7 +404,9 @@ export async function getSensorStatus(type) {
 //TODO: make a detailed comment for this function
 
 export async function getAllNotifications() { // apparently no gardenerId is needed
-  const res = await fetch(`${BASE_URL}/notification/all`);
+  const res = await fetch(`${BASE_URL}/notification/all`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load notifications`);
   const data = await res.json();
   return data;
@@ -386,7 +415,9 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
 //TODO: make a detailed comment for this function
 
 export async function getNotificationPreferences(){ // apparently no gardenerId is needed
-  const res = await fetch(`${BASE_URL}/notificationpref`);
+  const res = await fetch(`${BASE_URL}/notificationpref`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load notification preferences`);
   const data = await res.json();
   return data;
@@ -397,9 +428,7 @@ export async function getNotificationPreferences(){ // apparently no gardenerId 
 export async function toggleNotificationPreference(gardenerId, type) {
   const res = await fetch(`${BASE_URL}/notificationpref/toggle`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: createAuthHeaders(),
     body: JSON.stringify({
       gardenerId: gardenerId,
       type: type
@@ -435,7 +464,9 @@ export async function getSensorThresholds(type) {
   else if (lowerType === 'soilmoisture') typeId = 4;
 
   // Fetch data from the API for the given date
-  const res = await fetch(`${BASE_URL}/Sensor/${typeId}`);
+  const res = await fetch(`${BASE_URL}/Sensor/${typeId}`,{
+    headers: createAuthHeaders()
+  });
   if (!res.ok) throw new Error(`Failed to load sensor thresholds for type ${type}`);
   
   const data = await res.json();
@@ -480,9 +511,7 @@ export async function updateSensorThreshold(type, threshold) {
   // Fetch data from the API for the given date
   const res = await fetch(`${BASE_URL}/Sensor/update/${typeId}`, {
     method: 'PATCH', // Changed from PUT to PATCH
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: createAuthHeaders(),
     body: JSON.stringify({ thresholdValue: threshold }),
   });
   
@@ -510,7 +539,9 @@ export async function updateSensorThreshold(type, threshold) {
  */
 export async function getAllWaterPumps() {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump`);
+    const res = await fetch(`${BASE_URL}/WaterPump`,{
+      headers: createAuthHeaders()
+    });
     if (!res.ok) {
       throw new Error(`Failed to load water pumps. Status: ${res.status}`);
     }
@@ -528,7 +559,9 @@ export async function getAllWaterPumps() {
  */
 export async function getWaterPumpById(id) {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump/${id}`);
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}`,{
+      headers: createAuthHeaders()
+    });
     if (!res.ok) {
       throw new Error(`Failed to load water pump with ID ${id}. Status: ${res.status}`);
     }
@@ -546,7 +579,9 @@ export async function getWaterPumpById(id) {
  */
 export async function getWaterPumpWaterLevel(id) {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump/${id}/water-level`);
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/water-level`,{
+      headers: createAuthHeaders()
+    });
     if (!res.ok) {
       throw new Error(`Failed to load water level for pump with ID ${id}. Status: ${res.status}`);
     }
@@ -566,9 +601,7 @@ export async function createWaterPump(waterPumpData) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(),
       body: JSON.stringify(waterPumpData),
     });
     
@@ -593,9 +626,7 @@ export async function toggleAutomationStatus(id, autoWatering) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/toggle-automation`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(),
       body: JSON.stringify(autoWatering),
     });
     
@@ -619,9 +650,7 @@ export async function triggerManualWatering(id) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/manual-watering`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(),
     });
     
     if (!res.ok) {
@@ -645,9 +674,7 @@ export async function updateCurrentWaterLevel(id, addedWaterAmount) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/add-water`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(), 
       body: JSON.stringify(addedWaterAmount),
     });
     
@@ -672,9 +699,7 @@ export async function updateWaterPumpThreshold(id, newThresholdValue) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/threshold`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(),
       body: JSON.stringify(newThresholdValue),
     });
     
@@ -699,9 +724,7 @@ export async function updateWaterTankCapacity(id, newCapacityValue) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/capacity`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: createAuthHeaders(),
       body: JSON.stringify(newCapacityValue),
     });
     
@@ -725,6 +748,7 @@ export async function deleteWaterPump(id) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}`, {
       method: 'DELETE',
+      headers: createAuthHeaders(),
     });
     
     if (!res.ok) {
@@ -745,7 +769,9 @@ export async function deleteWaterPump(id) {
  */
 export async function getWaterUsageHistory(id) {
   try {
-    const res = await fetch(`${BASE_URL}/Log/${id}/water-usage`);
+    const res = await fetch(`${BASE_URL}/Log/${id}/water-usage`,{
+      headers: createAuthHeaders()
+    });
     
     if (!res.ok) {
       throw new Error(`Failed to load water usage history for pump with ID ${id}. Status: ${res.status}`);

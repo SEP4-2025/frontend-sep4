@@ -5,6 +5,8 @@ import svgr from 'vite-plugin-svgr'; // Import svgr
 import flowbiteReact from "flowbite-react/plugin/vite";
 
 export default defineConfig({
+  // Base path for GitHub Pages deployment
+  base: '/frontend-sep4/',
   plugins: [react(), tailwindcss(), svgr(), flowbiteReact()], // Add svgr back
   server: {
     proxy: {

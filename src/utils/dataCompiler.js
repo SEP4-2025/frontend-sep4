@@ -1,3 +1,4 @@
+import { get } from 'flowbite-react/helpers/get';
 import {
   fetchGrenhouseDataByGardenerId,
   getSensorDataLastest,
@@ -15,7 +16,9 @@ import {
   triggerManualWatering,
   updateCurrentWaterLevel,
   updateWaterPumpThreshold,
-  getWaterUsageHistory
+  getWaterUsageHistory,
+  getAllPLants,
+  getAllPicturesByPLantId
 } from '../api';
 
 function formatDate(date){
@@ -369,5 +372,23 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
       name: sensorConfig.name,
       error: `Failed to load data for ${sensorConfig.name}.`,
     };
+  }
+}
+export async function compileGalleryPageData() {
+  try {
+    const allPlants = await getAllPLants();
+    
+    if (!allPlants || !Array.isArray(allPlants)) {
+      console.warn('No plants returned or invalid format from getAllPLants.');
+      return [];  
+    }
+    return allPlants.map(plant => ({
+      ...plant,
+      pictures: plant.pictures || [] 
+    }));
+    
+  } catch (error) {
+    console.error('Error compiling gallery page data:', error);
+    return [];
   }
 }

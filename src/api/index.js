@@ -783,3 +783,122 @@ export async function getWaterUsageHistory(id) {
     throw error;
   }
 }
+
+
+/* Gallery page functions */
+export async function getAllPLants() {
+  try {
+    const res = await fetch(`${BASE_URL}/Plant`,{
+      headers: createAuthHeaders()
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to get all plants. Status: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching all plants:`, error);
+    throw error;
+  }
+}
+
+export async function getAllPicturesByPLantId(plantId){
+  try {
+    const res = await fetch(`${BASE_URL}/Picture/${plantId}`,{
+      headers: createAuthHeaders()
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to get all pictures for plant id: ${plantId}. Status: ${res.status}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching all pictures for plant id: ${plantId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Upload a picture for a plant
+ * @param {number} plantId - ID of the plant
+ * @param {File|string} pictureFile - The picture file or URL to upload
+ * @param {string} note - Optional note for the picture
+ * @returns {Promise<Object>} - Uploaded picture data
+ */
+export async function uploadPicture(plantId, pictureFile, note) {
+  try {
+    // Create form data to properly handle file upload
+    const formData = new FormData();
+    formData.append('PlantId', plantId);
+    
+    // If pictureFile is a File object, append it directly
+    if (pictureFile instanceof File) {
+      formData.append('File', pictureFile);
+    } 
+    // If it's a string URL, you might need to fetch and convert to File first
+    else if (typeof pictureFile === 'string') {
+      formData.append('File', pictureFile); // For API that accepts URL directly
+    }
+    
+    // Add note if provided
+    if (note) {
+      formData.append('Note', note);
+    }
+
+    const res = await fetch(`${BASE_URL}/Picture/UploadPicture`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: formData,
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to upload picture. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error('Error uploading picture:', error);
+    throw error;
+  }
+}
+
+export async function deletePicture(pictureId) {
+  try {
+    const res = await fetch(`${BASE_URL}/Picture/${pictureId}`, {
+      method: 'DELETE',
+      headers: createAuthHeaders(),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to delete picture with ID ${pictureId}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error deleting picture with ID ${pictureId}:`, error);
+    throw error;
+  }
+}
+/**
+ * Edit the note for an existing picture
+ * @param {number} pictureId - ID of the picture
+ * @param {string} note - New note text for the picture
+ * @returns {Promise<Object>} - Updated picture data
+ */
+export async function editPictureNote(pictureId, note){
+  try {
+    const res = await fetch(`${BASE_URL}/Picture?id=${pictureId}&note=${encodeURIComponent(note)}`, { // id and note should be passed as querry parameter in url. Dont ask me why
+      method: 'PUT',
+      headers: createAuthHeaders(),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to edit picture note for ID ${pictureId}. Status: ${res.status}`);
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error editing picture note for ID ${pictureId}:`, error);
+    throw error;
+  }
+}

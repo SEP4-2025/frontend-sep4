@@ -8,10 +8,9 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
     const { darkMode } = useDarkMode();
     const [filteredLogs, setFilteredLogs] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initial check
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     useEffect(() => {
-        // Update `isMobile` state on window resize
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
@@ -23,12 +22,24 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
     }, []);
 
     useEffect(() => {
-        let result = logs || [];
+        let result = Array.isArray(logs) ? [...logs] : [];
 
         if (selectedFilter) {
-            result = result.filter(log => log.sensorType?.toLowerCase() === selectedFilter.toLowerCase());
+            if (selectedFilter.toLowerCase() === "watering") {
+                result = result.filter(log => {
+                    const hasWaterPumpId = log.waterPumpId != null; 
+                    const hasNoSensorReadingId = log.sensorReadingId === null || typeof log.sensorReadingId === 'undefined';
+                    const isWateringLog = hasWaterPumpId && hasNoSensorReadingId;
+                    
+                    return isWateringLog;
+                });
+            } else {
+                result = result.filter(log => {
+                    const hasSensorType = log.sensorType !== null && typeof log.sensorType !== 'undefined';
+                    return hasSensorType && log.sensorType.toLowerCase() === selectedFilter.toLowerCase();
+                });
+            }
         }
-        // Logs are assumed to be pre-sorted by date from dataCompiler
         setFilteredLogs(result);
     }, [logs, selectedFilter]);
 
@@ -43,7 +54,7 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
         setIsFilterOpen(false);
     };
 
-    const filterOptions = ["Temperature", "Humidity", "Light", "Soil Moisture", "General"];
+    const filterOptions = ["Temperature", "Humidity", "Light", "Soil Moisture", "Watering"];
 
     return (
         <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 ${darkMode ? 'bg-gray-900/50' : 'bg-black/50'}`}>
@@ -52,8 +63,8 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
                     darkMode ? 'border-gray-600 bg-black' : 'bg-white border-gray-500'
                 }`}
                 style={{
-                    width: isMobile ? '90%' : '80%', // Adjusted width for mobile/desktop
-                    height: isMobile ? '85%' : '60%', // Adjusted height for mobile/desktop
+                    width: isMobile ? '90%' : '80%',
+                    height: isMobile ? '85%' : '60%',
                 }}
             >
                 {/* Header */}
@@ -65,7 +76,7 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
                         </h1>
 
                         {/* Filter Button */}
-                        <div className={`relative ${isMobile ? 'self-end mt-2' : ''}`}> {/* Added mt-2 for mobile spacing */}
+                        <div className={`relative ${isMobile ? 'self-end mt-2' : ''}`}>
                             <button
                                 className={`px-4 py-2 rounded-md focus:outline-none border cursor-pointer ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'}`}
                                 onClick={toggleFilterMenu}
@@ -82,7 +93,7 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
 
                             {/* Filter Menu */}
                             {isFilterOpen && (
-                                <div className={`absolute top-full right-0 mt-1 border rounded-md w-48 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'} z-10`}> {/* Added z-10 */}
+                                <div className={`absolute top-full right-0 mt-1 border rounded-md w-48 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'} z-10`}>
                                     <ul className="py-1">
                                         <li
                                             className={`px-4 py-2 cursor-pointer ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
@@ -125,7 +136,7 @@ function LogPopup({ isOpen, onClose, logs, title, description }) {
                 </div>
 
                 {/* Footer with Close Button */}
-                <div className="p-4 border-t border-gray-300 dark:border-gray-700"> {/* Adjusted border color for dark mode */}
+                <div className="p-4 border-t border-gray-300 dark:border-gray-700">
                     <button
                         onClick={onClose}
                         className={`w-full px-4 py-2 rounded-md text-sm font-medium ${darkMode ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}

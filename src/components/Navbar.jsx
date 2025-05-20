@@ -64,7 +64,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
           fixed inset-y-0 left-0 z-40
           flex flex-col h-full
           w-64 
-          ${darkMode ? 'bg-[#28463a]' : 'bg-[#28463a]'}
+          ${darkMode ? 'bg-slate-800' : 'bg-[#28463a]'}
           text-white
           shadow-md
           transform transition-transform duration-300 ease-in-out
@@ -99,7 +99,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
               to={link.to}
               onClick={handleLinkClick}
               className={`flex items-center px-2 py-2 rounded transition-colors ${
-                isActive(link.to) ? (darkMode ? 'bg-[#345c4e]' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-[#345c4e]' : 'hover:bg-[#345c4e]')
+                isActive(link.to) ? (darkMode ? 'bg-slate-700' : 'bg-[#345c4e]') : (darkMode ? 'hover:bg-slate-700' : 'hover:bg-[#345c4e]')
               }`}
             >
               <img src={link.icon} alt={link.alt} width="20" height="20" className="mr-3 filter invert" />
@@ -111,7 +111,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
         {/* Bottom Section with Support and Logout: mt-auto pushes to bottom if space available */}
         <div className="mt-auto p-4 border-t border-gray-700">
           {/* Support Section */}
-          <div className="flex items-center mb-4 p-2">
+          <div className={`flex items-center mb-4 p-2 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-[#345c4e]'}`}>
             <img src={supportIcon} alt="Support" width="30" height="30" className="rounded-full mr-3 filter invert" />
             <div>
               <p className="text-sm">Need help?</p>
@@ -122,7 +122,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center px-2 py-2 rounded transition-colors w-full text-white bg-red-500 hover:bg-red-600"
+            className={`flex items-center justify-center px-2 py-2 rounded transition-colors w-full text-white ${darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'}`}
           >
             <span>Logout</span>
           </button>

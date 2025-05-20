@@ -26,64 +26,49 @@ function formatDate(date){
 }
 
 export async function compileDashboardData(gardenerId) {
-  const greenhouseData = await fetchGrenhouseDataByGardenerId(gardenerId);
+  /*
+  TODO: Implement Data Fetching and Compilation for Dashboard
+  This function is intended to fetch all necessary data for the dashboard from various API endpoints and compile it into a single object. Currently, it's returning undefined variables.
+  Why:
+  The dashboard relies on this function to get its data. Without implementation, the dashboard will not display any meaningful information and will likely crash or show errors.
+  How:
+  - Identify all data points required by the Dashboard.jsx component (e.g., lightSensorData, temperatureSensorData, etc.).
+  - For each data point, determine the API endpoint to fetch it from.
+  - Use asynchronous functions (async/await) and fetch API (or a library like Axios) to get data from these endpoints.
+  - Implement error handling for each API call (e.g., try-catch blocks).
+  - Process/transform the fetched data if necessary to match the expected format.
+  - Populate the variables (lightSensorData, temperatureSensorData, etc.) with the fetched and processed data.
+  - Ensure all returned variables in the final object are correctly populated.
+  - This will affect Dashboard.jsx primarily, as it consumes the output of this function.
+  Mariete Colequete
+  */
 
-  const lightSensorData = await getSensorDataLastest('light');
-  const temperatureSensorData = await getSensorDataLastest('temperature');
-  const humiditySensorData = await getSensorDataLastest('humidity');
-  const soilMoistureSensorData = await getSensorDataLastest('soilMoisture');
-
-  const today = new Date();
-  const todayFormatted = formatDate(today);
-  const lightSensorDataAverageToday = await getSensorAverageByDate('light', todayFormatted);
-  const temperatureSensorDataAverageToday = await getSensorAverageByDate('temperature', todayFormatted);
-  const humiditySensorDataAverageToday = await getSensorAverageByDate('humidity', todayFormatted);
-  const soilMoistureSensorDataAverageToday = await getSensorAverageByDate('soilMoisture', todayFormatted);
-  
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayFormatted = formatDate(yesterday);
-  const lightSensorDataAverageYesterday = await getSensorAverageByDate('light', yesterdayFormatted);
-  const temperatureSensorDataAverageYesterday = await getSensorAverageByDate('temperature', yesterdayFormatted); 
-  const humiditySensorDataAverageYesterday = await getSensorAverageByDate('humidity', yesterdayFormatted);
-  const soilMoistureSensorDataAverageYesterday = await getSensorAverageByDate('soilMoisture', yesterdayFormatted);
-
-  // Fetch historical data
-  const rawTemperatureHistory = await getSensorData('temperature');
-  const temperatureHistory = rawTemperatureHistory.map(item => ({ date: item.timeStamp, value: item.value }));
-
-  const rawHumidityHistory = await getSensorData('humidity');
-  const humidityHistory = rawHumidityHistory.map(item => ({ date: item.timeStamp, value: item.value }));
-
-  const rawLightHistory = await getSensorData('light');
-  const lightHistory = rawLightHistory.map(item => ({ date: item.timeStamp, value: item.value }));
-
-  const rawSoilMoistureHistory = await getSensorData('soilMoisture');
-  const soilMoistureHistory = rawSoilMoistureHistory.map(item => ({ date: item.timeStamp, value: item.value }));
-
-  const notificationData = await getAllNotifications();
-  const notificationPreferences = await getNotificationPreferences(); 
+  // Placeholder: Implement actual data fetching and processing here
+  // Example:
+  // const lightSensorData = await fetchLightSensorData(gardenerId);
+  // const temperatureSensorData = await fetchTemperatureSensorData(gardenerId);
+  // ... and so on for all data points
 
   return {
-    lightSensorData,
-    temperatureSensorData,
-    humiditySensorData,
-    soilMoistureSensorData,
-    greenhouseData,
-    lightSensorDataAverageToday,
-    temperatureSensorDataAverageToday,
-    humiditySensorDataAverageToday,
-    soilMoistureSensorDataAverageToday,
-    lightSensorDataAverageYesterday,
-    temperatureSensorDataAverageYesterday,
-    humiditySensorDataAverageYesterday,
-    soilMoistureSensorDataAverageYesterday,
-    temperatureHistory,
-    humidityHistory,
-    lightHistory,
-    soilMoistureHistory,
-    notificationData,
-    notificationPreferences
+    lightSensorData: undefined,
+    temperatureSensorData: undefined,
+    humiditySensorData: undefined,
+    soilMoistureSensorData: undefined,
+    greenhouseData: undefined,
+    lightSensorDataAverageToday: undefined,
+    temperatureSensorDataAverageToday: undefined,
+    humiditySensorDataAverageToday: undefined,
+    soilMoistureSensorDataAverageToday: undefined,
+    lightSensorDataAverageYesterday: undefined,
+    temperatureSensorDataAverageYesterday: undefined,
+    humiditySensorDataAverageYesterday: undefined,
+    soilMoistureSensorDataAverageYesterday: undefined,
+    temperatureHistory: undefined,
+    humidityHistory: undefined,
+    lightHistory: undefined,
+    soilMoistureHistory: undefined,
+    notificationData: undefined,
+    notificationPreferences: undefined
   };
 }
 
@@ -117,7 +102,7 @@ export async function toggleNotificationPreferenceData(gardenerId, type) {
 
 export async function compileSensorLogs(requestedApiType, signal) {
   try {
-    const rawLogs = await getLogs(requestedApiType, null); // Fetch logs (all or specific + untagged)
+    const rawLogs = await getLogs(requestedApiType, null); 
 
 
     if (!rawLogs || !Array.isArray(rawLogs)) {
@@ -130,33 +115,36 @@ export async function compileSensorLogs(requestedApiType, signal) {
     thirtyDaysAgo.setHours(0, 0, 0, 0);
 
     const filteredLogsByDate = rawLogs.filter(log => {
-      // Use log.timestamp instead of log.date
+      
       if (!log || !log.timestamp) { 
         return false;
       }
-      const logDate = new Date(log.timestamp); // Use log.timestamp
+      const logDate = new Date(log.timestamp); 
       return !isNaN(logDate.getTime()) && logDate >= thirtyDaysAgo;
     });
 
-    // Helper function to map sensorReadingId to a readable type string
+    
     function mapSensorIdToText(sensorId) {
         if (sensorId === 1) return 'Temperature';
         if (sensorId === 2) return 'Humidity';
         if (sensorId === 3) return 'Light';
         if (sensorId === 4) return 'Soil Moisture';
-        if (sensorId == null) return 'General'; // For untagged logs
+        if (sensorId == null) return 'General'; 
         return 'Unknown';
     }
 
     return filteredLogsByDate.map(log => ({
       type: "Log Entry", 
       message: log.message,
-      // Use log.timestamp instead of log.date
+      
       timeStamp: new Date(log.timestamp).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      sensorType: mapSensorIdToText(log.sensorReadingId), // Added for filtering in popup
-      // Use log.timestamp instead of log.date
-      originalLogDate: new Date(log.timestamp) // Keep original date for robust sorting
-    })).sort((a, b) => b.originalLogDate - a.originalLogDate); // Sort by most recent first
+      sensorType: mapSensorIdToText(log.sensorReadingId), 
+      
+      originalLogDate: new Date(log.timestamp),
+      // Ensure waterPumpId and sensorReadingId are passed through
+      waterPumpId: log.waterPumpId, 
+      sensorReadingId: log.sensorReadingId 
+    })).sort((a, b) => b.originalLogDate - a.originalLogDate); 
 
   } catch (error) {
     if (error.name === 'AbortError' && signal && signal.aborted) {

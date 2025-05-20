@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { Line } from 'react-chartjs-2';
 import {

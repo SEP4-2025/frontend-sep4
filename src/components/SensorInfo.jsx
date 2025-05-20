@@ -1,5 +1,6 @@
 import { useDarkMode } from '../context/DarkModeContext';
 import infoIcon from '../assets/material-symbols--info-outline-rounded.svg';
+import React from 'react';
 
 function SensorInfo ({ lastMeasurementValue, idealValue, unit, sensorName, sensorKey }) {
     const { darkMode } = useDarkMode();
@@ -24,7 +25,7 @@ function SensorInfo ({ lastMeasurementValue, idealValue, unit, sensorName, senso
     }
 
     let recommendedAction = "Review sensor readings or check connection.";
-    const deviationThreshold = 10; // Example: 10% deviation triggers a specific action
+    const deviationThreshold = 10; 
 
     if (lastMeasurementValue !== null && lastMeasurementValue !== undefined && lastMeasurementValue !== 'N/A') {
         if (Math.abs(deviationPercentage) <= deviationThreshold) {
@@ -38,8 +39,6 @@ function SensorInfo ({ lastMeasurementValue, idealValue, unit, sensorName, senso
                     recommendedAction = deviationPercentage > 0 ? "Reduce humidity" : "Increase humidity";
                     break;
                 case 'light':
-                    // Light recommendations can be complex (e.g., duration vs. intensity)
-                    // Simple example:
                     recommendedAction = deviationPercentage > 0 ? "Monitor light levels (may be high)" : "Increase light exposure";
                     break;
                 case 'soilMoisture':

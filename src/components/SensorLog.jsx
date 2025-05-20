@@ -35,7 +35,7 @@ function SensorLog ({ logs }) { // Changed prop name from notifications to logs
                             </div>
                         ) : (
                             <div className="py-6 text-center">
-                                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>No logs available for the last 30 days.</p>
+                                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'}`} data-testid="no-logs-message">No logs available for the last 30 days.</p>
                             </div>
                         )}
                         

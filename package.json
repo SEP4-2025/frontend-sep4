@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "postinstall": "flowbite-react patch",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "test": "jest"
   },
   "homepage": "https://sep4-2025.github.io/frontend-sep4/",
   "dependencies": {

@@ -26,6 +26,43 @@ function formatDate(date){
 }
 
 export async function compileDashboardData(gardenerId) {
+  const greenhouseData = await fetchGrenhouseDataByGardenerId(gardenerId);
+
+  const lightSensorData = await getSensorDataLastest('light');
+  const temperatureSensorData = await getSensorDataLastest('temperature');
+  const humiditySensorData = await getSensorDataLastest('humidity');
+  const soilMoistureSensorData = await getSensorDataLastest('soilMoisture');
+
+  const today = new Date();
+  const todayFormatted = formatDate(today);
+  const lightSensorDataAverageToday = await getSensorAverageByDate('light', todayFormatted);
+  const temperatureSensorDataAverageToday = await getSensorAverageByDate('temperature', todayFormatted);
+  const humiditySensorDataAverageToday = await getSensorAverageByDate('humidity', todayFormatted);
+  const soilMoistureSensorDataAverageToday = await getSensorAverageByDate('soilMoisture', todayFormatted);
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayFormatted = formatDate(yesterday);
+  const lightSensorDataAverageYesterday = await getSensorAverageByDate('light', yesterdayFormatted);
+  const temperatureSensorDataAverageYesterday = await getSensorAverageByDate('temperature', yesterdayFormatted); 
+  const humiditySensorDataAverageYesterday = await getSensorAverageByDate('humidity', yesterdayFormatted);
+  const soilMoistureSensorDataAverageYesterday = await getSensorAverageByDate('soilMoisture', yesterdayFormatted);
+
+  // Fetch historical data
+  const rawTemperatureHistory = await getSensorData('temperature');
+  const temperatureHistory = rawTemperatureHistory.map(item => ({ date: item.timeStamp, value: item.value }));
+
+  const rawHumidityHistory = await getSensorData('humidity');
+  const humidityHistory = rawHumidityHistory.map(item => ({ date: item.timeStamp, value: item.value }));
+
+  const rawLightHistory = await getSensorData('light');
+  const lightHistory = rawLightHistory.map(item => ({ date: item.timeStamp, value: item.value }));
+
+  const rawSoilMoistureHistory = await getSensorData('soilMoisture');
+  const soilMoistureHistory = rawSoilMoistureHistory.map(item => ({ date: item.timeStamp, value: item.value }));
+
+  const notificationData = await getAllNotifications();
+  const notificationPreferences = await getNotificationPreferences();
 
   return {
     lightSensorData,

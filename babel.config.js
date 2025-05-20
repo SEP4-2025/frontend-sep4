@@ -1,7 +1,9 @@
 export default {
-  "presets": [
-    "@babel/preset-env",
-    "@babel/preset-react"
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-react',
   ],
-  "plugins": ["@babel/plugin-syntax-import-meta"]
+  plugins: [
+    '@babel/plugin-syntax-import-meta',
+  ],
 };

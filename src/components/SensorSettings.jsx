@@ -73,12 +73,12 @@ function SensorSettings ({ selectedSensorKey, sensorConfig, onThresholdUpdate })
 
     return (
         <div className="w-full">
-            <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
+            <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`} data-testid="sensor-settings-container">
                 <div className="p-6">
                     <h2 className="font-bold text-xl mb-4">Threshold Settings</h2>
                     <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} p-4`}>
                         <div className="mb-4">
-                            <p className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                            <p className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`} data-testid="sensor-name-label">
                                 {sensorConfig && selectedSensorKey && sensorConfig[selectedSensorKey] ? sensorConfig[selectedSensorKey].name : 'Sensor'} Threshold
                             </p>
                             <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>

@@ -1,14 +1,11 @@
 export default {
-  testEnvironment: 'jest-environment-jsdom',
-  setupFilesAfterEnv: ['@testing-library/jest-dom'],
   transform: {
-    '^.+\\.jsx?$': 'babel-jest', 
+    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.svg$': 'jest-transform-stub',
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!your-module-to-transform|another-module)/',
-  ],
-  moduleFileExtensions: ['js', 'jsx'],
+  testEnvironment: 'jsdom',
   moduleNameMapper: {
-    '\\.svg$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.svg$': 'jest-transform-stub',
   },
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
 };

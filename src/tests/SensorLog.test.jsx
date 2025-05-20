@@ -1,5 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+
+jest.mock('../api/index.js', () => ({
+  updateSensorThreshold: jest.fn(),
+}));
+
 import SensorLog from '../components/SensorLog';
 import { useDarkMode } from '../context/DarkModeContext';
 

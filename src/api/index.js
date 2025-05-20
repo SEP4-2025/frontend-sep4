@@ -243,9 +243,7 @@ export async function fetchGrenhouseDataByGardenerId(gardenerId) {
 export async function updateGreenhouseName(greenhouseId, name) {
   const res = await fetch(`${BASE_URL}/Greenhouse/update/${greenhouseId}`, {
     method: 'PUT',  // method needs to be specified
-    headers: { // content type needs to be specified
-      'Content-Type': 'application/json'  
-    },
+    headers: createAuthHeaders(),
     body: JSON.stringify(name),
   });
   if (!res.ok) throw new Error(`Failed to update greenhouse name for ${greenhouseId}`);
@@ -829,16 +827,16 @@ export async function uploadPicture(plantId, pictureFile, note) {
     const formData = new FormData();
     formData.append('PlantId', plantId);
     
-    // If pictureFile is a File object, append it directly
+    
     if (pictureFile instanceof File) {
       formData.append('File', pictureFile);
     } 
-    // If it's a string URL, you might need to fetch and convert to File first
+    
     else if (typeof pictureFile === 'string') {
-      formData.append('File', pictureFile); // For API that accepts URL directly
+      formData.append('File', pictureFile); 
     }
     
-    // Add note if provided
+    
     if (note) {
       formData.append('Note', note);
     }
@@ -873,7 +871,7 @@ export async function deletePicture(pictureId) {
       throw new Error(`Failed to delete picture with ID ${pictureId}. Status: ${res.status}`);
     }
     
-    return res.json();
+    return { success: true };
   } catch (error) {
     console.error(`Error deleting picture with ID ${pictureId}:`, error);
     throw error;
@@ -889,6 +887,7 @@ export async function editPictureNote(pictureId, note){
   try {
     const res = await fetch(`${BASE_URL}/Picture?id=${pictureId}&note=${encodeURIComponent(note)}`, { // id and note should be passed as querry parameter in url. Dont ask me why
       method: 'PUT',
+      credentials: 'include',
       headers: createAuthHeaders(),
     });
     

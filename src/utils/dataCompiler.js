@@ -373,16 +373,33 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
 }
 export async function compileGalleryPageData() {
   try {
+    // Get all plants first
     const allPlants = await getAllPLants();
     
     if (!allPlants || !Array.isArray(allPlants)) {
       console.warn('No plants returned or invalid format from getAllPLants.');
       return [];  
     }
-    return allPlants.map(plant => ({
-      ...plant,
-      pictures: plant.pictures || [] 
-    }));
+    const plantsWithPictures = await Promise.all(
+      allPlants.map(async (plant) => {
+        try {
+          const pictures = await getAllPicturesByPLantId(plant.id);
+          return {
+            ...plant,
+            pictures: Array.isArray(pictures) ? pictures : []
+          };
+        } catch (error) {
+          console.error(`Error fetching pictures for plant ID ${plant.id}:`, error);
+          return {
+            ...plant,
+            pictures: []
+          };
+        }
+      })
+    );
+    
+    console.log('Plants with pictures:', plantsWithPictures);
+    return plantsWithPictures;
     
   } catch (error) {
     console.error('Error compiling gallery page data:', error);

@@ -4,6 +4,7 @@ import waterLevelIcon from '../assets/hugeicons--humidity.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
 import { useDarkMode } from '../context/DarkModeContext';
+import React from 'react';
 
 function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorData, soilMoistureSensorData,
     lightSensorDataAverageToday, temperatureSensorDataAverageToday, humiditySensorDataAverageToday, soilMoistureSensorDataAverageToday,
@@ -47,7 +48,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
     return (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-1">
             {/* Temperature Card (1st item) */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`} data-testid="temperature-card">
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Temperature</h3>
                     <TemperatureIcon />
@@ -64,7 +65,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             </div>
             
             {/* Humidity Card (2nd item) */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`} data-testid="humidity-card">
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Humidity</h3>
                     <HumidityIcon />
@@ -81,7 +82,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             </div>
             
             {/* Soil Moisture Card (3rd item) */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`} data-testid="soil-moisture-card">
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Soil Moisture</h3>
                     <SoilMoistureIcon />
@@ -98,7 +99,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             </div>
             
             {/* Light Intensity Card (4th item) - Moved before Water Level */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm`} data-testid="light-intensity-card">
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Light Intensity</h3>
                     <LightIntensityIcon />
@@ -115,7 +116,7 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
             </div>
 
             {/* Water Level Card (5th item) - Will span full width on mobile and sm screens */}
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm col-span-2 md:col-span-1`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-white'} shadow-sm col-span-2 md:col-span-1`} data-testid="water-level-card">
                 <div className="flex justify-between items-center mb-1">
                     <h3 className="text-sm font-medium text-gray-500">Water Level</h3>
                     <WaterLevelIcon />

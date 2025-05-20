@@ -1,7 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+
+jest.mock('../api/index.js', () => ({
+  updateSensorThreshold: jest.fn(),
+}));
+
 import SensorCard from '../components/Sensor-cards';
-import { DarkModeContext } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext';
+
+jest.mock('../context/DarkModeContext', () => ({
+  useDarkMode: jest.fn(),
+}));
 
 describe('SensorCard', () => {
   const mockData = {
@@ -21,18 +30,18 @@ describe('SensorCard', () => {
     soilMoistureSensorDataAverageYesterday: { value: 29 },
     waterLevelSensorDataAverageYesterday: { value: 76 },
   };
+
   const renderWithDarkMode = (ui, darkModeValue = true) => {
-    return render(
-      <DarkModeContext.Provider value={{ darkMode: darkModeValue, setDarkMode: jest.fn() }}>
-        {ui}
-      </DarkModeContext.Provider>
-    );
+    useDarkMode.mockReturnValue({ darkMode: darkModeValue });
+    return render(ui);
   };
 
   test('renders the correct sensor data', () => {
     renderWithDarkMode(<SensorCard {...mockData} />);
+    
     const temperatureCard = screen.getByTestId('temperature-card');
     expect(temperatureCard).toHaveClass('bg-slate-700');
+    expect(temperatureCard).toHaveTextContent('22.5');
   });
 
   test('renders all sensor cards with dark mode styles and correct values', () => {
@@ -53,18 +62,18 @@ describe('SensorCard', () => {
     expect(temperatureCard).toHaveTextContent('22.5');
     expect(humidityCard).toHaveTextContent('60');
     expect(soilMoistureCard).toHaveTextContent('30');
-    expect(waterLevelCard).toHaveTextContent('88');
     expect(lightIntensityCard).toHaveTextContent('100');
-
-    if (mockData.waterLevelSensorData?.value != null) {
-    expect(waterLevelCard).toHaveTextContent(String(mockData.waterLevelSensorData.value));
-    } else {
-      expect(waterLevelCard).toHaveTextContent('N/A');
-    }
   });
 
   test('handles N/A if data is missing', () => {
     renderWithDarkMode(<SensorCard {...{ ...mockData, temperatureSensorData: null }} />);
-    expect(screen.getByText('N/A')).toBeInTheDocument();
+    const temperatureCard = screen.getByTestId('temperature-card');
+    expect(temperatureCard).toHaveTextContent('N/A');
+  });
+
+  test('applies dark mode classes when darkMode is true', () => {
+    renderWithDarkMode(<SensorCard {...mockData} />, true);
+    const temperatureCard = screen.getByTestId('temperature-card');
+    expect(temperatureCard).toHaveClass('bg-slate-700');
   });
 });

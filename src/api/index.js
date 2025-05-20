@@ -784,7 +784,7 @@ export async function getWaterUsageHistory(id) {
 
 
 /* Gallery page functions */
-export async function getAllPLants() {
+export async function getAllPlants() {
   try {
     const res = await fetch(`${BASE_URL}/Plant`,{
       headers: createAuthHeaders()
@@ -823,7 +823,6 @@ export async function getAllPicturesByPLantId(plantId){
  */
 export async function uploadPicture(plantId, pictureFile, note) {
   try {
-    // Create form data to properly handle file upload
     const formData = new FormData();
     formData.append('PlantId', plantId);
     
@@ -846,6 +845,7 @@ export async function uploadPicture(plantId, pictureFile, note) {
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
       },
+      credentials: 'include',
       body: formData,
     });
     

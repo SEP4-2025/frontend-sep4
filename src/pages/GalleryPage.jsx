@@ -79,6 +79,18 @@ function GalleryPage({ toggleMobileNav }) {
                 setIsLoading(false);
             });
     };
+    const handleUploadSuccess = () => {
+        setIsLoading(true);
+        compileGalleryPageData()
+            .then((plants) => {
+                setPlantData(plants);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error refreshing data after upload:', error);
+                setIsLoading(false);
+            });
+    };
 
     // Filter plants based on search term
     const searchedPlants = plantData.filter(plant =>
@@ -162,7 +174,7 @@ function GalleryPage({ toggleMobileNav }) {
                                             <p className='Manrope '>{plantMenuOption}</p>
                                             <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isPlantMenuOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
                                         </button>
-                                        {isPlantMenuOpen && ( //TODO get real list of the plants from the database
+                                        {isPlantMenuOpen && (
                                             <div className={`absolute top-full right-0  w-48 rounded-md shadow-lg z-50 dropdown-animation ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'}`}>
                                                 <ul className="py-1 text-left " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     <li>
@@ -270,7 +282,7 @@ function GalleryPage({ toggleMobileNav }) {
                                             time={picture.timeStamp.split('T')[0] || "No date available"}
                                             pictureId={picture.id}
                                             onNoteUpdate={handleNoteUpdate}
-                                            onPictureDelete={handlePictureDelete} 
+                                            onPictureDelete={handlePictureDelete}
                                         />
                                     </div>
                                 ))
@@ -282,7 +294,11 @@ function GalleryPage({ toggleMobileNav }) {
                         </div>
                     </div>
                 </div>
-                <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />
+                <Plant_upload_popup
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    onUploadSuccess={handleUploadSuccess}
+                />
             </main>
         </div>
     );

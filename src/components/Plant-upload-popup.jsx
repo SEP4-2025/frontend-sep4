@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { getAllPlants, uploadPicture } from '../api/index.js';
 
-function Plant_upload_popup({ isOpen, onClose }) {
+function Plant_upload_popup({ isOpen, onClose, onUploadSuccess }) {
   const { darkMode } = useDarkMode();
   const [note, setNote] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -86,6 +86,11 @@ function Plant_upload_popup({ isOpen, onClose }) {
 
     if (!selectedPlant) {
       setError('Please select a plant for this photo.');
+      return;
+    }
+
+    if (!note.trim()) {
+      setError('Please add a note about your plant.');
       return;
     }
 

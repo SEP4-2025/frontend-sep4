@@ -116,6 +116,16 @@ function GalleryPage({ toggleMobileNav }) {
                 return pictureDate >= lastMonth;
             });
         }
+        if (filterOption === "Today") {
+            return plant.pictures && plant.pictures.some(pic => {
+                const pictureDate = new Date(pic.timeStamp);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return pictureDate >= today && pictureDate < tomorrow;
+            });
+        }
         return true;
     });
 
@@ -242,6 +252,16 @@ function GalleryPage({ toggleMobileNav }) {
                                                     role="menuitem"
                                                 >
                                                     All
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="#"
+                                                    className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                                    onClick={() => handleFilterSelect("Today")}
+                                                    role="menuitem"
+                                                >
+                                                    Today
                                                 </a>
                                             </li>
                                             <li>

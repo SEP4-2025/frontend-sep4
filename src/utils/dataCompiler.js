@@ -26,49 +26,27 @@ function formatDate(date){
 }
 
 export async function compileDashboardData(gardenerId) {
-  /*
-  TODO: Implement Data Fetching and Compilation for Dashboard
-  This function is intended to fetch all necessary data for the dashboard from various API endpoints and compile it into a single object. Currently, it's returning undefined variables.
-  Why:
-  The dashboard relies on this function to get its data. Without implementation, the dashboard will not display any meaningful information and will likely crash or show errors.
-  How:
-  - Identify all data points required by the Dashboard.jsx component (e.g., lightSensorData, temperatureSensorData, etc.).
-  - For each data point, determine the API endpoint to fetch it from.
-  - Use asynchronous functions (async/await) and fetch API (or a library like Axios) to get data from these endpoints.
-  - Implement error handling for each API call (e.g., try-catch blocks).
-  - Process/transform the fetched data if necessary to match the expected format.
-  - Populate the variables (lightSensorData, temperatureSensorData, etc.) with the fetched and processed data.
-  - Ensure all returned variables in the final object are correctly populated.
-  - This will affect Dashboard.jsx primarily, as it consumes the output of this function.
-  Mariete Colequete
-  */
-
-  // Placeholder: Implement actual data fetching and processing here
-  // Example:
-  // const lightSensorData = await fetchLightSensorData(gardenerId);
-  // const temperatureSensorData = await fetchTemperatureSensorData(gardenerId);
-  // ... and so on for all data points
 
   return {
-    lightSensorData: undefined,
-    temperatureSensorData: undefined,
-    humiditySensorData: undefined,
-    soilMoistureSensorData: undefined,
-    greenhouseData: undefined,
-    lightSensorDataAverageToday: undefined,
-    temperatureSensorDataAverageToday: undefined,
-    humiditySensorDataAverageToday: undefined,
-    soilMoistureSensorDataAverageToday: undefined,
-    lightSensorDataAverageYesterday: undefined,
-    temperatureSensorDataAverageYesterday: undefined,
-    humiditySensorDataAverageYesterday: undefined,
-    soilMoistureSensorDataAverageYesterday: undefined,
-    temperatureHistory: undefined,
-    humidityHistory: undefined,
-    lightHistory: undefined,
-    soilMoistureHistory: undefined,
-    notificationData: undefined,
-    notificationPreferences: undefined
+    lightSensorData,
+    temperatureSensorData,
+    humiditySensorData,
+    soilMoistureSensorData,
+    greenhouseData,
+    lightSensorDataAverageToday,
+    temperatureSensorDataAverageToday,
+    humiditySensorDataAverageToday,
+    soilMoistureSensorDataAverageToday,
+    lightSensorDataAverageYesterday,
+    temperatureSensorDataAverageYesterday,
+    humiditySensorDataAverageYesterday,
+    soilMoistureSensorDataAverageYesterday,
+    temperatureHistory,
+    humidityHistory,
+    lightHistory,
+    soilMoistureHistory,
+    notificationData,
+    notificationPreferences
   };
 }
 

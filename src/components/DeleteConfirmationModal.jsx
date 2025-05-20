@@ -6,7 +6,7 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, title, message }) {
   if (!isOpen) return null;
   
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${darkMode ? 'bg-transparent bg-opacity-80' : 'bg-transparent bg-opacity-70'} backdrop-blur-md`}>
       <div className={`w-full max-w-md p-6 rounded-lg shadow-lg ${darkMode ? 'bg-slate-800 text-white' : 'bg-white text-gray-800'}`}>
         <h3 className="text-lg font-medium mb-2">{title}</h3>
         <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{message}</p>

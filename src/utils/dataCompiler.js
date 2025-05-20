@@ -17,7 +17,7 @@ import {
   updateCurrentWaterLevel,
   updateWaterPumpThreshold,
   getWaterUsageHistory,
-  getAllPLants,
+  getAllPlants,
   getAllPicturesByPLantId
 } from '../api';
 
@@ -374,7 +374,7 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
 export async function compileGalleryPageData() {
   try {
     // Get all plants first
-    const allPlants = await getAllPLants();
+    const allPlants = await getAllPlants();
     
     if (!allPlants || !Array.isArray(allPlants)) {
       console.warn('No plants returned or invalid format from getAllPLants.');

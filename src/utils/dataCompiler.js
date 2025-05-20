@@ -1,4 +1,3 @@
-import { get } from 'flowbite-react/helpers/get';
 import {
   fetchGrenhouseDataByGardenerId,
   getSensorDataLastest,

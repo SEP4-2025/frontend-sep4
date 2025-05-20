@@ -1,32 +1,17 @@
 import Plant_gallery_card from '../components/Plant-gallery-card';
 import Plant_upload_popup from '../components/Plant-upload-popup';
 import LoadingScreen from '../components/Loading-screen';
-import PlantIcon from '../assets/plant_icon.svg';
 import filterArrow from '../assets/filterArrow.png';
-import FilterIcon from '../assets/filter_icon.svg'; // Corrected import
-import calendarIcon from '../assets/calendar-icon-gray.svg';
-import PlantViewPopup from '../components/PlantViewPopup';
 import { useEffect, useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
 import MobileHeader from '../components/MobileHeader';
 import { compileGalleryPageData } from '../utils/dataCompiler';
 
-//dummy data
-const allPlants = [
-    { id: 1, name: "Basil", imageUrl: "https://via.placeholder.com/150/92c952", date: "2024-05-10", condition: "good" },
-    { id: 2, name: "Mint", imageUrl: "https://via.placeholder.com/150/771796", date: "2024-04-20", condition: "fair" },
-    { id: 3, name: "Rosemary", imageUrl: "https://via.placeholder.com/150/24f355", date: "2024-05-01", condition: "good" },
-    { id: 4, name: "Thyme", imageUrl: "https://via.placeholder.com/150/d32776", date: "2024-03-15", condition: "excellent" },
-    { id: 5, name: "Oregano", imageUrl: "https://via.placeholder.com/150/f66b97", date: "2024-05-12", condition: "good" },
-    { id: 6, name: "Sage", imageUrl: "https://via.placeholder.com/150/56a8c2", date: "2024-04-01", condition: "poor" },
-];
-
 function GalleryPage({ toggleMobileNav }) {
     const { darkMode } = useDarkMode();
     const [isFilterOpen, setIsFilterOpen] = useState(false); // filter menu state
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedPlant, setSelectedPlant] = useState(null); // For PlantViewPopup
     const [filterOption, setFilterOption] = useState("All"); // To store the selected filter
     const [isPlantMenuOpen, setIsPlantMenuOpen] = useState(false); // plant menu state
     const [plantMenuOption, setPlantMenuOption] = useState("All plants"); // To store the selected plant menu option
@@ -37,7 +22,7 @@ function GalleryPage({ toggleMobileNav }) {
         setIsLoading(true);
         compileGalleryPageData()
             .then((plants) => {
-                setPlantData(plants); 
+                setPlantData(plants);
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -51,6 +36,8 @@ function GalleryPage({ toggleMobileNav }) {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+
+
     const toggleFilterMenu = () => {
         setIsFilterOpen(!isFilterOpen);
     };
@@ -61,11 +48,6 @@ function GalleryPage({ toggleMobileNav }) {
     const handleFilterSelect = (option) => {
         setFilterOption(option);
         setIsFilterOpen(false);
-        // Implement actual filtering logic based on 'option' if needed beyond search
-        // For now, it just closes the menu and sets the option.
-        // The filtering based on search is already handled by `filteredPlants`.
-        // If "Last week", "Last month", "Condition: good" need to modify `allPlants` or a derived state,
-        // that logic would go here or be triggered from here.
     };
 
     const handlePlantMenuSelect = (option) => {
@@ -73,19 +55,68 @@ function GalleryPage({ toggleMobileNav }) {
         setIsPlantMenuOpen(false);
     };
 
+    const handleNoteUpdate = async (pictureId, newNote) => {
+        setIsLoading(true);
+        compileGalleryPageData()
+            .then((plants) => {
+                setPlantData(plants);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error refreshing data after note update:', error);
+                setIsLoading(false);
+            });
+    };
+    const handlePictureDelete = async (pictureId) => {
+        setIsLoading(true);
+        compileGalleryPageData()
+            .then((plants) => {
+                setPlantData(plants);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error refreshing data after picture deletion:', error);
+                setIsLoading(false);
+            });
+    };
+
     // Filter plants based on search term
-    const searchedPlants = allPlants.filter(plant =>
+    const searchedPlants = plantData.filter(plant =>
         plant.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    // Further filter based on the selected dropdown option (example logic)
+
     const filteredPlants = searchedPlants.filter(plant => {
         if (filterOption === "All") return true;
-        if (filterOption === "Condition: good") return plant.condition === "good";
-        // Add more complex date filtering for "Last week" / "Last month" if required
-        // This would involve parsing plant.date and comparing with current date
-        return true; // Default to true if filter option not yet implemented for data filtering
+        if (filterOption === "Last week") {
+            return plant.pictures && plant.pictures.some(pic => {
+                const pictureDate = new Date(pic.timeStamp);
+                const lastWeek = new Date();
+                lastWeek.setDate(lastWeek.getDate() - 7);
+                return pictureDate >= lastWeek;
+            });
+        }
+        if (filterOption === "Last month") {
+            return plant.pictures && plant.pictures.some(pic => {
+                const pictureDate = new Date(pic.timeStamp);
+                const lastMonth = new Date();
+                lastMonth.setMonth(lastMonth.getMonth() - 1);
+                return pictureDate >= lastMonth;
+            });
+        }
+        return true;
     });
+
+    const sortedFilteredPlants = filteredPlants
+        .filter(plant => plant.pictures && plant.pictures.length > 0)
+        .flatMap(plant =>
+            plant.pictures.map(picture => ({
+                plant,
+                picture,
+                date: new Date(picture.timeStamp)
+            }))
+        )
+        .sort((a, b) => b.date - a.date);
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -144,16 +175,18 @@ function GalleryPage({ toggleMobileNav }) {
                                                             All plants
                                                         </a>
                                                     </li>
-                                                    <li>
-                                                        <a
-                                                            href="#"
-                                                            className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                                            onClick={() => handlePlantMenuSelect("Bobby")}
-                                                            role="menuitem"
-                                                        >
-                                                            Bobby
-                                                        </a>
-                                                    </li>
+                                                    {plantData.map(plant => (
+                                                        <li key={plant.id}>
+                                                            <a
+                                                                href="#"
+                                                                className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                                                onClick={() => handlePlantMenuSelect(plant.name || `Plant ${plant.id}`)}
+                                                                role="menuitem"
+                                                            >
+                                                                {plant.name || `Plant ${plant.id}`}
+                                                            </a>
+                                                        </li>
+                                                    ))}
                                                 </ul>
                                             </div>
                                         )}
@@ -183,7 +216,7 @@ function GalleryPage({ toggleMobileNav }) {
                                     }
                                     toggleFilterMenu();
                                 }} className={`border-1 flex flex-row items-center gap-2 py-2 px-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
-                                    <p>Sort/filter: {filterOption}</p> {/* Display current filter */}
+                                    <p>Sort by: {filterOption}</p> {/* Display current filter */}
                                     <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isFilterOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
                                 </button>
                                 {isFilterOpen && (
@@ -219,16 +252,6 @@ function GalleryPage({ toggleMobileNav }) {
                                                     Last month
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a
-                                                    href="#"
-                                                    className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                                                    onClick={() => handleFilterSelect("Condition: good")}
-                                                    role="menuitem"
-                                                >
-                                                    Condition: good
-                                                </a>
-                                            </li>
                                         </ul>
                                     </div>
                                 )}
@@ -237,26 +260,30 @@ function GalleryPage({ toggleMobileNav }) {
 
                         {/* Plant Grid */}
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {filteredPlants.length > 0 ? (
-                                filteredPlants.map(plant => (
-                                    <div key={plant.id} onClick={() => setSelectedPlant(plant)} className="cursor-pointer">
-                                        {/* Pass imageUrl to Plant_gallery_card if it accepts it */}
-                                        <Plant_gallery_card name={plant.name} imageUrl={plant.imageUrl} />
+                            {sortedFilteredPlants.length > 0 ? (
+                                sortedFilteredPlants.map(({ plant, picture }) => (
+                                    <div key={picture.id || `${plant.id}-${Math.random()}`}>
+                                        <Plant_gallery_card
+                                            name={plant.name || `Plant ${plant.id}`}
+                                            imageUrl={picture.url || "https://via.placeholder.com/150/92c952"}
+                                            note={picture.note}
+                                            time={picture.timeStamp.split('T')[0] || "No date available"}
+                                            pictureId={picture.id}
+                                            onNoteUpdate={handleNoteUpdate}
+                                            onPictureDelete={handlePictureDelete} 
+                                        />
                                     </div>
                                 ))
                             ) : (
-                                <p className={`col-span-full text-center py-10 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No results found for "{search}" {filterOption !== "All" ? `with filter "${filterOption}"` : ""}</p>
+                                <p className={`col-span-full text-center py-10 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    No results found for "{search}" {filterOption !== "All" ? `with filter "${filterOption}"` : ""}
+                                </p>
                             )}
                         </div>
                     </div>
                 </div>
-
                 <Plant_upload_popup isOpen={isModalOpen} onClose={closeModal} />
             </main>
-
-            {selectedPlant && (
-                <PlantViewPopup plant={selectedPlant} onClose={() => setSelectedPlant(null)} />
-            )}
         </div>
     );
 }

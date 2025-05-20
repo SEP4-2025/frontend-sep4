@@ -1,9 +1,14 @@
 import React from 'react';
+import { useDarkMode } from '../context/DarkModeContext';
 
 function MobileHeader({ toggleMobileNav, title }) {
+  const { darkMode } = useDarkMode();
+
   return (
     <div
-      className="lg:hidden p-4 bg-[#28463a] text-white flex items-center justify-between shadow-md sticky top-0 z-20"
+      className={`lg:hidden p-4 text-white flex items-center justify-between shadow-md sticky top-0 z-20 ${
+        darkMode ? 'bg-slate-800' : 'bg-[#28463a]'
+      }`}
     >
       <button
         onClick={toggleMobileNav}

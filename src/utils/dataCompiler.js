@@ -380,7 +380,7 @@ export async function compileGalleryPageData() {
     const allPlants = await getAllPlants();
     
     if (!allPlants || !Array.isArray(allPlants)) {
-      console.warn('No plants returned or invalid format from getAllPLants.');
+      console.warn('No plants returned or invalid format from getAllPlants.');
       return [];  
     }
     const plantsWithPictures = await Promise.all(

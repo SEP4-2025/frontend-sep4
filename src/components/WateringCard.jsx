@@ -76,7 +76,12 @@ function WateringCard({
         if (title.toLowerCase().includes('threshold')) {
           await updateWaterPumpThreshold(pumpId, number);
         } else {
-          // Trigger manual watering
+          // For manual watering, first update the threshold/amount if provided
+          if (number > 0) {
+            // Update watering amount/threshold before triggering watering
+            await updateWaterPumpThreshold(pumpId, number);
+          }
+          // Then trigger manual watering
           await triggerManualWatering(pumpId);
         }
       }
@@ -151,17 +156,26 @@ function WateringCard({
                 </div>
                 <div className={`w-full ${darkMode ? 'bg-slate-700' : 'bg-gray-200'} h-2 rounded-full`}>
                   <div
-                    className={`h-full rounded-full ${currentValue >= 95 ? 'bg-green-500' : currentValue >= 50 ? 'bg-orange-500' : 'bg-red-500'}`}
+                    className={`h-full rounded-full ${
+                      currentValue >= 90 ? 'bg-green-500' : 
+                      currentValue >= 75 ? 'bg-green-400' : 
+                      currentValue >= 50 ? 'bg-orange-500' : 
+                      currentValue >= 25 ? 'bg-orange-600' : 
+                      'bg-red-500'}`}
                     style={{ width: `${currentValue}%` }}
                   ></div>
                 </div>
                 <div className="mt-2 text-sm text-center">
-                  {currentValue >= 95 ? (
+                  {currentValue >= 90 ? (
                     <span className="text-green-500 font-medium">Tank is full</span>
+                  ) : currentValue >= 75 ? (
+                    <span className="text-green-400 font-medium">Tank level is high</span>
                   ) : currentValue >= 50 ? (
                     <span className="text-orange-500 font-medium">Tank level is medium</span>
+                  ) : currentValue >= 25 ? (
+                    <span className="text-orange-600 font-medium">Tank level is low</span>
                   ) : (
-                    <span className="text-red-500 font-medium">Water level is low</span>
+                    <span className="text-red-500 font-medium">Tank level is critical</span>
                   )}
                 </div>
                 

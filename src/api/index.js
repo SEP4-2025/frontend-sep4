@@ -9,11 +9,11 @@ const createAuthHeaders = () => {
   const headers = {
     'Content-Type': 'application/json'
   };
-  
+
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  
+
   return headers;
 };
 
@@ -174,19 +174,19 @@ export async function getSensorAverageByDate(type, date) {
   else if (lowerType === 'light') typeId = 3;
   else if (lowerType === 'soilmoisture') typeId = 4;
   else if (lowerType === 'all') {
-      console.warn("getSensorAverageByDate called with type 'all'. This function is designed to average a specific sensor type. Returning null.");
-      return null;
+    console.warn("getSensorAverageByDate called with type 'all'. This function is designed to average a specific sensor type. Returning null.");
+    return null;
   }
 
 
   // Fetch data from the API for the given date
   // This endpoint is expected to return an array of all sensor readings for that date
-  const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`,{
+  const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) {
     console.error(`Failed to load sensor data average for the date ${date} [type ${type}, which is ${typeId}]`);
-    return null; 
+    return null;
   }
   // Filter the data by typeId
   const data = await res.json();
@@ -199,7 +199,7 @@ export async function getSensorAverageByDate(type, date) {
   const filteredData = data.filter(item => item.sensorId === typeId);
   if (filteredData.length === 0) {
     console.error(`No data found for type ${type} on date ${date}`);
-    return null; 
+    return null;
   }
 
   const sum = filteredData.reduce((total, item) => total + item.value, 0);
@@ -236,7 +236,7 @@ export async function getSensorAverageByDate(type, date) {
  */
 
 export async function getLastestPrediction() {
-  const res = await fetch(`${BASE_URL}/Prediction/`,{
+  const res = await fetch(`${BASE_URL}/Prediction/`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load lastest prediction`);
@@ -261,7 +261,7 @@ export async function getLastestPrediction() {
  */
 
 export async function fetchGrenhouseDataByGardenerId(gardenerId) {
-  const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`,{
+  const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load greenhouse data for gardener ${gardenerId}`);
@@ -316,16 +316,16 @@ export async function getLogs(sensorType, date) {
   const dateUrl = date ? `date/${date}` : '';
 
   // Fetch data from the API
-  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`,{
+  const res = await fetch(`${BASE_URL}/Log/${dateUrl}`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load logs (url: ${BASE_URL}/Log/${dateUrl})`);
-  
+
   const allLogsForPeriod = await res.json();
 
   if (!Array.isArray(allLogsForPeriod)) {
-      console.warn(`Expected an array of logs from ${BASE_URL}/Log/${dateUrl}, but received:`, allLogsForPeriod);
-      return []; // Return empty array if data is not as expected
+    console.warn(`Expected an array of logs from ${BASE_URL}/Log/${dateUrl}, but received:`, allLogsForPeriod);
+    return []; // Return empty array if data is not as expected
   }
 
   if (lowerType === 'all') {
@@ -343,7 +343,7 @@ export async function getLogs(sensorType, date) {
   const filteredData = allLogsForPeriod.filter(item => item.sensorReadingId === typeId || item.sensorReadingId == null);
 
   if (filteredData.length === 0) {
-// console.warn(`No logs found matching type ${lowerType} (ID: ${typeId}) or untagged logs. Total logs for period: ${allLogsForPeriod.length}`);
+    // console.warn(`No logs found matching type ${lowerType} (ID: ${typeId}) or untagged logs. Total logs for period: ${allLogsForPeriod.length}`);
   }
   return filteredData; // Can be an empty array if no matches
 }
@@ -379,7 +379,7 @@ export async function getSensorStatus(type) {
         console.error(`Error encountered while checking status for ${singleType} as part of 'all' check: ${error.message}. Considering this sensor off.`);
         return false; // If any sensor check errors out, 'all' cannot be true.
       }
-      
+
       if (!status) { // If any sensor is off (status is false, or evaluates to false like null/undefined)
         return false; // Then not all sensors are on
       }
@@ -394,7 +394,7 @@ export async function getSensorStatus(type) {
     try {
       // Call getLogs to retrieve logs for the specific sensor type, for all dates.
       // getLogs will return null if no logs are found or if an error occurs during its execution.
-      sensorLogs = await getLogs(lowerType, null); 
+      sensorLogs = await getLogs(lowerType, null);
     } catch (error) {
       // Catch errors from getLogs if it throws, though it's designed to return null on fetch/parse errors.
       console.error(`Error calling getLogs for sensor status (type: '${lowerType}'): ${error.message}. Sensor considered off.`);
@@ -407,9 +407,9 @@ export async function getSensorStatus(type) {
       // getLogs would have logged a warning if no logs were found for the type.
       // If sensorLogs is not an array or is empty, it means no relevant logs.
       console.warn(`No logs returned from getLogs for type '${lowerType}' or logs were empty. Sensor considered off.`);
-      return false; 
+      return false;
     }
-    
+
     // getLogs should already return logs filtered by sensor type.
     // It also sorts them by date, but we sort again here to be absolutely sure for picking the lastLog.
     // If getLogs guarantees sorted order, this sort can be removed.
@@ -417,25 +417,25 @@ export async function getSensorStatus(type) {
     sensorLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const lastLog = sensorLogs[sensorLogs.length - 1];
-    
+
     // Validate that the last log entry and its date property are present
     if (!lastLog || typeof lastLog.date === 'undefined') {
-        console.warn(`Invalid last log entry or missing date for type '${lowerType}' after processing getLogs. Sensor considered off.`);
-        return false;
+      console.warn(`Invalid last log entry or missing date for type '${lowerType}' after processing getLogs. Sensor considered off.`);
+      return false;
     }
 
     const lastLogDate = new Date(lastLog.date);
     // Validate the parsed date
     if (isNaN(lastLogDate.getTime())) {
-        console.warn(`Invalid date format in last log for type '${lowerType}': "${lastLog.date}". Sensor considered off.`);
-        return false;
+      console.warn(`Invalid date format in last log for type '${lowerType}': "${lastLog.date}". Sensor considered off.`);
+      return false;
     }
 
     const currentDate = new Date();
     // Calculate the time difference in milliseconds. Math.abs handles potential minor clock skews.
     const timeDifferenceMs = Math.abs(currentDate - lastLogDate);
     const minutesDifference = Math.floor(timeDifferenceMs / (1000 * 60));
-    
+
     // Sensor is on if the last log entry is not older than 60 minutes
     return minutesDifference <= 60; // Modify this value to change the threshold (minutes)
   }
@@ -444,7 +444,7 @@ export async function getSensorStatus(type) {
 //TODO: make a detailed comment for this function
 
 export async function getAllNotifications() { // apparently no gardenerId is needed
-  const res = await fetch(`${BASE_URL}/notification/all`,{
+  const res = await fetch(`${BASE_URL}/notification/all`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load notifications`);
@@ -454,8 +454,8 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
 
 //TODO: make a detailed comment for this function
 
-export async function getNotificationPreferences(){ // apparently no gardenerId is needed
-  const res = await fetch(`${BASE_URL}/notificationpref`,{
+export async function getNotificationPreferences() { // apparently no gardenerId is needed
+  const res = await fetch(`${BASE_URL}/notificationpref`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load notification preferences`);
@@ -474,7 +474,7 @@ export async function toggleNotificationPreference(gardenerId, type) {
       type: type
     })
   });
-  
+
   if (!res.ok) throw new Error(`Failed to toggle notification preference for gardener ${gardenerId} and type ${type}`);
   return await res.text(); // Return the success message
 }
@@ -504,24 +504,24 @@ export async function getSensorThresholds(type) {
   else if (lowerType === 'soilmoisture') typeId = 4;
 
   // Fetch data from the API for the given date
-  const res = await fetch(`${BASE_URL}/Sensor/${typeId}`,{
+  const res = await fetch(`${BASE_URL}/Sensor/${typeId}`, {
     headers: createAuthHeaders()
   });
   if (!res.ok) throw new Error(`Failed to load sensor thresholds for type ${type}`);
-  
+
   const data = await res.json();
 
   // Retrieve the threshold value from the response, which is a json object originally
   // The response is a single object, not an array
   if (!data || typeof data.thresholdValue === 'undefined') {
     console.error(`No threshold data found for type ${type}`);
-    return null; 
+    return null;
   }
   // Return the threshold value
   const threshold = data.thresholdValue;
-  
+
   return threshold; // Return the threshold value, this is a number
-  }
+}
 
 /*
   *   updateSensorThreshold(type, threshold)
@@ -554,7 +554,7 @@ export async function updateSensorThreshold(type, threshold) {
     headers: createAuthHeaders(),
     body: JSON.stringify({ thresholdValue: threshold }),
   });
-  
+
   if (!res.ok) {
     let errorBody = 'Could not retrieve error body.';
     try {
@@ -565,7 +565,7 @@ export async function updateSensorThreshold(type, threshold) {
     console.error(`Backend error details for type ${type}: ${res.status} - ${res.statusText}. Body: ${errorBody}`);
     throw new Error(`Failed to update sensor thresholds for type ${type}. Status: ${res.status}`);
   }
-  
+
   return res.json(); // Return the updated sensor data object
 }
 
@@ -579,7 +579,7 @@ export async function updateSensorThreshold(type, threshold) {
  */
 export async function getAllWaterPumps() {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump`,{
+    const res = await fetch(`${BASE_URL}/WaterPump`, {
       headers: createAuthHeaders()
     });
     if (!res.ok) {
@@ -599,7 +599,7 @@ export async function getAllWaterPumps() {
  */
 export async function getWaterPumpById(id) {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump/${id}`,{
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}`, {
       headers: createAuthHeaders()
     });
     if (!res.ok) {
@@ -619,7 +619,7 @@ export async function getWaterPumpById(id) {
  */
 export async function getWaterPumpWaterLevel(id) {
   try {
-    const res = await fetch(`${BASE_URL}/WaterPump/${id}/water-level`,{
+    const res = await fetch(`${BASE_URL}/WaterPump/${id}/water-level`, {
       headers: createAuthHeaders()
     });
     if (!res.ok) {
@@ -644,11 +644,11 @@ export async function createWaterPump(waterPumpData) {
       headers: createAuthHeaders(),
       body: JSON.stringify(waterPumpData),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to create water pump. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error('Error creating water pump:', error);
@@ -669,11 +669,11 @@ export async function toggleAutomationStatus(id, autoWatering) {
       headers: createAuthHeaders(),
       body: JSON.stringify(autoWatering),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to toggle automation status for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error toggling automation status for pump with ID ${id}:`, error);
@@ -692,11 +692,11 @@ export async function triggerManualWatering(id) {
       method: 'PATCH',
       headers: createAuthHeaders(),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to trigger manual watering for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error triggering manual watering for pump with ID ${id}:`, error);
@@ -714,14 +714,14 @@ export async function updateCurrentWaterLevel(id, addedWaterAmount) {
   try {
     const res = await fetch(`${BASE_URL}/WaterPump/${id}/add-water`, {
       method: 'PATCH',
-      headers: createAuthHeaders(), 
+      headers: createAuthHeaders(),
       body: JSON.stringify(addedWaterAmount),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to update water level for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error updating water level for pump with ID ${id}:`, error);
@@ -742,11 +742,11 @@ export async function updateWaterPumpThreshold(id, newThresholdValue) {
       headers: createAuthHeaders(),
       body: JSON.stringify(newThresholdValue),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to update threshold for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error updating threshold for pump with ID ${id}:`, error);
@@ -767,11 +767,11 @@ export async function updateWaterTankCapacity(id, newCapacityValue) {
       headers: createAuthHeaders(),
       body: JSON.stringify(newCapacityValue),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to update water tank capacity for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error updating water tank capacity for pump with ID ${id}:`, error);
@@ -790,11 +790,11 @@ export async function deleteWaterPump(id) {
       method: 'DELETE',
       headers: createAuthHeaders(),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to delete water pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return;
   } catch (error) {
     console.error(`Error deleting water pump with ID ${id}:`, error);
@@ -809,14 +809,14 @@ export async function deleteWaterPump(id) {
  */
 export async function getWaterUsageHistory(id) {
   try {
-    const res = await fetch(`${BASE_URL}/Log/${id}/water-usage`,{
+    const res = await fetch(`${BASE_URL}/Log/${id}/water-usage`, {
       headers: createAuthHeaders()
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to load water usage history for pump with ID ${id}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error fetching water usage history for pump with ID ${id}:`, error);
@@ -828,7 +828,7 @@ export async function getWaterUsageHistory(id) {
 /* Gallery page functions */
 export async function getAllPlants() {
   try {
-    const res = await fetch(`${BASE_URL}/Plant`,{
+    const res = await fetch(`${BASE_URL}/Plant`, {
       headers: createAuthHeaders()
     });
     if (!res.ok) {
@@ -841,9 +841,9 @@ export async function getAllPlants() {
   }
 }
 
-export async function getAllPicturesByPLantId(plantId){
+export async function getAllPicturesByPLantId(plantId) {
   try {
-    const res = await fetch(`${BASE_URL}/Picture/${plantId}`,{
+    const res = await fetch(`${BASE_URL}/Picture/${plantId}`, {
       headers: createAuthHeaders()
     });
     if (!res.ok) {
@@ -867,17 +867,17 @@ export async function uploadPicture(plantId, pictureFile, note) {
   try {
     const formData = new FormData();
     formData.append('PlantId', plantId);
-    
-    
+
+
     if (pictureFile instanceof File) {
       formData.append('File', pictureFile);
-    } 
-    
-    else if (typeof pictureFile === 'string') {
-      formData.append('File', pictureFile); 
     }
-    
-    
+
+    else if (typeof pictureFile === 'string') {
+      formData.append('File', pictureFile);
+    }
+
+
     if (note) {
       formData.append('Note', note);
     }
@@ -890,11 +890,11 @@ export async function uploadPicture(plantId, pictureFile, note) {
       credentials: 'include',
       body: formData,
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to upload picture. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error('Error uploading picture:', error);
@@ -908,11 +908,11 @@ export async function deletePicture(pictureId) {
       method: 'DELETE',
       headers: createAuthHeaders(),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to delete picture with ID ${pictureId}. Status: ${res.status}`);
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error(`Error deleting picture with ID ${pictureId}:`, error);
@@ -925,21 +925,95 @@ export async function deletePicture(pictureId) {
  * @param {string} note - New note text for the picture
  * @returns {Promise<Object>} - Updated picture data
  */
-export async function editPictureNote(pictureId, note){
+export async function editPictureNote(pictureId, note) {
   try {
     const res = await fetch(`${BASE_URL}/Picture?id=${pictureId}&note=${encodeURIComponent(note)}`, { // id and note should be passed as querry parameter in url. Dont ask me why
       method: 'PUT',
       credentials: 'include',
       headers: createAuthHeaders(),
     });
-    
+
     if (!res.ok) {
       throw new Error(`Failed to edit picture note for ID ${pictureId}. Status: ${res.status}`);
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error editing picture note for ID ${pictureId}:`, error);
     throw error;
   }
 }
+
+
+
+// Plant management functions
+export async function addPlant(name, species, greenhouseId) {
+  try {
+    const res = await fetch(`${BASE_URL}/Plant`, {
+      method: 'POST',
+      headers: createAuthHeaders(),
+      body: JSON.stringify({
+        name: name,
+        species: species,
+        greenhouseId: greenhouseId
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to add plant. Status: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error('Error adding plant:', error);
+    throw error;
+  }
+}
+
+export async function editPlant(plantId, name, species) {
+  try {
+    // Update plant name first
+    const nameRes = await fetch(`${BASE_URL}/Plant/${plantId}/name?plantName=${encodeURIComponent(name)}`, {
+      method: 'PUT',
+      headers: createAuthHeaders(),
+    });
+
+    if (!nameRes.ok) {
+      throw new Error(`Failed to update plant name for ID ${plantId}. Status: ${nameRes.status}`);
+    }
+
+    // Update plant species
+    const speciesRes = await fetch(`${BASE_URL}/Plant/${plantId}/species?species=${encodeURIComponent(species)}`,{
+      method: 'PUT',
+      headers: createAuthHeaders(),
+    });
+
+    if (!speciesRes.ok) {
+      throw new Error(`Failed to update plant species for ID ${plantId}. Status: ${speciesRes.status}`);
+    }
+
+    return speciesRes.json(); 
+  } catch (error) {
+    console.error(`Error updating plant with ID ${plantId}:`, error);
+    throw error;
+  }
+
+}
+export async function deletePlant(plantId) {
+  try {
+    const res = await fetch(`${BASE_URL}/Plant/${plantId}`, {
+      method: 'DELETE',
+      headers: createAuthHeaders(),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to delete plant with ID ${plantId}. Status: ${res.status}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error(`Error deleting plant with ID ${plantId}:`, error);
+    throw error;
+  }
+}
+

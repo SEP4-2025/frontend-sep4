@@ -4,11 +4,13 @@ import LoadingScreen from '../components/Loading-screen';
 import filterArrow from '../assets/filterArrow.png';
 import { useEffect, useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
+import { useLocation } from 'react-router-dom';
 import MobileHeader from '../components/MobileHeader';
 import { compileGalleryPageData } from '../utils/dataCompiler';
 
 function GalleryPage({ toggleMobileNav }) {
     const { darkMode } = useDarkMode();
+    const location = useLocation();
     const [isFilterOpen, setIsFilterOpen] = useState(false); // filter menu state
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +32,12 @@ function GalleryPage({ toggleMobileNav }) {
                 setIsLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        if (location.state && location.state.selectedPlant) {
+            setPlantMenuOption(location.state.selectedPlant);
+        }
+    }, [location.state]);
 
 
 
@@ -140,6 +148,10 @@ function GalleryPage({ toggleMobileNav }) {
         )
         .sort((a, b) => b.date - a.date);
 
+    const plantMenuFilteredPlants = plantMenuOption === "All plants"
+        ? sortedFilteredPlants
+        : sortedFilteredPlants.filter(({ plant }) => plant.name === plantMenuOption);
+
     if (isLoading) {
         return <LoadingScreen />;
     }
@@ -189,7 +201,7 @@ function GalleryPage({ toggleMobileNav }) {
                                                 <ul className="py-1 text-left " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     <li>
                                                         <a
-                                                            href="#"
+                                                            type="button"
                                                             className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                             onClick={() => handlePlantMenuSelect("All plants")}
                                                             role="menuitem"
@@ -200,7 +212,7 @@ function GalleryPage({ toggleMobileNav }) {
                                                     {plantData.map(plant => (
                                                         <li key={plant.id}>
                                                             <a
-                                                                href="#"
+                                                                type="button"
                                                                 className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                                 onClick={() => handlePlantMenuSelect(plant.name || `Plant ${plant.id}`)}
                                                                 role="menuitem"
@@ -229,6 +241,47 @@ function GalleryPage({ toggleMobileNav }) {
                             </button>
                         </div>
 
+                        {/* Plant menu */}
+                        <div className="relative inline-block lg:hidden">
+                            <button onClick={() => {
+                                if (isFilterOpen) {
+                                    setIsFilterOpen(false);
+                                }
+                                togglePlantMenu();
+                            }} className={`border-1 flex flex-row items-center gap-2 py-2 my-4 px-4 rounded-lg ${darkMode ? 'bg-slate-700 text-white border-gray-600' : 'border-gray-300'}`}>
+                                <p className='Manrope '>{plantMenuOption}</p>
+                                <img src={filterArrow} className={`w-5 h-5 transition-transform duration-750 ${isPlantMenuOpen ? 'rotate-180' : ''}  ${darkMode ? 'filter invert' : ''}`} alt="temperature icon" width="23" height="2" />
+                            </button>
+                            {isPlantMenuOpen && (
+                                <div className={`absolute top-full right-0  w-48 rounded-md shadow-lg z-50 dropdown-animation ${darkMode ? 'bg-slate-700 border border-gray-600' : 'bg-white border border-gray-300'}`}>
+                                    <ul className="py-1 text-left " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                        <li>
+                                            <a
+                                                type="button"
+                                                className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                                onClick={() => handlePlantMenuSelect("All plants")}
+                                                role="menuitem"
+                                            >
+                                                All plants
+                                            </a>
+                                        </li>
+                                        {plantData.map(plant => (
+                                            <li key={plant.id}>
+                                                <a
+                                                    type="button"
+                                                    className={`block px-4 py-2 ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                                                    onClick={() => handlePlantMenuSelect(plant.name || `Plant ${plant.id}`)}
+                                                    role="menuitem"
+                                                >
+                                                    {plant.name || `Plant ${plant.id}`}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+
                         {/* Filter section */}
                         <div className="flex justify-center lg:justify-end w-full mb-4">
                             <div className="relative inline-block text-left">
@@ -246,7 +299,7 @@ function GalleryPage({ toggleMobileNav }) {
                                         <ul className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                             <li>
                                                 <a
-                                                    href="#"
+                                                    type="button"
                                                     className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                     onClick={() => handleFilterSelect("All")}
                                                     role="menuitem"
@@ -256,7 +309,7 @@ function GalleryPage({ toggleMobileNav }) {
                                             </li>
                                             <li>
                                                 <a
-                                                    href="#"
+                                                    type="button"
                                                     className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                     onClick={() => handleFilterSelect("Today")}
                                                     role="menuitem"
@@ -266,7 +319,7 @@ function GalleryPage({ toggleMobileNav }) {
                                             </li>
                                             <li>
                                                 <a
-                                                    href="#"
+                                                    type="button"
                                                     className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                     onClick={() => handleFilterSelect("Last week")}
                                                     role="menuitem"
@@ -276,7 +329,7 @@ function GalleryPage({ toggleMobileNav }) {
                                             </li>
                                             <li>
                                                 <a
-                                                    href="#"
+                                                    type="button"
                                                     className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`}
                                                     onClick={() => handleFilterSelect("Last month")}
                                                     role="menuitem"
@@ -292,8 +345,8 @@ function GalleryPage({ toggleMobileNav }) {
 
                         {/* Plant Grid */}
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {sortedFilteredPlants.length > 0 ? (
-                                sortedFilteredPlants.map(({ plant, picture }) => (
+                            {plantMenuFilteredPlants.length > 0 ? (
+                                plantMenuFilteredPlants.map(({ plant, picture }) => (
                                     <div key={picture.id || `${plant.id}-${Math.random()}`}>
                                         <Plant_gallery_card
                                             name={plant.name || `Plant ${plant.id}`}

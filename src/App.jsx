@@ -167,16 +167,6 @@ function AppContent() {
               )
             }
           />
-          <Route
-            path="/popup-page"
-            element={
-              isAuthenticated ? (
-                <PlantUploadPopup /> // Updated component usage
-              ) : (
-                <Navigate to="/loginPage" replace />
-              )
-            }
-          />
           {/* Fallback route for any other paths */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/loginPage"} />} />
         </Routes>

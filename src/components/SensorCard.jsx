@@ -6,7 +6,7 @@ import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
 import { useDarkMode } from '../context/DarkModeContext';
 import React from 'react';
 
-function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorData, soilMoistureSensorData,
+function SensorCard({ lightSensorData, temperatureSensorData, humiditySensorData, soilMoistureSensorData,
     lightSensorDataAverageToday, temperatureSensorDataAverageToday, humiditySensorDataAverageToday, soilMoistureSensorDataAverageToday,
     lightSensorDataAverageYesterday, temperatureSensorDataAverageYesterday, humiditySensorDataAverageYesterday, soilMoistureSensorDataAverageYesterday }) {
     
@@ -139,4 +139,5 @@ function Sensor_card({ lightSensorData, temperatureSensorData, humiditySensorDat
         </div>
     );
 }
-export default Sensor_card;
+
+export default SensorCard;

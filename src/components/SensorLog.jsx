@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDarkMode } from '../context/DarkModeContext.jsx';
-import LogCard from './log-card.jsx'; // Corrected case-sensitivity
-import LogPopup from './log-pupup.jsx'; // Changed import
+import LogCard from './LogCard.jsx'; // Corrected case-sensitivity
+import LogPopup from './LogPopup.jsx'; // Changed import
 
 function SensorLog ({ logs }) { // Changed prop name from notifications to logs
     const { darkMode } = useDarkMode();

@@ -2,13 +2,13 @@ import deleteIcon from '../assets/delete-icon.svg';
 import penIcon from '../assets/pen-icon.svg';
 import calendarIcon from '../assets/calendar-icon-gray.svg';
 import saveIcon from '../assets/saveIcon.svg';
-import { useDarkMode } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext.jsx';
 import { editPictureNote, deletePicture } from '../api/index.js';
-import ExpandedImageModal from './ExpandedImageModal';
-import DeleteConfirmationModal from './DeleteConfirmationModal';
+import ExpandedImageModal from './ExpandedImageModal.jsx';
+import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
 import { useState } from 'react';
 
-function Plant_gallery_card({ name, time, imageUrl, note, pictureId, onNoteUpdate, onPictureDelete }) {
+function PlantGalleryCard({ name, time, imageUrl, note, pictureId, onNoteUpdate, onPictureDelete }) {
     const { darkMode } = useDarkMode();
     const [isImageExpanded, setIsImageExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -172,4 +172,5 @@ function Plant_gallery_card({ name, time, imageUrl, note, pictureId, onNoteUpdat
         </>
     );
 }
-export default Plant_gallery_card;
+
+export default PlantGalleryCard;

@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // Components
 import Navbar from './components/Navbar';
-import Plant_upload_popup from './components/Plant-upload-popup';
+import PlantUploadPopup from './components/PlantUploadPopup.jsx'; // Updated import name
 import MobileHeader from './components/MobileHeader'; // Added import
 import { useMobileDetection } from './utils/useMobileDetection'; // Added import
 
@@ -171,7 +171,7 @@ function AppContent() {
             path="/popup-page"
             element={
               isAuthenticated ? (
-                <Plant_upload_popup />
+                <PlantUploadPopup /> // Updated component usage
               ) : (
                 <Navigate to="/loginPage" replace />
               )

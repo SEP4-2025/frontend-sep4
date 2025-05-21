@@ -1,6 +1,7 @@
+import React from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 
-function LoadingScreen(){
+function LoadingScreen() {
     const { darkMode } = useDarkMode();
     
     return (

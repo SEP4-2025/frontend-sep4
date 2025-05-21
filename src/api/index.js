@@ -220,7 +220,7 @@ export async function getSensorAverageByDate(type, date) {
 }
 
 /* TODO: water level and ground moisture - Mariete
- *   getLastestPrediction()
+ *   getLatestPrediction()
  *   INPUT:
  *     none
  *   RETURNS:
@@ -234,7 +234,7 @@ export async function getSensorAverageByDate(type, date) {
  *     sensorReadingId (int) - id of the sensor reading
  */
 
-export async function getLastestPrediction() {
+export async function getLatestPrediction() {
   const res = await fetch(`${BASE_URL}/Prediction/`, {
     headers: createAuthHeaders()
   });
@@ -249,7 +249,7 @@ export async function getLastestPrediction() {
 }
 
 /*
- *   fetchGrenhouseDataByGardenerId(gardenerId)
+ *   fetchGreenhouseDataByGardenerId(gardenerId)
  *   INPUT:
  *     gardenerId (int) - id of the gardener
  *   RETURNS:
@@ -259,7 +259,7 @@ export async function getLastestPrediction() {
  *       gardenerId (int) - id of the gardener
  */
 
-export async function fetchGrenhouseDataByGardenerId(gardenerId) {
+export async function fetchGreenhouseDataByGardenerId(gardenerId) {
   const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`, {
     headers: createAuthHeaders()
   });
@@ -840,7 +840,7 @@ export async function getAllPlants() {
   }
 }
 
-export async function getAllPicturesByPLantId(plantId) {
+export async function getAllPicturesByPlantId(plantId) {
   try {
     const res = await fetch(`${BASE_URL}/Picture/${plantId}`, {
       headers: createAuthHeaders()

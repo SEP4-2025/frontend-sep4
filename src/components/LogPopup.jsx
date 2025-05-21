@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import LogCard from './log-card.jsx';
+import LogCard from './LogCard.jsx';
 import filterArrow from '../assets/filterArrow.png';
-import { useDarkMode } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext.jsx';
 import { useMobileDetection } from '../utils/useMobileDetection.js'; // Import the hook
 
-function LogPopup({ isOpen, onClose, logs, title, description }) {
+function LogPopup({ isOpen, onClose, title, description, logs }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const { darkMode } = useDarkMode();
     const [filteredLogs, setFilteredLogs] = useState([]);

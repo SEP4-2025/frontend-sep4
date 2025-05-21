@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Notification_card from './Notification-card.jsx';
-import Notification_pop_up from './Notification-pop-up.jsx';
+import NotificationCard from './NotificationCard.jsx'; // Standardized import
+import NotificationPopup from './NotificationPopup.jsx'; // Standardized import
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
-import { useDarkMode } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext.jsx';
 
-function Notification_centre({ notificationData, notificationPreferences }) {
+function NotificationCentre({ notificationData, notificationPreferences }) {
     const { notifications, isConnected } = useNotificationHub();
     const { darkMode } = useDarkMode();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +16,7 @@ function Notification_centre({ notificationData, notificationPreferences }) {
     let notificationElements;
     if (recentNotifications.length > 0) {
         notificationElements = recentNotifications.map((notification, index) => (
-            <Notification_card key={index} notification={notification} />
+            <NotificationCard key={index} notification={notification} />
         ));
     } else {
         notificationElements = <p className='text-center py-2'>No new notifications available</p>
@@ -60,7 +60,7 @@ function Notification_centre({ notificationData, notificationPreferences }) {
                 </button>
             </div>
             
-            <Notification_pop_up 
+            <NotificationPopup 
                 isOpen={isModalOpen} 
                 onClose={closeModal} 
                 notificationData={notificationData} 
@@ -70,4 +70,4 @@ function Notification_centre({ notificationData, notificationPreferences }) {
     );
 }
 
-export default Notification_centre;
+export default NotificationCentre; // Standardized export name

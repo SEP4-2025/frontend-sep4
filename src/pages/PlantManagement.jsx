@@ -1,8 +1,8 @@
 import { useDarkMode } from '../context/DarkModeContext';
-import PlantForm from '../components/Plant-form-popup';
-import { compilePlantManagamentData } from '../utils/dataCompiler';
+import PlantForm from '../components/PlantFormPopup.jsx';
+import { compilePlantManagementData } from '../utils/dataCompiler';
 import { useState, useEffect } from 'react';
-import LoadingScreen from '../components/Loading-screen';
+import LoadingScreen from '../components/LoadingScreen.jsx';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import PasswordConfirmPopup from '../components/PasswordConfirmPopup';
 import filterArrow from '../assets/filterArrow.png';
@@ -30,7 +30,7 @@ function PlantManagement() {
 
     const refreshPlantData = () => {
         setIsLoading(true);
-        compilePlantManagamentData()
+        compilePlantManagementData()
             .then((plants) => {
                 setPlantData(plants);
                 setIsLoading(false);

@@ -2,13 +2,13 @@ import '../App.css'; // For any global styles it might need, path is correct fro
 import { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { compileDashboardData } from '../utils/dataCompiler';
-import Name_card from '../components/Name-card';
-import Sensor_card from '../components/Sensor-cards';
+import NameCard from '../components/NameCard'; // Standardized import
+import SensorCard from '../components/SensorCard'; // Standardized import
 import { SensorOverview } from '../components/SensorOverview';
-import Notification_centre from '../components/Notification-centre';
+import NotificationCentre from '../components/NotificationCentre'; // Standardized import
 import { AIModelPredictions } from '../components/AIModelPredictions';
-import ClockCard from '../components/Clock-card';
-import LoadingScreen from '../components/Loading-screen';
+import ClockCard from '../components/ClockCard'; // Standardized import
+import LoadingScreen from '../components/LoadingScreen'; // Standardized import
 
 const _dummyAiMetrics = [
   { name: 'Temperature', unit: 'ºC', value: 23, optimal: 25, min: 0, max: 50 },
@@ -81,13 +81,13 @@ function Dashboard() {
       <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'} ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
           <div className="lg:col-span-5">
-            <Name_card greenhouseData={greenhouseData} />
+            <NameCard greenhouseData={greenhouseData} />
           </div>
           <div className="hidden lg:block lg:col-span-1">
             <ClockCard />
           </div>
           <div className="lg:col-span-6 mt-1">
-            <Sensor_card
+            <SensorCard
               lightSensorData={lightSensorData}
               temperatureSensorData={temperatureSensorData}
               humiditySensorData={humiditySensorData}
@@ -115,7 +115,7 @@ function Dashboard() {
             />
           </div>
           <div className="lg:col-span-3 mt-1">
-            <Notification_centre 
+            <NotificationCentre 
               notificationData={notificationData} 
               notificationPreferences={notificationPreferences} 
             />

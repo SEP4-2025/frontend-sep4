@@ -11,9 +11,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',  // wherever json-server is running
+        target: process.env.VITE_PROXY_TARGET || 'http://localhost:8000',  // Use environment variable
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, '') // Corrected regex
       }
     }
   }

@@ -156,12 +156,7 @@ function WateringCard({
                 </div>
                 <div className={`w-full ${darkMode ? 'bg-slate-700' : 'bg-gray-200'} h-2 rounded-full`}>
                   <div
-                    className={`h-full rounded-full ${
-                      currentValue >= 90 ? 'bg-green-500' : 
-                      currentValue >= 75 ? 'bg-green-400' : 
-                      currentValue >= 50 ? 'bg-orange-500' : 
-                      currentValue >= 25 ? 'bg-orange-600' : 
-                      'bg-red-500'}`}
+                    className={`h-full rounded-full ${getTankColorClass(currentValue)}`}
                     style={{ width: `${currentValue}%` }}
                   ></div>
                 </div>

@@ -55,10 +55,14 @@ function PasswordConfirmPopup({ isOpen, onClose, onConfirm, actionName }) {
           )}
           
           <div className="mb-4">
-            <label className={`block mb-2 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <label
+              htmlFor="passwordInput"
+              className={`block mb-2 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}
+            >
               Password
             </label>
             <input
+              id="passwordInput"
               type="password"
               className={`border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-slate-600 text-white border-slate-500' : 'bg-white border-gray-300'}`}
               value={password}

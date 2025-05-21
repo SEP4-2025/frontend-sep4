@@ -1159,3 +1159,42 @@ export async function deletePlant(plantId) {
   }
 }
 
+/**
+ * Parses the JWT from sessionStorage and extracts the Gardener ID.
+ * @returns {string|null} The Gardener ID if found and successfully parsed, otherwise null.
+ */
+export const getGardenerIdFromToken = () => {
+  const token = getAuthToken(); // Use existing getAuthToken
+  if (token) {
+    try {
+      const base64Url = token.split('.')[1];
+      if (!base64Url) {
+        console.error("Invalid token: Missing payload.");
+        return null;
+      }
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+      const decodedToken = JSON.parse(jsonPayload);
+
+      const gardenerId = decodedToken.nameid;
+
+      if (!gardenerId) {
+        console.warn("Gardener ID claim not found in token or is empty. Token payload:", decodedToken);
+        return null;
+      }
+      return String(gardenerId); // Ensure it's a string if your API expects that
+    } catch (error) {
+      console.error("Failed to decode token or extract gardenerId:", error);
+      return null;
+    }
+  }
+  console.warn("No token found in sessionStorage.");
+  return null;
+};

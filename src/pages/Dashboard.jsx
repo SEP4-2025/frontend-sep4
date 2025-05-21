@@ -1,14 +1,17 @@
-import '../App.css'; // For any global styles it might need, path is correct from pages dir
+import '../App.css';
 import { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { compileDashboardData } from '../utils/dataCompiler';
-import NameCard from '../components/NameCard'; // Standardized import
-import SensorCard from '../components/SensorCard'; // Standardized import
+import { getGardenerIdFromToken } from '../api'; // Import the function
+import NameCard from '../components/NameCard';
+import SensorCard from '../components/SensorCard';
 import { SensorOverview } from '../components/SensorOverview';
-import NotificationCentre from '../components/NotificationCentre'; // Standardized import
+import NotificationCentre from '../components/NotificationCentre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
-import ClockCard from '../components/ClockCard'; // Standardized import
-import LoadingScreen from '../components/LoadingScreen'; // Standardized import
+import ClockCard from '../components/ClockCard';
+import LoadingScreen from '../components/LoadingScreen';
+
+// Remove the local getGardenerIdFromToken helper function if it was here
 
 const _dummyAiMetrics = [
   { name: 'Temperature', unit: 'ºC', value: 23, optimal: 25, min: 0, max: 50 },
@@ -16,7 +19,6 @@ const _dummyAiMetrics = [
   { name: 'Humidity', unit: '%', value: 45, optimal: 60, min: 0, max: 100 },
 ];
 
-// Assume toggleMobileNav is passed as a prop from the parent layout/router (App.jsx)
 function Dashboard() {
   const { darkMode } = useDarkMode();
   const [lightSensorData, setLightSensorData] = useState(null);
@@ -38,42 +40,89 @@ function Dashboard() {
   const [soilMoistureHistory, setSoilMoistureHistory] = useState([]);
   const [notificationData, setNotificationData] = useState([]);
   const [notificationPreferences, setNotificationPreferences] = useState([]);
+  
+  const [gardenerId, setGardenerId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const gardenerId = 1; //TODO: Get this from the logged-in user context or props
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
-    compileDashboardData(gardenerId)
-      .then((data) => {
-        setLightSensorData(data.lightSensorData);
-        setTemperatureSensorData(data.temperatureSensorData);
-        setHumiditySensorData(data.humiditySensorData);
-        setSoilMoistureSensorData(data.soilMoistureSensorData);
-        setGreenhouseData(data.greenhouseData);
-        setLightSensorDataAverageToday(data.lightSensorDataAverageToday);
-        setTemperatureSensorDataAverageToday(data.temperatureSensorDataAverageToday);
-        setHumiditySensorDataAverageToday(data.humiditySensorDataAverageToday);
-        setSoilMoistureSensorDataAverageToday(data.soilMoistureSensorDataAverageToday);
-        setLightSensorDataAverageYesterday(data.lightSensorDataAverageYesterday);
-        setTemperatureSensorDataAverageYesterday(data.temperatureSensorDataAverageYesterday);
-        setHumiditySensorDataAverageYesterday(data.humiditySensorDataAverageYesterday);
-        setSoilMoistureSensorDataAverageYesterday(data.soilMoistureSensorDataAverageYesterday);
-        setTemperatureHistory(data.temperatureHistory || []);
-        setHumidityHistory(data.humidityHistory || []);
-        setLightHistory(data.lightHistory || []);
-        setSoilMoistureHistory(data.soilMoistureHistory || []);
-        setNotificationData(data.notificationData);
-        setNotificationPreferences(data.notificationPreferences);
+    const id = getGardenerIdFromToken(); // Use the imported function
+    if (id) {
+      setGardenerId(id);
+    } else {
+      // setError('User information could not be retrieved. Please log in again.');
+      // It's possible the token is not yet available on initial load if login is async
+      // Or if the user is not logged in.
+      // Consider redirecting to login or showing a message.
+      // For now, if no ID, data fetching won't proceed.
+      console.warn('Gardener ID not found in token. Dashboard data will not be loaded.');
+      setIsLoading(false); // Stop loading if no ID is found
+    }
+  }, []);
+
+  useEffect(() => {
+    if (gardenerId) {
+      setIsLoading(true);
+      setError(null);
+      compileDashboardData(gardenerId)
+        .then((data) => {
+          setLightSensorData(data.lightSensorData);
+          setTemperatureSensorData(data.temperatureSensorData);
+          setHumiditySensorData(data.humiditySensorData);
+          setSoilMoistureSensorData(data.soilMoistureSensorData);
+          setGreenhouseData(data.greenhouseData);
+          setLightSensorDataAverageToday(data.lightSensorDataAverageToday);
+          setTemperatureSensorDataAverageToday(data.temperatureSensorDataAverageToday);
+          setHumiditySensorDataAverageToday(data.humiditySensorDataAverageToday);
+          setSoilMoistureSensorDataAverageToday(data.soilMoistureSensorDataAverageToday);
+          setLightSensorDataAverageYesterday(data.lightSensorDataAverageYesterday);
+          setTemperatureSensorDataAverageYesterday(data.temperatureSensorDataAverageYesterday);
+          setHumiditySensorDataAverageYesterday(data.humiditySensorDataAverageYesterday);
+          setSoilMoistureSensorDataAverageYesterday(data.soilMoistureSensorDataAverageYesterday);
+          setTemperatureHistory(data.temperatureHistory || []);
+          setHumidityHistory(data.humidityHistory || []);
+          setLightHistory(data.lightHistory || []);
+          setSoilMoistureHistory(data.soilMoistureHistory || []);
+          setNotificationData(data.notificationData);
+          setNotificationPreferences(data.notificationPreferences);
+        })
+        .catch((fetchError) => {
+          console.error('Error fetching dashboard data:', fetchError);
+          setError(`Failed to load dashboard data: ${fetchError.message}. Please try again later.`);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else if (!isLoading && !getGardenerIdFromToken()) {
+        // This condition ensures that if gardenerId was never set (e.g. no token),
+        // and we are not already in a loading state from a previous attempt,
+        // we set loading to false.
+        // The first useEffect already handles setting isLoading to false if no ID is found initially.
+        // This is more of a safeguard.
         setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching dashboard data:', error);
-        setIsLoading(false);
-      });
-  }, [gardenerId]);
+    }
+  }, [gardenerId]); // Re-run this effect if gardenerId changes
 
   if (isLoading) {
     return <LoadingScreen />;
+  }
+
+  if (error) {
+    return (
+      <div className={`flex flex-col min-h-screen justify-center items-center ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
+
+  if (!gardenerId) {
+    // This state occurs if the token wasn't found or couldn't be parsed, and no error was set for data fetching.
+    return (
+      <div className={`flex flex-col min-h-screen justify-center items-center ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
+        <p className="text-yellow-500 text-lg">Unable to retrieve user information. Please ensure you are logged in.</p>
+        {/* Optionally, add a button to redirect to login page */}
+      </div>
+    );
   }
 
   return (
@@ -94,6 +143,7 @@ function Dashboard() {
               soilMoistureSensorData={soilMoistureSensorData}
               lightSensorDataAverageToday={lightSensorDataAverageToday}
               temperatureSensorDataAverageToday={temperatureSensorDataAverageToday}
+// ...existing code...
               humiditySensorDataAverageToday={humiditySensorDataAverageToday}
               soilMoistureSensorDataAverageToday={soilMoistureSensorDataAverageToday}
               lightSensorDataAverageYesterday={lightSensorDataAverageYesterday}

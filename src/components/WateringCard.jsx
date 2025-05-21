@@ -22,6 +22,20 @@ function WateringCard({
   const [pendingAction, setPendingAction] = useState(null);
   const { darkMode } = useDarkMode();
   
+  const getTankColorClass = (percentage) => {
+    if (percentage >= 90) {
+      return 'bg-green-500'; // Full
+    } else if (percentage >= 75) {
+      return 'bg-green-400'; // High
+    } else if (percentage >= 50) {
+      return 'bg-orange-500'; // Medium
+    } else if (percentage >= 25) {
+      return 'bg-orange-600'; // Low
+    } else {
+      return 'bg-red-500'; // Critical
+    }
+  };
+
   // Update local state when props change
   useEffect(() => {
     if (value !== undefined) {

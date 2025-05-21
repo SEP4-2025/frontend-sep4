@@ -5,6 +5,7 @@ import { compilePlantManagamentData } from '../utils/dataCompiler';
 import { useState, useEffect } from 'react';
 import LoadingScreen from '../components/Loading-screen';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import PasswordConfirmPopup from '../components/PasswordConfirmPopup';
 import filterArrow from '../assets/filterArrow.png';
 import { deletePlant } from '../api/index.js';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +23,7 @@ function PlantManagement({ toggleMobileNav }) {
     const [openDropdownId, setOpenDropdownId] = useState(null);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    
 
     useEffect(() => {
         refreshPlantData();
@@ -65,6 +67,7 @@ function PlantManagement({ toggleMobileNav }) {
                 setSelectedPlant(null);
             } catch (error) {
                 console.error('Error deleting plant:', error);
+                alert('Failed to delete plant. Please check if any pictures are tight to this plant.');
             }
         }
     };
@@ -113,7 +116,7 @@ function PlantManagement({ toggleMobileNav }) {
                                 type="text"
                                 className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${darkMode ? 'bg-slate-700 text-white border-gray-600 placeholder-gray-400' : 'border-gray-300 placeholder-gray-500'}`}
                                 placeholder="Search plants..."
-                                value={search} 
+                                value={search}
                                 onChange={e => setSearch(e.target.value)}
                             />
                         </div>
@@ -237,12 +240,13 @@ function PlantManagement({ toggleMobileNav }) {
 
             {/* Delete confirmation modal */}
             {isDeleteModalOpen && (
-                <DeleteConfirmationModal
+                <PasswordConfirmPopup
                     isOpen={isDeleteModalOpen}
-                    onClose={() => setIsDeleteModalOpen(false)}
+                    onClose={() => {
+                        setIsDeleteModalOpen(false);
+                    }}
                     onConfirm={handleDeleteConfirm}
-                    title="Delete Plant"
-                    message="Are you sure you want to delete this plant?"
+                    actionName="delete this plant"
                 />
             )}
         </>

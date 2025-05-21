@@ -1,4 +1,3 @@
-import MobileHeader from '../components/MobileHeader';
 import LogoIcon from "../assets/GrowMate_Logo_Transparent.png";
 import { useDarkMode } from "../context/DarkModeContext";
 import InformationCard from "../components/InformationCard";
@@ -9,14 +8,11 @@ import LeafIcon from "../assets/leaf-icon.svg";
 import ClockIcon from "../assets/clock-icon.svg";
 import DatabaseIcon from "../assets/database-icon.svg";
 
-function AboutUsPage({ toggleMobileNav }) {
+function AboutUsPage() {
     const { darkMode } = useDarkMode();
 
     return (
         <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
-            {/* Mobile Header */}
-            <MobileHeader toggleMobileNav={toggleMobileNav} title="About Us" />
-
             <main className="flex-grow overflow-y-auto flex flex-col items-center px-4 py-6">
                 {/* Logo Section */}
                 <div className={`rounded-full p-4 ${darkMode ? 'bg-slate-600' : 'bg-navbar-color'} flex items-center justify-center`}>

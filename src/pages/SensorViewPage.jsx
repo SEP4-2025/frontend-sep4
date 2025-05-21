@@ -1,5 +1,4 @@
 import { useDarkMode } from '../context/DarkModeContext';
-import MobileHeader from '../components/MobileHeader';
 import SensorViewGraph, { SENSOR_CONFIG, SENSOR_TYPES } from '../components/SensorViewGraph';
 import SensorLog from '../components/SensorLog'; 
 import SensorSettings from '../components/SensorSettings';
@@ -7,7 +6,7 @@ import SensorInfo from '../components/SensorInfo';
 import { useState, useEffect } from 'react';
 import { compileSensorViewGraphData, compileSensorLogs } from '../utils/dataCompiler';
 
-function SensorViewPage({ toggleMobileNav }) {
+function SensorViewPage() {
     const { darkMode } = useDarkMode();
     const [selectedSensorKey, setSelectedSensorKey] = useState(SENSOR_TYPES[0]);
     const [allDisplayLogs, setAllDisplayLogs] = useState([]); 
@@ -101,9 +100,6 @@ function SensorViewPage({ toggleMobileNav }) {
 
     return (
         <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-            {/* Mobile Header */}
-            <MobileHeader toggleMobileNav={toggleMobileNav} title="Sensor View" />
-
             <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 {/* Title */}
                 <div className='hidden sm:flex flex-col mb-6'>

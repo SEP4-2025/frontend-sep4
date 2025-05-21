@@ -1,5 +1,4 @@
 import { useDarkMode } from '../context/DarkModeContext';
-import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
 import WaterManagementGraph from '../components/WaterManagementGraph';
 import WaterManagementStatus from '../components/WaterManagementStatus';
 import AutomaticWatering from '../components/AutomaticWatering';
@@ -7,7 +6,7 @@ import WateringCard from '../components/WateringCard';
 import React, { useState, useEffect } from 'react';
 import { compileWaterPumpData } from '../utils/dataCompiler';
 
-function WaterManagement ({ toggleMobileNav }) { // Added toggleMobileNav prop
+function WaterManagement () {
 
     const { darkMode } = useDarkMode();
     const [loading, setLoading] = useState(true);
@@ -63,9 +62,6 @@ function WaterManagement ({ toggleMobileNav }) { // Added toggleMobileNav prop
 
     return (
         <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
-            {/* Mobile Header */}
-            <MobileHeader toggleMobileNav={toggleMobileNav} title="Water Management" />
-
             <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 {/* Title */}
                 <div className='flex flex-col mb-6'>

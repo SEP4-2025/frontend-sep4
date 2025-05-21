@@ -232,7 +232,6 @@ export async function getSensorAverageByDate(type, date) {
  *     optimallight (int) - optimal light for the greenhouse
  *     greenhouseId (int) - id of the greenhouse
  *     sensorReadingId (int) - id of the sensor reading
- *     optimalWaterLevel (int) - TODO: What is this? - Mariete
  */
 
 export async function getLastestPrediction() {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
+// import MobileHeader from '../components/MobileHeader'; // Removed
 import { useFontSize } from '../context/FontSizeContext';
 import { useDarkMode } from '../context/DarkModeContext';
 import {
@@ -25,7 +25,7 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
+const SettingsPage = () => { // Removed toggleMobileNav prop
   const [notificationPrefs, setNotificationPrefs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -68,8 +68,8 @@ const SettingsPage = ({ toggleMobileNav }) => { // Added toggleMobileNav prop
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <MobileHeader toggleMobileNav={toggleMobileNav} title="Settings" />
-      <main className={`flex-grow overflow-y-auto p-8`}>
+      {/* MobileHeader removed from here */}
+      <main className="flex-grow overflow-y-auto p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row gap-6"> {/* Main two-column container */}
           {/* Left Column */}
           <div className="flex-1 space-y-8 max-w-3xl">

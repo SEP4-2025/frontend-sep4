@@ -3,6 +3,7 @@ import Notification_card from './Notification-card.jsx';
 import filterArrow from '../assets/filterArrow.png';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
+import { useMobileDetection } from '../utils/useMobileDetection.js'; // Import the hook
 
 function Notification_pop_up({ isOpen, onClose, notificationData, notificationPreferences }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -10,7 +11,7 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
     const { notifications } = useNotificationHub();
     const [notificationList, setNotificationList] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initial check for mobile screen size
+    const isMobile = useMobileDetection(); // Use the hook
 
     const allNotifications = [...(notifications || []), ...(notificationData || [])];
     const combinedNotifications = allNotifications.filter((notification, index, self) =>
@@ -36,17 +37,17 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
         setNotificationList(result);
     }, [notificationData, notificationPreferences, notifications, selectedFilter]);
 
-    useEffect(() => {
-        // Update `isMobile` state on window resize
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    // useEffect(() => {
+    //     // Update `isMobile` state on window resize
+    //     const handleResize = () => {
+    //         setIsMobile(window.innerWidth <= 768);
+    //     };
+    //
+    //     window.addEventListener('resize', handleResize);
+    //     return () => {
+    //         window.removeEventListener('resize', handleResize);
+    //     };
+    // }, []);
 
     if (!isOpen) return null;
 

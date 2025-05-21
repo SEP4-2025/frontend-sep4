@@ -9,7 +9,6 @@ import Notification_centre from '../components/Notification-centre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
 import ClockCard from '../components/Clock-card';
 import LoadingScreen from '../components/Loading-screen';
-import MobileHeader from '../components/MobileHeader'; // Import MobileHeader
 
 const _dummyAiMetrics = [
   { name: 'Temperature', unit: 'ºC', value: 23, optimal: 25, min: 0, max: 50 },
@@ -18,7 +17,7 @@ const _dummyAiMetrics = [
 ];
 
 // Assume toggleMobileNav is passed as a prop from the parent layout/router (App.jsx)
-function Dashboard({ toggleMobileNav }) {
+function Dashboard() {
   const { darkMode } = useDarkMode();
   const [lightSensorData, setLightSensorData] = useState(null);
   const [temperatureSensorData, setTemperatureSensorData] = useState(null);
@@ -79,8 +78,6 @@ function Dashboard({ toggleMobileNav }) {
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-      <MobileHeader toggleMobileNav={toggleMobileNav} title="Dashboard" />
-
       <main className={`flex-grow overflow-y-auto px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'} ${darkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
           <div className="lg:col-span-5">

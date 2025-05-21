@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import LogCard from './Log-card.jsx';
+import LogCard from './log-card.jsx';
 import filterArrow from '../assets/filterArrow.png';
 import { useDarkMode } from '../context/DarkModeContext';
+import { useMobileDetection } from '../utils/useMobileDetection.js'; // Import the hook
 
 function LogPopup({ isOpen, onClose, logs, title, description }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const { darkMode } = useDarkMode();
     const [filteredLogs, setFilteredLogs] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    const isMobile = useMobileDetection(); // Use the hook
 
     useEffect(() => {
         let result = Array.isArray(logs) ? [...logs] : [];

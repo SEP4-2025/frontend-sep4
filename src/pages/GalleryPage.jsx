@@ -5,10 +5,9 @@ import filterArrow from '../assets/filterArrow.png';
 import { useEffect, useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
 import { useLocation } from 'react-router-dom';
-import MobileHeader from '../components/MobileHeader';
 import { compileGalleryPageData } from '../utils/dataCompiler';
 
-function GalleryPage({ toggleMobileNav }) {
+function GalleryPage() {
     const { darkMode } = useDarkMode();
     const location = useLocation();
     const [isFilterOpen, setIsFilterOpen] = useState(false); // filter menu state
@@ -157,7 +156,6 @@ function GalleryPage({ toggleMobileNav }) {
     }
     return (
         <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
-            <MobileHeader toggleMobileNav={toggleMobileNav} title="Plant Gallery" />
             <main className="flex-grow overflow-y-auto p-4 sm:p-6">
                 {/* Overall container for gallery content and desktop upload button */}
                 <div className="flex flex-col lg:flex-row lg:gap-6">

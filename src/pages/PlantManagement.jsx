@@ -1,5 +1,4 @@
 import { useDarkMode } from '../context/DarkModeContext';
-import MobileHeader from '../components/MobileHeader';
 import PlantForm from '../components/Plant-form-popup';
 import { compilePlantManagamentData } from '../utils/dataCompiler';
 import { useState, useEffect } from 'react';
@@ -10,7 +9,7 @@ import filterArrow from '../assets/filterArrow.png';
 import { deletePlant } from '../api/index.js';
 import { useNavigate } from 'react-router-dom';
 
-function PlantManagement({ toggleMobileNav }) {
+function PlantManagement() {
     const { darkMode } = useDarkMode();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
@@ -92,7 +91,6 @@ function PlantManagement({ toggleMobileNav }) {
     return (
         <>
             <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-800'}`}>
-                <MobileHeader toggleMobileNav={toggleMobileNav} title="Plant Management" />
                 <main className="flex-grow overflow-y-auto p-4 sm:p-6">
                     {/* Header Section - desktop */}
                     <div className='hidden lg:flex flex-col lg:justify-start w-full mb-6'>

@@ -11,7 +11,7 @@
     "postinstall": "flowbite-react patch",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "test": "jest"
+    "test": "jest --config jest.config.cjs"
   },
   "homepage": "https://sep4-2025.github.io/frontend-sep4/",
   "dependencies": {

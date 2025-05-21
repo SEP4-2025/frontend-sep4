@@ -1,4 +1,5 @@
-export default {
+/** @type {import('jest').Config} */
+module.exports = {
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.svg$': 'jest-transform-stub',

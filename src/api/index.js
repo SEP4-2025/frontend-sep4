@@ -23,6 +23,48 @@ const createAuthHeaders = () => {
  * 
  */
 
+/**
+ * Confirms a user's password for secure actions
+ * 
+ * @param {string} password - Current user password
+ * @returns {Promise<boolean>} - Returns true if password is confirmed
+ */
+export async function confirmPassword(password) {
+  if (!password) {
+    throw new Error('Password is required');
+  }
+
+  try {
+    // Use the correct route to the Auth controller (no /api prefix)
+    // Include both Password and ConfirmPassword fields as required by the DTO
+    const response = await fetch(`${BASE_URL}/Auth/confirm-password`, {
+      method: 'POST',
+      headers: createAuthHeaders(),
+      body: JSON.stringify({
+        Password: password,
+        ConfirmPassword: password // Both fields must match per the [Compare] attribute
+      })
+    });
+
+    if (!response.ok) {
+      // Handle different error cases
+      if (response.status === 401) {
+        throw new Error('Invalid password');
+      } else if (response.status === 404) {
+        throw new Error('Password confirmation endpoint not found. Please check API configuration.');
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Password confirmation failed: ${response.status}`);
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error confirming password:', error);
+    throw error;
+  }
+}
+
 /*
  *   GetSensorData(type)
  *   INPUT: 

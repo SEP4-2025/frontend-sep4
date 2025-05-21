@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
-import { triggerManualWatering, updateCurrentWaterLevel, updateWaterPumpThreshold } from '../api';
+import { triggerManualWatering, updateCurrentWaterLevel, updateWaterPumpThreshold, confirmPassword } from '../api';
+import PasswordConfirmPopup from './PasswordConfirmPopup';
 
 function WateringCard({ 
   title, 
@@ -17,6 +18,8 @@ function WateringCard({
   const [currentValue, setCurrentValue] = useState(Number(value));
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
   const { darkMode } = useDarkMode();
   
   // Update local state when props change
@@ -31,8 +34,15 @@ function WateringCard({
     const value = e.target.value.replace(/[^0-9.]/g, '');
     setInputValue(value);
   };
+  
+  // Close the password modal
+  const closePasswordModal = () => {
+    setIsPasswordModalOpen(false);
+    setPendingAction(null);
+  };
 
-  const handleUpdate = async () => {
+  // Handle form submission - opens the password confirmation dialog
+  const handleSubmit = () => {
     const number = parseFloat(inputValue);
     if (isNaN(number) || number <= 0) {
       setError('Please enter a valid number greater than 0');
@@ -40,9 +50,24 @@ function WateringCard({
     }
     
     setError(null);
+    
+    // Store the pending action for after password confirmation
+    setPendingAction(number);
+    setIsPasswordModalOpen(true);
+  };
+  
+  // The actual update function that runs after password confirmation
+  const handlePasswordConfirm = async (password) => {
+    if (!pendingAction) return false;
+    
+    const number = pendingAction;
     setIsUpdating(true);
     
     try {
+      // First verify password
+      await confirmPassword(password);
+      
+      // Then perform the actual action
       if (tankLevel) {
         // Refill water tank
         await updateCurrentWaterLevel(pumpId, number);
@@ -59,9 +84,12 @@ function WateringCard({
       // Notify parent to refresh data
       if (onUpdate) onUpdate();
       setInputValue('');
+      setPendingAction(null);
+      return true;
     } catch (err) {
-      console.error('Error updating water:', err);
+      console.error('Error in password confirmation or water action:', err);
       setError(err.message || 'Failed to update. Please try again.');
+      throw err; // Re-throw to show in the password popup
     } finally {
       setIsUpdating(false);
     }
@@ -92,6 +120,8 @@ function WateringCard({
               />
             </div>
             
+
+            
             <button
               className={`w-full rounded-lg py-2.5 px-4 text-white font-medium transition-colors ${
                 isLoading || isUpdating
@@ -100,7 +130,7 @@ function WateringCard({
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700'
               }`}
-              onClick={handleUpdate}
+              onClick={handleSubmit}
               disabled={isLoading || isUpdating || (tankLevel && currentValue >= 100)}
             >
               {isUpdating ? (
@@ -147,6 +177,14 @@ function WateringCard({
           </div>
         </div>
       </div>
+      
+      {/* Password Confirmation Popup */}
+      <PasswordConfirmPopup 
+        isOpen={isPasswordModalOpen}
+        onClose={closePasswordModal}
+        onConfirm={handlePasswordConfirm}
+        actionName={tankLevel ? "refill water tank" : "water the greenhouse"}
+      />
     </div>
   );
 }

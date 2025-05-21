@@ -375,7 +375,6 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
 }
 export async function compileGalleryPageData() {
   try {
-    // Get all plants first
     const allPlants = await getAllPlants();
     
     if (!allPlants || !Array.isArray(allPlants)) {
@@ -405,6 +404,22 @@ export async function compileGalleryPageData() {
     
   } catch (error) {
     console.error('Error compiling gallery page data:', error);
+    return [];
+  }
+}
+
+export async function compilePlantManagamentData() {
+  try {
+    const allPlants = await getAllPlants();
+    
+    if (!allPlants || !Array.isArray(allPlants)) {
+      console.warn('No plants returned or invalid format from getAllPlants.');
+      return [];  
+    }
+    return allPlants;
+    
+  } catch (error) {
+    console.error('Error compiling plant management data:', error);
     return [];
   }
 }

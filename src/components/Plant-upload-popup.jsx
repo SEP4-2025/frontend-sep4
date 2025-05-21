@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { getAllPlants, uploadPicture } from '../api/index.js';
 
+// That's for the picture upload in gallery page
 function Plant_upload_popup({ isOpen, onClose, onUploadSuccess }) {
   const { darkMode } = useDarkMode();
   const [note, setNote] = useState('');

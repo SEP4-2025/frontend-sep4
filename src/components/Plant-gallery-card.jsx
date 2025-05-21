@@ -125,7 +125,7 @@ function Plant_gallery_card({ name, time, imageUrl, note, pictureId, onNoteUpdat
                         </p>
                     )}
                 </div>
-                <div className='flex flex-row w-full mt-4'>
+                <div className='flex flex-row w-full mt-4 gap-4'>
                     {isEditing ? (
                         <button
                             className={`mr-auto cursor-pointer rounded-lg px-6 py-4 text-center flex flex-row gap-4 items-center border-1 ${darkMode ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-green-500 text-white hover:bg-green-600'}`}

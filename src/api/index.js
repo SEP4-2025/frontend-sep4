@@ -17,12 +17,6 @@ const createAuthHeaders = () => {
   return headers;
 };
 
-/*
- * 
- *   NEW API ENDPOINTS - Mariete
- * 
- */
-
 /**
  * Confirms a user's password for secure actions
  * 
@@ -65,22 +59,19 @@ export async function confirmPassword(password) {
   }
 }
 
-/*
- *   GetSensorData(type)
- *   INPUT: 
- *     type (string) - type of sensor data to fetch || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
- *   RETURNS:
- *   Array of sensor data objects || each object contains the following properties:
- *     id (int) - id of the sensor data
- *     date (date-time) - date of the sensor data
- *     value (int) - value of the sensor data
- *     sensorId (int) - id of the sensor
- *       1 - temperature
- *       2 - humidity
- *       3 - light
- *       4 - soilMoisture
+/**
+ * Fetches sensor data based on the specified sensor type.
+ * If "all" is specified, it fetches data for all sensor types (implicitly, as the backend endpoint without a specific sensor ID does this).
+ * If a specific type is given, it fetches data only for that sensor.
+ * @param {string} type - The type of sensor data to fetch. Possible values: "all", "temperature", "humidity", "light", "soilMoisture".
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of sensor reading objects.
+ * Each sensor reading object (SensorReadingDto) contains:
+ * @property {number} id - The ID of the sensor reading.
+ * @property {string} date - The ISO 8601 date-time string when the reading was taken.
+ * @property {number} value - The value of the sensor reading.
+ * @property {number} sensorId - The ID of the sensor (1: temperature, 2: humidity, 3: light, 4: soilMoisture).
+ * @throws {Error} If the sensor type is invalid or if the API request fails.
  */
-
 export async function getSensorData(type) {
   // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
@@ -105,22 +96,17 @@ export async function getSensorData(type) {
   return res.json();
 }
 
-/*
- *   GetSensorDataLastest(type)
- *   INPUT:
- *   type (string) - type of sensor data to fetch || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
- *   RETURNS:
- *   Lastest sensor data object || the object contains the following properties:
- *     id (int) - id of the sensor data
- *     date (date-time) - date of the sensor data
- *     value (int) - value of the sensor data
- *     sensorId (int) - id of the sensor
- *       1 - temperature
- *       2 - humidity
- *       3 - light
- *       4 - soilMoisture
+/**
+ * Fetches the latest sensor data for a specified sensor type.
+ * @param {string} type - The type of sensor data to fetch. Possible values: "all", "temperature", "humidity", "light", "soilMoisture".
+ * @returns {Promise<Object>} A promise that resolves to the latest sensor reading object.
+ * The sensor reading object (SensorReadingDto) contains:
+ * @property {number} id - The ID of the sensor reading.
+ * @property {string} date - The ISO 8601 date-time string when the reading was taken.
+ * @property {number} value - The value of the sensor reading.
+ * @property {number} sensorId - The ID of the sensor (1: temperature, 2: humidity, 3: light, 4: soilMoisture).
+ * @throws {Error} If no data is found for the specified type or if the API request fails.
  */
-
 export async function getSensorDataLastest(type) {
   const allData = await getSensorData(type)
 
@@ -131,25 +117,18 @@ export async function getSensorDataLastest(type) {
 
   return latestData;
 }
-
-/* 
- *   getSensorAverageByDate(type, date)
- *   INPUT:
- *     type (string) - type of sensor data to fetch || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
- *     date (date-time) - date to fetch the data for
- *   RETURNS:
- *    Note: If type is "all", the function will return null as it is not designed to handle that case.
- *    Sensor data object from the specified date where the value is averaged || the object contains the following properties:
- *      id (int) - id of the sensor data
- *      date (date-time) - date of the sensor data
- *      value (int) - averaged value of the sensor data for the specified date
- *      sensorId (int) - id of the sensor
- *        1 - temperature
- *        2 - humidity
- *        3 - light
- *        4 - soilMoisture
+/**
+ * Fetches all sensor readings for a specific date, filters them by sensor type, and calculates the average value.
+ * @param {string} type - The type of sensor data to average. Possible values: "temperature", "humidity", "light", "soilMoisture".
+ *                      The function returns `null` if type is "all".
+ * @param {string} date - The date for which to fetch and average data (e.g., "YYYY-MM-DD").
+ * @returns {Promise<Object|null>} A promise that resolves to an object containing the averaged sensor data, or `null` if no data is found,
+ *                                 the type is "all", or an error occurs.
+ * The returned object contains:
+ * @property {string} date - The date for which the average was calculated.
+ * @property {number} value - The calculated average sensor value, formatted to two decimal places.
+ * @property {number} sensorId - The ID of the sensor type for which the average was calculated.
  */
-
 export async function getSensorAverageByDate(type, date) {
   // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
@@ -219,21 +198,20 @@ export async function getSensorAverageByDate(type, date) {
   return average;
 }
 
-/* TODO: water level and ground moisture - Mariete
- *   getLatestPrediction()
- *   INPUT:
- *     none
- *   RETURNS:
- *   Lastest prediction object || the object contains the following properties:
- *     id (int) - id of the prediction
- *     date (date-time) - date of the prediction
- *     optimaltemp (int) - optimal temperature for the greenhouse
- *     optimalhumidity (int) - optimal humidity for the greenhouse
- *     optimallight (int) - optimal light for the greenhouse
- *     greenhouseId (int) - id of the greenhouse
- *     sensorReadingId (int) - id of the sensor reading
+// TODO: water level and ground moisture - Mariete
+/**
+ * Fetches the latest prediction data.
+ * @returns {Promise<Object>} A promise that resolves to the latest prediction object.
+ * The prediction object (PredictionDto) contains:
+ * @property {number} id - The ID of the prediction.
+ * @property {string} date - The ISO 8601 date-time string of the prediction.
+ * @property {number} optimalTemp - The predicted optimal temperature.
+ * @property {number} optimalHumidity - The predicted optimal humidity.
+ * @property {number} optimalLight - The predicted optimal light level.
+ * @property {number} greenhouseId - The ID of the greenhouse for which the prediction is made.
+ * @property {number} sensorReadingId - The ID of the single sensor reading used for this prediction.
+ * @throws {Error} If no prediction data is found or if the API request fails.
  */
-
 export async function getLatestPrediction() {
   const res = await fetch(`${BASE_URL}/Prediction/`, {
     headers: createAuthHeaders()
@@ -248,17 +226,16 @@ export async function getLatestPrediction() {
   return latestData;
 }
 
-/*
- *   fetchGreenhouseDataByGardenerId(gardenerId)
- *   INPUT:
- *     gardenerId (int) - id of the gardener
- *   RETURNS:
- *     Greenhose data object whith the id provided || the object contains the following properties:
- *       id (int) - id of the greenhouse
- *       name (string) - name of the greenhouse
- *       gardenerId (int) - id of the gardener
+/**
+ * Fetches greenhouse data for a specific gardener.
+ * @param {number} gardenerId - The ID of the gardener.
+ * @returns {Promise<Object>} A promise that resolves to the greenhouse data object.
+ * The greenhouse object (GreenhouseDto) contains:
+ * @property {number} id - The ID of the greenhouse.
+ * @property {string} name - The name of the greenhouse.
+ * @property {number} gardenerId - The ID of the gardener who owns the greenhouse.
+ * @throws {Error} If the API request fails.
  */
-
 export async function fetchGreenhouseDataByGardenerId(gardenerId) {
   const res = await fetch(`${BASE_URL}/Greenhouse/gardener/${gardenerId}`, {
     headers: createAuthHeaders()
@@ -268,19 +245,17 @@ export async function fetchGreenhouseDataByGardenerId(gardenerId) {
   return data;
 }
 
-/*
- *   updateGreenhouseData(greenhouseId, data)
- *   INPUT:
- *     greenhouseId (int) - id of the greenhouse
- *     name (string) - new name for the greenhouse
- *   RETURNS:
- *     Updates the database with the new name for the greenhouse
- *     Returns the updated greenhouse data object || the object contains the following properties:
- *       id (int) - id of the greenhouse
- *       name (string) - name of the greenhouse
- *       gardenerId (int) - id of the gardener
+/**
+ * Updates the name of a specific greenhouse.
+ * @param {number} greenhouseId - The ID of the greenhouse to update.
+ * @param {string} name - The new name for the greenhouse.
+ * @returns {Promise<Object>} A promise that resolves to the updated greenhouse data object.
+ * The greenhouse object (GreenhouseDto) contains:
+ * @property {number} id - The ID of the greenhouse.
+ * @property {string} name - The updated name of the greenhouse.
+ * @property {number} gardenerId - The ID of the gardener who owns the greenhouse.
+ * @throws {Error} If the API request fails.
  */
-
 export async function updateGreenhouseName(greenhouseId, name) {
   const res = await fetch(`${BASE_URL}/Greenhouse/update/${greenhouseId}`, {
     method: 'PUT',  // method needs to be specified
@@ -291,20 +266,23 @@ export async function updateGreenhouseName(greenhouseId, name) {
   return res.json();
 }
 
-/*
- *   getLogs(sensorType, date)
- *   INPUT:
- *     type (string) - type of sensor data to fetch || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
- *     date (date-time?) - date to fetch the data for || imput null for all dates
- *   RETURNS:
- *     Array of log data objects filtered by type and date || each object contains the following properties:
- *       date (date-time) - date of the log
- *       message (string) - message of the log
- *       waterpumpid (int) - id of the water pump
- *       sensorreadingid (int) - id of the sensor reading
- *       greenhouseid (int) - id of the greenhouse
+/**
+ * Fetches logs, optionally filtered by sensor type and/or date.
+ * @param {string} sensorType - The type of sensor to filter logs by.
+ *                              Possible values: "all", "temperature", "humidity", "light", "soilMoisture".
+ *                              If "all", logs are not filtered by sensor type but may still be filtered by date.
+ * @param {string|null} date - The specific date (e.g., "YYYY-MM-DD") to fetch logs for. If `null`, logs for all dates (matching other criteria) are fetched.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of log objects.
+ *                                   Returns an empty array if no logs match or if data is not in the expected format.
+ * Each log object (LogDto) contains:
+ * @property {number} id - The ID of the log entry.
+ * @property {string} date - The ISO 8601 date-time string of the log entry.
+ * @property {string} message - The log message.
+ * @property {number|null} waterPumpId - The ID of the water pump related to this log, or `null`.
+ * @property {number|null} sensorReadingId - The ID of the sensor reading related to this log (typically the sensor ID like 1 for temp), or `null`.
+ * @property {number} greenhouseId - The ID of the greenhouse this log pertains to.
+ * @throws {Error} If an invalid sensor type is provided or if the API request fails.
  */
-
 export async function getLogs(sensorType, date) {
   // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(sensorType)) {
@@ -347,16 +325,15 @@ export async function getLogs(sensorType, date) {
   return filteredData; // Can be an empty array if no matches
 }
 
-/*
- *   getSensorStatus(type)
- *   INPUT:
- *     type (string) - type of sensor to check || possible values: "all", "temperature", "humidity", "light", "soilMoisture"
- *   RETURNS:
- *     boolean - true if the sensor is on, false if the sensor is off
- *       If the type is set to "all", the function will return true if all sensors are on, false otherwise.
- *       The status is based on the last log entry for each sensor: If the last log entry is older than 15 minutes, the sensor is considered off.
+/**
+ * Checks the operational status of a sensor or all sensors based on recent log activity.
+ * A sensor is considered "on" if its last log entry is within the last 60 minutes.
+ * @param {string} type - The type of sensor to check. Possible values: "all", "temperature", "humidity", "light", "soilMoisture".
+ *                      If "all", checks the status of all individual sensor types; returns `true` only if all are "on".
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the sensor (or all sensors, if type is "all") is considered "on", `false` otherwise.
+ *                             Returns `false` if errors occur during log fetching or processing for any sensor.
+ * @throws {Error} If an invalid sensor type is provided (but not for "all" if an individual check fails, which returns false).
  */
-
 export async function getSensorStatus(type) {
   // Validate the type parameter
   const validTypes = ['all', 'temperature', 'humidity', 'light', 'soilMoisture'];
@@ -441,7 +418,17 @@ export async function getSensorStatus(type) {
 }
 
 //TODO: make a detailed comment for this function
-
+/**
+ * Fetches all notifications for the authenticated gardener.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of notification objects.
+ * Each notification object (NotificationDto) contains:
+ * @property {number} id - The ID of the notification.
+ * @property {string} message - The content of the notification message.
+ * @property {string} date - The ISO 8601 date-time string when the notification was created.
+ * @property {number} gardenerId - The ID of the gardener to whom the notification belongs.
+ * @property {boolean} isRead - Indicates whether the notification has been read.
+ * @throws {Error} If the API request fails.
+ */
 export async function getAllNotifications() { // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notification/all`, {
     headers: createAuthHeaders()
@@ -452,7 +439,16 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
 }
 
 //TODO: make a detailed comment for this function
-
+/**
+ * Fetches the notification preferences for the authenticated gardener.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of notification preference objects.
+ * Each notification preference object (NotificationPreferenceDto) contains:
+ * @property {number} id - The ID of the notification preference.
+ * @property {number} gardenerId - The ID of the gardener.
+ * @property {string} type - The type of notification. Possible values: "Soil Moisture", "Light", "Temperature", "Watering", "Humidity".
+ * @property {boolean} isEnabled - Indicates whether notifications of this type are enabled.
+ * @throws {Error} If the API request fails.
+ */
 export async function getNotificationPreferences() { // apparently no gardenerId is needed
   const res = await fetch(`${BASE_URL}/notificationpref`, {
     headers: createAuthHeaders()
@@ -463,7 +459,13 @@ export async function getNotificationPreferences() { // apparently no gardenerId
 }
 
 //TODO: make a detailed comment for this function
-
+/**
+ * Toggles a specific notification preference for a gardener.
+ * @param {number} gardenerId - The ID of the gardener whose preference is to be toggled.
+ * @param {string} type - The type of notification preference to toggle. Possible values: "Soil Moisture", "Light", "Temperature", "Watering", "Humidity".
+ * @returns {Promise<string>} A promise that resolves to a success message string from the API.
+ * @throws {Error} If the API request fails.
+ */
 export async function toggleNotificationPreference(gardenerId, type) {
   const res = await fetch(`${BASE_URL}/notificationpref/toggle`, {
     method: 'PATCH',
@@ -478,14 +480,13 @@ export async function toggleNotificationPreference(gardenerId, type) {
   return await res.text(); // Return the success message
 }
 
-/*
- *   getSensorThresholds(type)
- *   INPUT:
- *     type (string) - type of sensor to check || possible values: "temperature", "humidity", "light", "soilMoisture"
- *   RETURNS:
- *     threshold (int) - threshold value for the sensor
+/**
+ * Fetches the current threshold value for a specific sensor type.
+ * @param {string} type - The type of sensor. Possible values: "temperature", "humidity", "light", "soilMoisture".
+ * @returns {Promise<number|null>} A promise that resolves to the threshold value (a number) for the sensor,
+ *                                 or `null` if no threshold data is found or an error occurs.
+ * @throws {Error} If an invalid sensor type is provided or if the API request fails before data parsing.
  */
-
 export async function getSensorThresholds(type) {
   // Validate the type parameter
   if (!['temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
@@ -522,15 +523,17 @@ export async function getSensorThresholds(type) {
   return threshold; // Return the threshold value, this is a number
 }
 
-/*
-  *   updateSensorThreshold(type, threshold)
-  *   INPUT:
-  *     type (string) - type of sensor to check || possible values: "temperature", "humidity", "light", "soilMoisture"
-  *     threshold (int) - new threshold value
-  *   RETURNS:
-  *     Success message
-  */
-
+/**
+ * Updates the threshold value for a specific sensor type.
+ * @param {string} type - The type of sensor. Possible values: "temperature", "humidity", "light", "soilMoisture".
+ * @param {number} threshold - The new threshold value to set for the sensor.
+ * @returns {Promise<Object>} A promise that resolves to the updated sensor data object.
+ * The sensor object (SensorDto) contains:
+ * @property {number} id - The ID of the sensor.
+ * @property {string} type - The type of the sensor (e.g., "Temperature").
+ * @property {number} thresholdValue - The updated threshold value.
+ * @throws {Error} If an invalid sensor type is provided or if the API request fails.
+ */
 export async function updateSensorThreshold(type, threshold) {
   // Validate the type parameter
   if (!['temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
@@ -568,13 +571,16 @@ export async function updateSensorThreshold(type, threshold) {
   return res.json(); // Return the updated sensor data object
 }
 
-/*
- *   WATER PUMP API ENDPOINTS
- */
-
 /**
- * Get all water pumps
- * @returns {Promise<Array>} - Array of water pump objects
+ * Get all water pumps associated with the authenticated gardener's greenhouse(s).
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of water pump objects.
+ * Each water pump object (WaterPumpDto) contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse the water pump belongs to.
+ * @property {number} currentWaterLevel - The current water level in the pump's tank, in milliliters (ml).
+ * @property {number} capacity - The total capacity of the water pump's tank, in milliliters (ml).
+ * @property {number} threshold - The water level threshold (in ml) for triggering actions (e.g., notifications or auto-watering).
+ * @property {boolean} autoWatering - Indicates if automatic watering is enabled for this pump.
  */
 export async function getAllWaterPumps() {
   try {
@@ -592,9 +598,16 @@ export async function getAllWaterPumps() {
 }
 
 /**
- * Get water pump by ID
- * @param {number} id - ID of the water pump
- * @returns {Promise<Object>} - Water pump object
+ * Get a specific water pump by its ID.
+ * @param {number} id - The unique identifier of the water pump to retrieve.
+ * @returns {Promise<Object>} - A promise that resolves to a water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse the water pump belongs to.
+ * @property {number} currentWaterLevel - The current water level in the pump's tank, in milliliters (ml).
+ * @property {number} capacity - The total capacity of the water pump's tank, in milliliters (ml).
+ * @property {number} threshold - The water level threshold (in ml) for triggering actions.
+ * @property {boolean} autoWatering - Indicates if automatic watering is enabled for this pump.
  */
 export async function getWaterPumpById(id) {
   try {
@@ -612,9 +625,9 @@ export async function getWaterPumpById(id) {
 }
 
 /**
- * Get water pump's water level
- * @param {number} id - ID of the water pump
- * @returns {Promise<number>} - Water level value
+ * Get the current water level of a specific water pump.
+ * @param {number} id - The unique identifier of the water pump.
+ * @returns {Promise<number>} - A promise that resolves to a number representing the current water level in milliliters (ml).
  */
 export async function getWaterPumpWaterLevel(id) {
   try {
@@ -632,9 +645,21 @@ export async function getWaterPumpWaterLevel(id) {
 }
 
 /**
- * Create a new water pump
- * @param {Object} waterPumpData - Water pump data
- * @returns {Promise<Object>} - Created water pump object
+ * Create a new water pump.
+ * @param {Object} waterPumpData - Data for the new water pump.
+ * @param {number} waterPumpData.greenhouseId - The ID of the greenhouse this water pump will belong to.
+ * @param {number} waterPumpData.currentWaterLevel - The initial water level, in milliliters (ml).
+ * @param {number} waterPumpData.capacity - The tank capacity, in milliliters (ml).
+ * @param {number} waterPumpData.threshold - The water level threshold, in milliliters (ml).
+ * @param {boolean} waterPumpData.autoWatering - Whether auto-watering is enabled.
+ * @returns {Promise<Object>} - A promise that resolves to the created water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the newly created water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The current water level (ml).
+ * @property {number} capacity - The tank capacity (ml).
+ * @property {number} threshold - The water level threshold (ml).
+ * @property {boolean} autoWatering - Auto-watering status.
  */
 export async function createWaterPump(waterPumpData) {
   try {
@@ -656,10 +681,17 @@ export async function createWaterPump(waterPumpData) {
 }
 
 /**
- * Toggle automation status for a water pump
- * @param {number} id - ID of the water pump
- * @param {boolean} autoWatering - New automation status
- * @returns {Promise<Object>} - Updated water pump object
+ * Toggle the automation (auto-watering) status for a specific water pump.
+ * @param {number} id - The ID of the water pump.
+ * @param {boolean} autoWatering - The new automation status (true for enabled, false for disabled). The request body is this boolean.
+ * @returns {Promise<Object>} - A promise that resolves to the updated water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The current water level (ml).
+ * @property {number} capacity - The tank capacity (ml).
+ * @property {number} threshold - The water level threshold (ml).
+ * @property {boolean} autoWatering - The updated auto-watering status.
  */
 export async function toggleAutomationStatus(id, autoWatering) {
   try {
@@ -681,9 +713,16 @@ export async function toggleAutomationStatus(id, autoWatering) {
 }
 
 /**
- * Trigger manual watering for a water pump
- * @param {number} id - ID of the water pump
- * @returns {Promise<Object>} - Updated water pump object
+ * Trigger manual watering for a specific water pump.
+ * @param {number} id - The ID of the water pump to trigger manual watering for.
+ * @returns {Promise<Object>} - A promise that resolves to the updated water pump object (WaterPumpDto) after the manual watering action.
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The updated current water level (ml).
+ * @property {number} capacity - The tank capacity (ml).
+ * @property {number} threshold - The water level threshold (ml).
+ * @property {boolean} autoWatering - The auto-watering status.
  */
 export async function triggerManualWatering(id) {
   try {
@@ -704,10 +743,17 @@ export async function triggerManualWatering(id) {
 }
 
 /**
- * Update current water level for a water pump
- * @param {number} id - ID of the water pump 
- * @param {number} addedWaterAmount - Amount of water to add
- * @returns {Promise<Object>} - Updated water pump object
+ * Update the current water level for a water pump, typically after adding water.
+ * @param {number} id - The ID of the water pump.
+ * @param {number} addedWaterAmount - The amount of water added to the tank, in milliliters (ml). This value is sent as the request body.
+ * @returns {Promise<Object>} - A promise that resolves to the updated water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The new current water level (ml).
+ * @property {number} capacity - The tank capacity (ml).
+ * @property {number} threshold - The water level threshold (ml).
+ * @property {boolean} autoWatering - The auto-watering status.
  */
 export async function updateCurrentWaterLevel(id, addedWaterAmount) {
   try {
@@ -729,10 +775,17 @@ export async function updateCurrentWaterLevel(id, addedWaterAmount) {
 }
 
 /**
- * Update threshold value for a water pump
- * @param {number} id - ID of the water pump
- * @param {number} newThresholdValue - New threshold value
- * @returns {Promise<Object>} - Updated water pump object
+ * Update the threshold value for a specific water pump.
+ * @param {number} id - The ID of the water pump.
+ * @param {number} newThresholdValue - The new threshold value for the water pump, in milliliters (ml). This value is sent as the request body.
+ * @returns {Promise<Object>} - A promise that resolves to the updated water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The current water level (ml).
+ * @property {number} capacity - The tank capacity (ml).
+ * @property {number} threshold - The updated threshold value (ml).
+ * @property {boolean} autoWatering - The auto-watering status.
  */
 export async function updateWaterPumpThreshold(id, newThresholdValue) {
   try {
@@ -754,10 +807,17 @@ export async function updateWaterPumpThreshold(id, newThresholdValue) {
 }
 
 /**
- * Update water tank capacity for a water pump
- * @param {number} id - ID of the water pump
- * @param {number} newCapacityValue - New capacity value
- * @returns {Promise<Object>} - Updated water pump object
+ * Update water tank capacity for a specific water pump.
+ * @param {number} id - The ID of the water pump.
+ * @param {number} newCapacityValue - The new capacity value for the water pump's tank, in milliliters (ml). This value is sent as the request body.
+ * @returns {Promise<Object>} - A promise that resolves to the updated water pump object (WaterPumpDto).
+ * The water pump object contains:
+ * @property {number} id - The ID of the water pump.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ * @property {number} currentWaterLevel - The current water level (ml).
+ * @property {number} capacity - The updated tank capacity (ml).
+ * @property {number} threshold - The water level threshold (ml).
+ * @property {boolean} autoWatering - The auto-watering status.
  */
 export async function updateWaterTankCapacity(id, newCapacityValue) {
   try {
@@ -779,9 +839,9 @@ export async function updateWaterTankCapacity(id, newCapacityValue) {
 }
 
 /**
- * Delete a water pump
- * @param {number} id - ID of the water pump
- * @returns {Promise<void>}
+ * Delete a water pump by its ID.
+ * @param {number} id - The ID of the water pump to delete.
+ * @returns {Promise<void>} - A promise that resolves when the deletion is successful (API returns 204 No Content).
  */
 export async function deleteWaterPump(id) {
   try {
@@ -802,9 +862,14 @@ export async function deleteWaterPump(id) {
 }
 
 /**
- * Get water usage history for a water pump
- * @param {number} id - ID of the water pump
- * @returns {Promise<Array>} - Array of water usage data objects
+ * Get water usage history for a specific water pump.
+ * Retrieves logs detailing daily water usage and water levels for the pump.
+ * @param {number} id - The ID of the water pump.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of water usage log objects (WaterUsageLogDto).
+ * Each object contains:
+ * @property {string} date - The ISO 8601 date-time string for the log entry.
+ * @property {number} dailyWaterUsage - The amount of water used on that day, in milliliters (ml).
+ * @property {number} waterLevel - The water level at the time of the log, in milliliters (ml).
  */
 export async function getWaterUsageHistory(id) {
   try {
@@ -823,8 +888,22 @@ export async function getWaterUsageHistory(id) {
   }
 }
 
-
-/* Gallery page functions */
+/**
+ * Fetches all plants associated with the authenticated gardener's greenhouse(s).
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of plant objects (PlantDto).
+ * Each plant object includes:
+ * @property {number} id - The unique identifier for the plant.
+ * @property {string} name - The name of the plant.
+ * @property {string} species - The species of the plant.
+ * @property {Array<Object>} pictures - An array of picture objects (PictureDto) associated with the plant.
+ *   Each picture object contains:
+ *   @property {number} id - Picture ID.
+ *   @property {string} url - Picture URL.
+ *   @property {string} note - Picture note.
+ *   @property {string} timeStamp - ISO 8601 date-time string of picture upload.
+ *   @property {number} plantId - ID of the plant this picture belongs to.
+ * @property {number} greenhouseId - The ID of the greenhouse where the plant is located.
+ */
 export async function getAllPlants() {
   try {
     const res = await fetch(`${BASE_URL}/Plant`, {
@@ -840,6 +919,17 @@ export async function getAllPlants() {
   }
 }
 
+/**
+ * Fetches all pictures associated with a specific plant ID.
+ * @param {number} plantId - The unique identifier of the plant for which to retrieve pictures.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of picture objects (PictureDto).
+ * Each picture object includes:
+ * @property {number} id - The unique identifier for the picture.
+ * @property {string} url - The URL where the picture is stored.
+ * @property {string} [note] - An optional note or description for the picture.
+ * @property {string} timeStamp - The ISO 8601 date-time string when the picture was uploaded/recorded.
+ * @property {number} plantId - The ID of the plant this picture belongs to.
+ */
 export async function getAllPicturesByPlantId(plantId) {
   try {
     const res = await fetch(`${BASE_URL}/Picture/${plantId}`, {
@@ -856,11 +946,18 @@ export async function getAllPicturesByPlantId(plantId) {
 }
 
 /**
- * Upload a picture for a plant
- * @param {number} plantId - ID of the plant
- * @param {File|string} pictureFile - The picture file or URL to upload
- * @param {string} note - Optional note for the picture
- * @returns {Promise<Object>} - Uploaded picture data
+ * Upload a picture for a specific plant.
+ * The picture can be provided as a File object or as a URL string (though backend expects a file upload).
+ * @param {number} plantId - The ID of the plant to associate the picture with.
+ * @param {File|string} pictureFile - The picture file (File object). If a string is passed, it's assumed to be handled by FormData correctly, but `File` is typical.
+ * @param {string} [note] - An optional note or description to save with the picture.
+ * @returns {Promise<Object>} A promise that resolves to an object representing the uploaded picture data (PictureDto).
+ * The returned object includes:
+ * @property {number} id - The unique identifier for the uploaded picture.
+ * @property {string} url - The URL of the stored picture.
+ * @property {string} [note] - The note associated with the picture, if provided.
+ * @property {string} timeStamp - The ISO 8601 date-time string of when the picture was uploaded.
+ * @property {number} plantId - The ID of the plant.
  */
 export async function uploadPicture(plantId, pictureFile, note) {
   try {
@@ -901,6 +998,12 @@ export async function uploadPicture(plantId, pictureFile, note) {
   }
 }
 
+/**
+ * Deletes a picture by its unique identifier.
+ * @param {number} pictureId - The ID of the picture to delete.
+ * @returns {Promise<Object>} A promise that resolves to an object indicating success, e.g., { success: true } (client-side convention, API returns 204 No Content).
+ * @throws {Error} If the deletion fails (e.g., picture not found, server error).
+ */
 export async function deletePicture(pictureId) {
   try {
     const res = await fetch(`${BASE_URL}/Picture/${pictureId}`, {
@@ -918,11 +1021,18 @@ export async function deletePicture(pictureId) {
     throw error;
   }
 }
+
 /**
- * Edit the note for an existing picture
- * @param {number} pictureId - ID of the picture
- * @param {string} note - New note text for the picture
- * @returns {Promise<Object>} - Updated picture data
+ * Edits the note associated with an existing picture.
+ * @param {number} pictureId - The ID of the picture whose note is to be edited.
+ * @param {string} note - The new note text for the picture.
+ * @returns {Promise<Object>} A promise that resolves to the updated picture data object (PictureDto).
+ * The returned object includes:
+ * @property {number} id - The ID of the picture.
+ * @property {string} url - The URL of the picture.
+ * @property {string} note - The updated note.
+ * @property {string} timeStamp - The ISO 8601 date-time string of the original upload; this timestamp does not update when the note is edited.
+ * @property {number} plantId - The ID of the plant this picture belongs to.
  */
 export async function editPictureNote(pictureId, note) {
   try {
@@ -946,6 +1056,19 @@ export async function editPictureNote(pictureId, note) {
 
 
 // Plant management functions
+/**
+ * Adds a new plant to a greenhouse.
+ * @param {string} name - The name of the new plant.
+ * @param {string} species - The species of the new plant.
+ * @param {number} greenhouseId - The ID of the greenhouse where the plant will be added.
+ * @returns {Promise<Object>} A promise that resolves to the newly created plant object (PlantDto).
+ * The plant object includes:
+ * @property {number} id - The unique identifier for the new plant.
+ * @property {string} name - The name of the plant.
+ * @property {string} species - The species of the plant.
+ * @property {Array<Object>} pictures - An array of picture objects (PictureDto), initially empty.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ */
 export async function addPlant(name, species, greenhouseId) {
   try {
     const res = await fetch(`${BASE_URL}/Plant`, {
@@ -969,6 +1092,20 @@ export async function addPlant(name, species, greenhouseId) {
   }
 }
 
+/**
+ * Edits the name and species of an existing plant.
+ * This function makes two separate API calls: one to update the name and one for the species.
+ * @param {number} plantId - The ID of the plant to edit.
+ * @param {string} name - The new name for the plant.
+ * @param {string} species - The new species for the plant.
+ * @returns {Promise<Object>} A promise that resolves to the updated plant object (PlantDto) from the species update call.
+ * The plant object includes:
+ * @property {number} id - The ID of the plant.
+ * @property {string} name - The updated name.
+ * @property {string} species - The updated species.
+ * @property {Array<Object>} pictures - The existing pictures associated with the plant.
+ * @property {number} greenhouseId - The ID of the greenhouse.
+ */
 export async function editPlant(plantId, name, species) {
   try {
     // Update plant name first
@@ -998,6 +1135,12 @@ export async function editPlant(plantId, name, species) {
   }
 
 }
+/**
+ * Deletes a plant by its unique identifier.
+ * @param {number} plantId - The ID of the plant to delete.
+ * @returns {Promise<Object>} A promise that resolves to an object indicating success, e.g., { success: true } (client-side convention, API returns 204 No Content).
+ * @throws {Error} If the deletion fails (e.g., plant not found, server error).
+ */
 export async function deletePlant(plantId) {
   try {
     const res = await fetch(`${BASE_URL}/Plant/${plantId}`, {

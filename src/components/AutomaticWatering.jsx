@@ -85,6 +85,7 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
                                         className="sr-only peer" 
                                         checked={automaticWatering} 
                                         onChange={handleToggleClick} 
+                                        disabled={isLoading || isToggling} 
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500"></div>
                                     <div className={`absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform ${automaticWatering ? 'translate-x-5' : ''}`}></div>

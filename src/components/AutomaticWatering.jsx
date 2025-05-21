@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import waterLevelIcon from '../assets/hugeicons--humidity.svg';
 import { useDarkMode } from '../context/DarkModeContext';
-import { toggleAutomationStatus } from '../api';
+import { toggleAutomationStatus, confirmPassword } from '../api';
+import PasswordConfirmPopup from './PasswordConfirmPopup';
 
 function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
     const [automaticWatering, setAutomaticWatering] = useState(isAutomatic || false);
     const [isToggling, setIsToggling] = useState(false);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const { darkMode } = useDarkMode();
     
     // Update state when props change
@@ -13,8 +15,17 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
         setAutomaticWatering(isAutomatic || false);
     }, [isAutomatic]);
     
-    const handleToggleAutomaticWatering = async () => {
+    const handleToggleClick = () => {
+        // Open password confirmation modal
+        setIsPasswordModalOpen(true);
+    };
+    
+    const handlePasswordConfirm = async (password) => {
         try {
+            // First verify the password
+            await confirmPassword(password);
+            
+            // Then proceed with the actual operation
             setIsToggling(true);
             // Toggle automatic watering via API
             await toggleAutomationStatus(pumpId, !automaticWatering);
@@ -22,13 +33,19 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
             setAutomaticWatering(prev => !prev);
             // Notify parent component to refresh data
             if (onUpdate) onUpdate();
+            return true;
         } catch (error) {
-            console.error('Error toggling automatic watering:', error);
+            console.error('Error in password confirmation or toggling automatic watering:', error);
             // Revert local state if API call fails
             setAutomaticWatering(isAutomatic || false);
+            throw error; // Re-throw to show in the password popup
         } finally {
             setIsToggling(false);
         }
+    };
+    
+    const closePasswordModal = () => {
+        setIsPasswordModalOpen(false);
     };
 
     return (
@@ -67,7 +84,7 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
                                         id="wateringToggle" 
                                         className="sr-only peer" 
                                         checked={automaticWatering} 
-                                        onChange={handleToggleAutomaticWatering} 
+                                        onChange={handleToggleClick} 
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500"></div>
                                     <div className={`absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform ${automaticWatering ? 'translate-x-5' : ''}`}></div>
@@ -77,6 +94,14 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
                     </div>
                 </div>
             </div>
+            
+            {/* Password Confirmation Popup */}
+            <PasswordConfirmPopup 
+                isOpen={isPasswordModalOpen}
+                onClose={closePasswordModal}
+                onConfirm={handlePasswordConfirm}
+                actionName="toggle automatic watering"
+            />
         </div>
     );
 }

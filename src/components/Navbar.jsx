@@ -8,6 +8,7 @@ import sensorIcon from '../assets/material-symbols--nest-remote-comfort-sensor-o
 import galleryIcon from '../assets/solar--gallery-broken.svg';
 import settingsIcon from '../assets/akar-icons--gear.svg';
 import aboutIcon from '../assets/material-symbols--info-outline-rounded.svg';
+import plantIcon from '../assets/plant_icon.svg';
 
 // New close icon for mobile
 const CloseIcon = () => (
@@ -43,6 +44,7 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
     { to: "/water-management", icon: waterIcon, text: "Water Management", alt: "Water-icon" },
     { to: "/sensor-view", icon: sensorIcon, text: "Sensor View", alt: "Sensor-icon" },
     { to: "/gallery", icon: galleryIcon, text: "Gallery", alt: "Gallery-icon" },
+    { to: "/plant-management", icon: plantIcon, text: "Plant Management", alt: "Plant-icon" },
     { to: "/settings", icon: settingsIcon, text: "Settings", alt: "Settings-icon" },
     { to: "/about", icon: aboutIcon, text: "About us", alt: "About-us-icon" },
   ];

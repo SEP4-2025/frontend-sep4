@@ -15,6 +15,7 @@ import GalleryPage from './pages/GalleryPage';
 import WaterManagement from './pages/WaterManagement';
 import AboutUsPage from './pages/AboutUsPage';
 import SensorViewPage from './pages/SensorViewPage';
+import PlantManagement from './pages/PlantManagement';
 // import { useDarkMode } from './context/DarkModeContext'; // If needed for App level dark mode
 
 function App() {
@@ -102,6 +103,16 @@ function AppContent() {
             element={
               isAuthenticated ? (
                 <GalleryPage toggleMobileNav={toggleMobileNav} />
+              ) : (
+                <Navigate to="/loginPage" replace />
+              )
+            }
+          />
+          <Route
+            path="/plant-management"
+            element={
+              isAuthenticated ? (
+                <PlantManagement toggleMobileNav={toggleMobileNav} />
               ) : (
                 <Navigate to="/loginPage" replace />
               )

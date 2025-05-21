@@ -1,11 +1,11 @@
 import logo from '../assets/GrowMate_Logo_Transparent.png';
 import filterArrow from '../assets/filterArrow.png';
 import React, { useState, useEffect } from 'react';
-import { useDarkMode } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext.jsx';
 import { getAllPlants, uploadPicture } from '../api/index.js';
 
 // That's for the picture upload in gallery page
-function Plant_upload_popup({ isOpen, onClose, onUploadSuccess }) {
+function PlantUploadPopup({ isOpen, onClose, onUploadSuccess }) {
   const { darkMode } = useDarkMode();
   const [note, setNote] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -241,4 +241,4 @@ function Plant_upload_popup({ isOpen, onClose, onUploadSuccess }) {
     </div>
   )
 }
-export default Plant_upload_popup;
+export default PlantUploadPopup;

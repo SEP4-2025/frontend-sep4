@@ -1,6 +1,6 @@
-import Plant_gallery_card from '../components/Plant-gallery-card';
-import Plant_upload_popup from '../components/Plant-upload-popup';
-import LoadingScreen from '../components/Loading-screen';
+import PlantGalleryCard from '../components/PlantGalleryCard';
+import PlantUploadPopup from '../components/PlantUploadPopup';
+import LoadingScreen from '../components/LoadingScreen';
 import filterArrow from '../assets/filterArrow.png';
 import { useEffect, useState } from "react";
 import { useDarkMode } from '../context/DarkModeContext';
@@ -346,7 +346,7 @@ function GalleryPage() {
                             {plantMenuFilteredPlants.length > 0 ? (
                                 plantMenuFilteredPlants.map(({ plant, picture }) => (
                                     <div key={picture.id || `${plant.id}-${Math.random()}`}>
-                                        <Plant_gallery_card
+                                        <PlantGalleryCard
                                             name={plant.name || `Plant ${plant.id}`}
                                             imageUrl={picture.url || "https://via.placeholder.com/150/92c952"}
                                             note={picture.note}
@@ -365,7 +365,7 @@ function GalleryPage() {
                         </div>
                     </div>
                 </div>
-                <Plant_upload_popup
+                <PlantUploadPopup
                     isOpen={isModalOpen}
                     onClose={closeModal}
                     onUploadSuccess={handleUploadSuccess}

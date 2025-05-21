@@ -3,7 +3,7 @@ import { useDarkMode } from "../context/DarkModeContext";
 import { addPlant, editPlant } from "../api";
 
 
-function Plant_form_popup({ isOpen, onClose, onSuccess, initialPlant = null }) {
+function PlantFormPopup({ isOpen, onClose, onSuccess, initialPlant = null }) {
     const { darkMode } = useDarkMode();
     const [plantName, setPlantName] = useState('');
     const [species, setSpecies] = useState('');
@@ -133,4 +133,4 @@ function Plant_form_popup({ isOpen, onClose, onSuccess, initialPlant = null }) {
 }
 
 
-export default Plant_form_popup;
+export default PlantFormPopup;

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Notification_card from './Notification-card.jsx';
+import NotificationCard from './NotificationCard.jsx'; // Standardized import
 import filterArrow from '../assets/filterArrow.png';
-import { useDarkMode } from '../context/DarkModeContext';
+import { useDarkMode } from '../context/DarkModeContext.jsx';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
 import { useMobileDetection } from '../utils/useMobileDetection.js'; // Import the hook
 
-function Notification_pop_up({ isOpen, onClose, notificationData, notificationPreferences }) {
+function NotificationPopup({ isOpen, onClose, notificationData, notificationPreferences }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const { darkMode } = useDarkMode();
     const { notifications } = useNotificationHub();
@@ -186,7 +186,7 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
             <div className="flex-1 overflow-y-auto px-4">
               {notificationList.length > 0 ? (
                 notificationList.map((notification, index) => (
-                  <Notification_card key={index} notification={notification} />
+                  <NotificationCard key={index} notification={notification} />
                 ))
               ) : (
                 <p className="text-center py-4">No notifications available</p>
@@ -209,4 +209,4 @@ function Notification_pop_up({ isOpen, onClose, notificationData, notificationPr
       );
 }
 
-export default Notification_pop_up;
+export default NotificationPopup; // Standardized export

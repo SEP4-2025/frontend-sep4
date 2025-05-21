@@ -6,7 +6,7 @@ import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
 import notificationIcon from '../assets/notification-icon.svg';
 import { useDarkMode } from '../context/DarkModeContext';
 
-function Notification_card({ notification }) {
+function NotificationCard({ notification }) {
     const { darkMode } = useDarkMode();
 
     // Helper function to determine the importance tier of the notification
@@ -104,4 +104,4 @@ function Notification_card({ notification }) {
     );
 }
 
-export default Notification_card;
+export default NotificationCard;

@@ -1,8 +1,9 @@
 import PenLogo from '../assets/pen-icon.svg';
 import SaveLogo from '../assets/saveIcon.svg';
 import React, { useState, useRef, useEffect } from 'react';
-import { updateGreenhouseName } from '../api';
+import { updateGreenhouseName } from '../api/index.js';
 import { useDarkMode } from '../context/DarkModeContext.jsx'; 
+
 function NameCard({ greenhouseData }) {
   const [name, setName] = useState(greenhouseData?.name);
   const [isEditing, setIsEditing] = useState(false);

@@ -1,5 +1,5 @@
 import {
-  fetchGrenhouseDataByGardenerId,
+  fetchGreenhouseDataByGardenerId,
   getSensorDataLastest,
   getSensorData,
   getSensorAverageByDate,
@@ -17,7 +17,7 @@ import {
   updateWaterPumpThreshold,
   getWaterUsageHistory,
   getAllPlants,
-  getAllPicturesByPLantId
+  getAllPicturesByPlantId
 } from '../api';
 
 function formatDate(date){
@@ -28,7 +28,7 @@ function formatDate(date){
 }
 
 export async function compileDashboardData(gardenerId) {
-  const greenhouseData = await fetchGrenhouseDataByGardenerId(gardenerId);
+  const greenhouseData = await fetchGreenhouseDataByGardenerId(gardenerId);
 
   const lightSensorData = await getSensorDataLastest('light');
   const temperatureSensorData = await getSensorDataLastest('temperature');
@@ -384,7 +384,7 @@ export async function compileGalleryPageData() {
     const plantsWithPictures = await Promise.all(
       allPlants.map(async (plant) => {
         try {
-          const pictures = await getAllPicturesByPLantId(plant.id);
+          const pictures = await getAllPicturesByPlantId(plant.id);
           return {
             ...plant,
             pictures: Array.isArray(pictures) ? pictures : []
@@ -408,7 +408,7 @@ export async function compileGalleryPageData() {
   }
 }
 
-export async function compilePlantManagamentData() {
+export async function compilePlantManagementData() {
   try {
     const allPlants = await getAllPlants();
     

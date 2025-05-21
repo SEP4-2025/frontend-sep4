@@ -12,7 +12,7 @@ jest.mock('../context/DarkModeContext', () => ({
   useDarkMode: jest.fn(),
 }));
 
-jest.mock('../components/Log-card', () => ({ log }) => (
+jest.mock('../components/log-card', () => ({ log }) => (
   <div data-testid="log-card">{log.message}</div>
 ));
 

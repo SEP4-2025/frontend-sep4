@@ -4,7 +4,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 import { compileDashboardData } from '../utils/dataCompiler';
 import { getGardenerIdFromToken, getSensorThresholds } from '../api';
 import NameCard from '../components/NameCard';
-import SensorCard from '../components/SensorCard'; // Updated import
+import SensorCard from '../components/SensorCard';
 import { SensorOverview } from '../components/SensorOverview';
 import NotificationCentre from '../components/NotificationCentre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
@@ -20,12 +20,12 @@ import waterLevelIcon from '../assets/lets-icons--water.svg';
 
 function Dashboard() {
   const { darkMode } = useDarkMode();
+  const [greenhouseData, setGreenhouseData] = useState(null);
   const [lightSensorData, setLightSensorData] = useState(null);
   const [temperatureSensorData, setTemperatureSensorData] = useState(null);
   const [humiditySensorData, setHumiditySensorData] = useState(null);
   const [soilMoistureSensorData, setSoilMoistureSensorData] = useState(null);
   const [soilMoistureSensorThreshold, setSoilMoistureSensorThreshold] = useState(null);
-  const [greenhouseData, setGreenhouseData] = useState([]);
   const [lightSensorDataAverageToday, setLightSensorDataAverageToday] = useState(null);
   const [temperatureSensorDataAverageToday, setTemperatureSensorDataAverageToday] = useState(null);
   const [humiditySensorDataAverageToday, setHumiditySensorDataAverageToday] = useState(null);
@@ -41,7 +41,7 @@ function Dashboard() {
   const [notificationData, setNotificationData] = useState([]);
   const [notificationPreferences, setNotificationPreferences] = useState([]);
   const [aiPredictionData, setAiPredictionData] = useState(null);
-  const [waterLevelCardData, setWaterLevelCardData] = useState(null); // New state for water level card
+  const [waterLevelCardData, setWaterLevelCardData] = useState(null);
 
   const [gardenerId, setGardenerId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,20 +59,30 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (gardenerId) {
-      setIsLoading(true);
-      setError(null);
-      Promise.all([
-        compileDashboardData(gardenerId), // This now includes waterLevelCardData
-        getSensorThresholds('soilMoisture')
-      ])
-        .then(([dashboardData, thresholdValue]) => {
+    if (!gardenerId) return;
+
+    let isMounted = true;
+
+    const fetchData = async (isInitialLoad = false) => {
+      if (isInitialLoad && isMounted) {
+        setIsLoading(true);
+        setError(null);
+      }
+
+      try {
+        // Call compileDashboardData and getSensorThresholds without signal
+        const [dashboardData, thresholdValue] = await Promise.all([
+          compileDashboardData(gardenerId),
+          getSensorThresholds('soilMoisture')
+        ]);
+
+        if (isMounted) {
+          setGreenhouseData(dashboardData.greenhouseData);
           setLightSensorData(dashboardData.lightSensorData);
           setTemperatureSensorData(dashboardData.temperatureSensorData);
           setHumiditySensorData(dashboardData.humiditySensorData);
           setSoilMoistureSensorData(dashboardData.soilMoistureSensorData);
           setSoilMoistureSensorThreshold(thresholdValue);
-          setGreenhouseData(dashboardData.greenhouseData);
           setLightSensorDataAverageToday(dashboardData.lightSensorDataAverageToday);
           setTemperatureSensorDataAverageToday(dashboardData.temperatureSensorDataAverageToday);
           setHumiditySensorDataAverageToday(dashboardData.humiditySensorDataAverageToday);
@@ -88,21 +98,37 @@ function Dashboard() {
           setNotificationData(dashboardData.notificationData);
           setNotificationPreferences(dashboardData.notificationPreferences);
           setAiPredictionData(dashboardData.aiPredictionData);
-          setWaterLevelCardData(dashboardData.waterLevelCardData); // Set water level data
-        })
-        .catch((fetchError) => {
-          console.error('Error fetching dashboard data or soil moisture threshold:', fetchError);
-          setError(`Failed to load dashboard data: ${fetchError.message}. Please try again later.`);
-          setSoilMoistureSensorThreshold(null); // Reset threshold on error
-        })
-        .finally(() => {
+          setWaterLevelCardData(dashboardData.waterLevelCardData);
+          if (!isInitialLoad) setError(null); // Clear previous non-critical errors on successful background refresh
+        }
+      } catch (fetchError) {
+        if (isMounted) {
+            console.error('Error fetching dashboard data:', fetchError);
+            if (isInitialLoad) {
+                setError(`Failed to load dashboard data: ${fetchError.message}.`);
+                setSoilMoistureSensorThreshold(null); // Reset threshold if initial load fails
+            } else {
+                // For background refresh failures, just log a warning.
+                // The UI will continue to show the stale data.
+                console.warn("Background dashboard data refresh failed:", fetchError.message);
+            }
+        }
+      } finally {
+        if (isMounted && isInitialLoad) {
           setIsLoading(false);
-        });
-    } else if (!isLoading && !getGardenerIdFromToken()) { // Only set loading false if not already loading and no ID
-        setIsLoading(false);
-        if (!error) setError("User information not found. Please log in again."); // Set error if not already set
-    }
-  }, [gardenerId]); // Removed 'error' and 'isLoading' from dependency array as they are set within this effect.
+        }
+      }
+    };
+
+    fetchData(true); // Initial fetch
+
+    const intervalId = setInterval(() => fetchData(false), 30000); // Refresh every 30 seconds
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [gardenerId]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -115,13 +141,14 @@ function Dashboard() {
       </div>
     );
   }
-
-  if (!gardenerId && !isLoading) { // Check isLoading to prevent brief flash of this message
-    return (
-      <div className={`px-4 py-6 text-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-        <p className="text-yellow-500 text-lg">Unable to retrieve user information. Please ensure you are logged in.</p>
-      </div>
-    );
+  
+  // Display message if data is null after loading and no critical error
+  if (!greenhouseData && !error && !isLoading) {
+      return (
+          <div className={`px-4 py-6 text-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <p>No dashboard data available. Try refreshing.</p>
+          </div>
+      );
   }
 
   return (
@@ -134,7 +161,6 @@ function Dashboard() {
           <ClockCard />
         </div>
 
-        {/* Sensor Cards Grid */}
         <div className="lg:col-span-6 mt-1 grid grid-cols-2 lg:grid-cols-5 gap-4">
           <SensorCard
             title="Light"
@@ -144,7 +170,7 @@ function Dashboard() {
             averageYesterday={lightSensorDataAverageYesterday}
             unit=" lux"
             precision={0}
-            cardClassName="lg:col-span-1" // Ensures each card takes up one column on large screens
+            cardClassName="lg:col-span-1"
             dataTestId="light-sensor-card"
           />
           <SensorCard
@@ -177,7 +203,7 @@ function Dashboard() {
             averageYesterday={soilMoistureSensorDataAverageYesterday}
             unit="%"
             precision={1}
-            cardClassName="lg:col-span-1" // Takes 1 column on large screens
+            cardClassName="lg:col-span-1"
             dataTestId="soil-moisture-sensor-card"
           />
           <SensorCard
@@ -187,7 +213,7 @@ function Dashboard() {
             additionalText={waterLevelCardData ? `Level: ${waterLevelCardData.value}%` : 'N/A'}
             unit="%" 
             precision={0}
-            cardClassName="col-span-2 lg:col-span-1" // Spans 2 columns on mobile, 1 on large screens
+            cardClassName="col-span-2 lg:col-span-1"
             dataTestId="water-level-sensor-card"
           />
         </div>

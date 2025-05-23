@@ -20,7 +20,6 @@ function WaterManagement () {
         waterTankCapacity: 1000
     });
     
-    // Default pump ID - in a real app, this might come from user settings or URL params
     const pumpId = 1;
     
     useEffect(() => {

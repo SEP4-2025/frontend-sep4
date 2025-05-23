@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import MobileHeader from '../components/MobileHeader'; // Removed
 import { useFontSize } from '../context/FontSizeContext';
 import { useDarkMode } from '../context/DarkModeContext';
 import {
@@ -25,13 +24,12 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const SettingsPage = () => { // Removed toggleMobileNav prop
+const SettingsPage = () => { 
   const [notificationPrefs, setNotificationPrefs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { darkMode, setDarkMode } = useDarkMode();
   const { fontSizeKey, setFontSizeKey, FONT_SIZES_CONFIG } = useFontSize();
-  // theme, tempMin, tempMax are not used in the provided selection, but kept if part of full component
   const [theme, setTheme] = useState('green');
   const [tempMin, setTempMin] = useState(18);
   const [tempMax, setTempMax] = useState(30);
@@ -73,10 +71,10 @@ const SettingsPage = () => { // Removed toggleMobileNav prop
         <div className="flex flex-col lg:flex-row gap-6"> {/* Main two-column container */}
           {/* Left Column */}
           <div className="flex-1 space-y-8 max-w-3xl">
-            <header className="mb-6 hidden sm:block"> {/* Updated: Hide header on mobile, show on sm+ */}
+            <header className="mb-6 hidden sm:block">
               <h1 className="text-4xl font-bold flex items-center">
                 <IconWrapper><img src={gearIconPath} alt="Settings" className={`w-full h-full ${darkMode ? 'invert' : ''}`} /></IconWrapper>
-                <span className="Jacques-Francois ml-3">Settings</span> {/* Updated: Removed responsive visibility classes as parent handles it */}
+                <span className="Jacques-Francois ml-3">Settings</span>
               </h1>
             </header>
 
@@ -140,7 +138,7 @@ const SettingsPage = () => { // Removed toggleMobileNav prop
           {/* Right Column: Configured for specific alignment */}
           <div className="w-full lg:w-96 flex flex-col">
             {/* Color Mode Card: mt-16 to align with Notification Preferences card top */}
-            <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-16`}> {/* Original mt-16 for alignment */}
+            <div className={`${darkMode ? 'bg-slate-700' : 'bg-white'} p-6 rounded-lg shadow-md mt-16`}>
               <div className="flex items-center gap-2 mb-1">
                 <img src={moonIconPath} alt="Dark Mode" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
                 <h2 className="text-xl font-semibold">Color mode</h2>

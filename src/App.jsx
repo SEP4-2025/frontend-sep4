@@ -4,11 +4,9 @@ import { useState } from 'react';
 
 // Components
 import Navbar from './components/Navbar';
-// PlantUploadPopup is imported but not used in App.jsx, consider removing if not needed globally here
-// import PlantUploadPopup from './components/PlantUploadPopup.jsx';
 import MobileHeader from './components/MobileHeader';
 import { useMobileDetection } from './utils/useMobileDetection';
-import { useDarkMode } from './context/DarkModeContext'; // Import useDarkMode
+import { useDarkMode } from './context/DarkModeContext'; 
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -34,7 +32,7 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const isMobile = useMobileDetection();
-  const { darkMode } = useDarkMode(); // Get darkMode state
+  const { darkMode } = useDarkMode(); 
 
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
@@ -59,31 +57,16 @@ function AppContent() {
   const currentPageTitle = getPageTitle(location.pathname);
 
   return (
-    // This outer div is a flex row for Navbar + main content.
-    // min-h-screen ensures it covers the viewport height.
-    // A base background for the entire app (e.g., behind the navbar if it's transparent or has gaps)
     <div className={`flex min-h-screen ${darkMode ? 'bg-slate-900' : 'bg-gray-100'}`}>
       {!shouldHideNavbarAndMobileHeader && isAuthenticated && (
         <Navbar isMobileNavOpen={isMobileNavOpen} toggleMobileNav={toggleMobileNav} />
       )}
-      {/*
-        MAIN CONTENT AREA:
-        - `flex-1`: Takes up remaining width.
-        - `overflow-y-auto`: Handles scrolling for page content.
-        - `h-screen` REMOVED. Its height is now governed by the parent flex container.
-        - Sets the background and default text color for the area where pages are rendered.
-      */}
+      
       <main className={`flex-1 overflow-y-auto ${darkMode ? 'bg-slate-800 text-slate-100' : 'bg-gray-50 text-gray-900'}`}>
         {isMobile && !shouldHideNavbarAndMobileHeader && isAuthenticated && (
           <MobileHeader toggleMobileNav={toggleMobileNav} title={currentPageTitle} />
         )}
-        {/*
-          If MobileHeader is fixed (e.g., sticky top-0) and has a known height,
-          you might need to add padding-top to the div wrapping <Routes> or directly to <main>
-          to prevent page content from being obscured by the MobileHeader.
-          Example: <div className="pt-16"> <Routes>...</Routes> </div> if MobileHeader is h-16.
-          For now, assuming MobileHeader flows in document or its height is accounted for.
-        */}
+        
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to="/loginPage" replace /> : <StartPage />} />
           <Route path="/loginPage" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage setIsAuthenticated={setIsAuthenticated} />} />

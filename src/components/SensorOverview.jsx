@@ -69,7 +69,7 @@ export function SensorOverview({
       // Set y-axis to defaults for the selected sensor when no data
       let defaultMin = 0, defaultMax = 100;
       if (selectedSensor === "temperature") { defaultMin = -30; defaultMax = 70; }
-      else if (selectedSensor === "light") { defaultMax = 100000; } // min is 0
+      else if (selectedSensor === "light") { defaultMax = 2000; } // min is 0
       setYAxisConfig({ min: defaultMin, max: defaultMax });
       return;
     }
@@ -91,7 +91,7 @@ export function SensorOverview({
 
         const valuesInDay = sourceData
           .filter(item => {
-            const itemDate = new Date(item.date); // Assuming item.date is a valid date string or Date object
+            const itemDate = new Date(item.date);
             return itemDate >= dayDate && itemDate < dayEnd;
           })
           .map(item => item.value);
@@ -100,7 +100,7 @@ export function SensorOverview({
           const avg = valuesInDay.reduce((a, b) => a + b, 0) / valuesInDay.length;
           dataPoints.push(parseFloat(avg.toFixed(2)));
         } else {
-          dataPoints.push(null); // Use null for Chart.js to represent missing data
+          dataPoints.push(null);
         }
       }
     } else if (timeframe === "24h") {
@@ -144,7 +144,7 @@ export function SensorOverview({
     let baseMin = 0;
     let baseMax = 100; // Default for humidity and soil moisture
     if (selectedSensor === "temperature") { baseMin = -30; baseMax = 70; }
-    else if (selectedSensor === "light") { baseMax = 100000; } // min is 0
+    else if (selectedSensor === "light") { baseMax = 2000; } // min is 0
 
     let currentYMin = baseMin;
     let currentYMax = baseMax;
@@ -207,7 +207,7 @@ export function SensorOverview({
     }
     
     setYAxisConfig({
-      min: Math.floor(currentYMin), // Use Math.floor and Math.ceil for cleaner axis values
+      min: Math.floor(currentYMin),
       max: Math.ceil(currentYMax),
     });
 

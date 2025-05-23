@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDarkMode } from '../context/DarkModeContext.jsx';
-import LogCard from './LogCard.jsx'; // Corrected case-sensitivity
-import LogPopup from './LogPopup.jsx'; // Changed import
+import LogCard from './LogCard.jsx'; 
+import LogPopup from './LogPopup.jsx'; 
 
-function SensorLog ({ logs }) { // Changed prop name from notifications to logs
+function SensorLog ({ logs }) { 
     const { darkMode } = useDarkMode();
     const [isModalOpen, setIsModalOpen] = useState(false);
     

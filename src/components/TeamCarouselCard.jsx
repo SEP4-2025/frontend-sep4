@@ -34,10 +34,10 @@ function TeamCarouselCard() {
         speed: 500,
         slidesToShow: 3,
         slidesToScroll: 1,
-        centerMode: true, // Enables centering
-        centerPadding: "0", // Removes extra padding
-        autoplay: true, // Enables autoplay
-        autoplaySpeed: 10000, // Time between slides
+        centerMode: true,
+        centerPadding: "0",
+        autoplay: true,
+        autoplaySpeed: 10000,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
         responsive: [

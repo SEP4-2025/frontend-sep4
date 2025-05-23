@@ -44,7 +44,7 @@ function PlantFormPopup({ isOpen, onClose, onSuccess, initialPlant = null }) {
             if (initialPlant) {
                 await editPlant(initialPlant.id, plantName, species);
             } else {
-                await addPlant(plantName, species, 1); // Fixed greenhouse ID
+                await addPlant(plantName, species, 1);
             }
 
             if (onSuccess) {

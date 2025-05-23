@@ -20,31 +20,30 @@ function ImpactCard() {
         dots: false,
         arrows: false,
         speed: 500,
-        // Default settings for desktop (static row)
         slidesToShow: impactStats.length,
-        slidesToScroll: impactStats.length, // Scroll all at once if arrows were enabled
+        slidesToScroll: impactStats.length,
         infinite: false,
-        autoplay: false, // No autoplay on desktop
+        autoplay: false,
         draggable: false,
         swipeToSlide: false,
         touchMove: false,
         centerMode: false,
-        pauseOnHover: true, // Default behavior for desktop
+        pauseOnHover: true,
         responsive: [
             {
-                breakpoint: 768, // Apply below this width (mobile)
+                breakpoint: 768,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1,
                     infinite: true,
-                    autoplay: true, // Enable autoplay on mobile
-                    autoplaySpeed: 4000, // Time between slides on mobile (e.g., 4 seconds)
+                    autoplay: true,
+                    autoplaySpeed: 4000,
                     draggable: true,
                     swipeToSlide: true,
                     touchMove: true,
-                    centerMode: true, // Center the single slide on mobile
+                    centerMode: true, 
                     centerPadding: '0px',
-                    pauseOnHover: false, // Disable pause on hover for mobile to ensure continuous autoplay
+                    pauseOnHover: false,
                 }
             }
         ]

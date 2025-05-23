@@ -13,7 +13,6 @@ import {
   Legend,
 } from 'chart.js';
 
-// Sensor configurations defined at the top of this file
 export const SENSOR_CONFIG = {
   temperature: {
     name: 'Temperature',
@@ -63,8 +62,8 @@ function SensorViewGraph({
     sensorTypesCollection 
 }) {
     const { darkMode } = useDarkMode();
-    const [open, setOpen] = useState(false); // For the dropdown
-    const [mobileOpen, setMobileOpen] = useState(false); // Separate state for mobile dropdown
+    const [open, setOpen] = useState(false); 
+    const [mobileOpen, setMobileOpen] = useState(false); 
 
     const { 
         history = [], 

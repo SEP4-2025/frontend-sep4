@@ -30,11 +30,6 @@ function NotificationCard({ notification }) {
         if (match && match[1]) {
             const deviationPercentage = parseFloat(match[1]);
 
-            // Check if the message indicates a direct percentage deviation
-            // or if it's a value like "21Celcius" which might imply a direct reading, not a deviation percentage.
-            // For simplicity, if "Celcius" is found, we might need a different logic or assume it's a high deviation.
-            // If the unit is '%', it's clearly a percentage.
-
             if (deviationPercentage < 5) {
                 return "Info";
             } else if (deviationPercentage >= 5 && deviationPercentage < 10) {

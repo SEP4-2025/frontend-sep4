@@ -1,10 +1,12 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-68779328892.europe-north2.run.app'; // Override in .env for real prod URL
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-68779328892.europe-north2.run.app'; 
 
 const getAuthToken = () => {
+  
   return sessionStorage.getItem('token');
 };
 
 const createAuthHeaders = () => {
+  
   const token = getAuthToken();
   const headers = {
     'Content-Type': 'application/json'
@@ -29,19 +31,16 @@ export async function confirmPassword(password) {
   }
 
   try {
-    // Use the correct route to the Auth controller (no /api prefix)
-    // Include both Password and ConfirmPassword fields as required by the DTO
     const response = await fetch(`${BASE_URL}/Auth/confirm-password`, {
       method: 'POST',
       headers: createAuthHeaders(),
       body: JSON.stringify({
         Password: password,
-        ConfirmPassword: password // Both fields must match per the [Compare] attribute
+        ConfirmPassword: password
       })
     });
 
     if (!response.ok) {
-      // Handle different error cases
       if (response.status === 401) {
         throw new Error('Invalid password');
       } else if (response.status === 404) {
@@ -73,22 +72,18 @@ export async function confirmPassword(password) {
  * @throws {Error} If the sensor type is invalid or if the API request fails.
  */
 export async function getSensorData(type) {
-  // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
     throw new Error(`Invalid sensor type: ${type}`);
   }
 
-  // Transform type to lowercase
   const lowerType = type.toLowerCase();
 
-  // Translate type into int
   let typeIdPath = '';
   if (lowerType === 'temperature') typeIdPath = 'sensor/1';
   else if (lowerType === 'humidity') typeIdPath = 'sensor/2';
   else if (lowerType === 'light') typeIdPath = 'sensor/3';
   else if (lowerType === 'soilmoisture') typeIdPath = 'sensor/4';
 
-  // Fetch data from the API
   const res = await fetch(`${BASE_URL}/SensorReading/${typeIdPath}`, {
     headers: createAuthHeaders()
   });
@@ -108,9 +103,8 @@ export async function getSensorData(type) {
  * @throws {Error} If no data is found for the specified type or if the API request fails.
  */
 export async function getSensorDataLastest(type) {
-  const allData = await getSensorData(type)
+  const allData = await getSensorData(type);
 
-  // Get the latest data from the response's array (last element)
   const data = await allData;
   const latestData = data[data.length - 1];
   if (!latestData) throw new Error(`No data found for type ${type}`);
@@ -130,24 +124,15 @@ export async function getSensorDataLastest(type) {
  * @property {number} sensorId - The ID of the sensor type for which the average was calculated.
  */
 export async function getSensorAverageByDate(type, date) {
-  // Validate the type parameter
   if (!['all', 'temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
-    console.error(`Invalid sensor type: ${type}`); // Log error instead of throwing to allow graceful handling
+    console.error(`Invalid sensor type: ${type}`); 
     return null;
   }
 
-  // Date format validation (optional, but good practice if you expect a specific format)
-  // const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  // if (!dateRegex.test(date)) {
-  //   console.error(`Invalid date format: ${date}. Expected format: YYYY-MM-DD`);
-  //   return null;
-  // }
+  const lowerType = type.toLowerCase(); 
 
-  // Transform type to lowercase
-  const lowerType = type.toLowerCase(); // Use a new variable
 
-  // Translate type into int for filtering
-  let typeId = -1; // Default to an invalid ID
+  let typeId = -1; 
   if (lowerType === 'temperature') typeId = 1;
   else if (lowerType === 'humidity') typeId = 2;
   else if (lowerType === 'light') typeId = 3;
@@ -157,9 +142,6 @@ export async function getSensorAverageByDate(type, date) {
     return null;
   }
 
-
-  // Fetch data from the API for the given date
-  // This endpoint is expected to return an array of all sensor readings for that date
   const res = await fetch(`${BASE_URL}/SensorReading/date/${date}`, {
     headers: createAuthHeaders()
   });
@@ -167,14 +149,13 @@ export async function getSensorAverageByDate(type, date) {
     console.error(`Failed to load sensor data average for the date ${date} [type ${type}, which is ${typeId}]`);
     return null;
   }
-  // Filter the data by typeId
+
   const data = await res.json();
   if (!Array.isArray(data) || data.length === 0) {
     console.warn(`No data returned from API for date ${date}`);
     return null;
   }
 
-  // Filter the data by the specific sensorId
   const filteredData = data.filter(item => item.sensorId === typeId);
   if (filteredData.length === 0) {
     console.error(`No data found for type ${type} on date ${date}`);
@@ -184,14 +165,9 @@ export async function getSensorAverageByDate(type, date) {
   const sum = filteredData.reduce((total, item) => total + item.value, 0);
   const averageValue = sum / filteredData.length;
 
-  /* Construct the average data object, which is a single .json element averaging the "res" data:
-   *   date (date-time) - date of the sensor data
-   *   value (int) - averaged value of the sensor data for the specified date
-   *   sensorId (int) - id of the sensor 
-   */
   const average = {
-    date: date, // The date requested
-    value: parseFloat(averageValue.toFixed(2)), // Keep value as a number, format to 2 decimal places
+    date: date,
+    value: parseFloat(averageValue.toFixed(2)),
     sensorId: typeId
   };
 
@@ -215,8 +191,8 @@ export async function getSensorAverageByDate(type, date) {
  * @throws {Error} If no prediction data is found or if the API request fails.
  */
 export async function getLatestPrediction() {
-  const res = await fetch(`${BASE_URL}/Prediction/repredict/latest`, { // Changed endpoint
-    method: 'POST', // Add POST method
+  const res = await fetch(`${BASE_URL}/Prediction/repredict/latest`, { 
+    method: 'POST', 
     headers: createAuthHeaders()
   });
   if (!res.ok) {
@@ -225,14 +201,13 @@ export async function getLatestPrediction() {
   }
   const data = await res.json();
 
-  console.log("🔥Latest prediction data:", data); // Log the response for debugging
 
-  // The new endpoint is expected to return a single prediction object directly
-  if (!data) { // Check if data itself is null or undefined
+  
+  if (!data) { 
     throw new Error(`No data found for prediction`);
   }
 
-  return data; // Return the single prediction object
+  return data; 
 }
 
 /**
@@ -267,7 +242,7 @@ export async function fetchGreenhouseDataByGardenerId(gardenerId) {
  */
 export async function updateGreenhouseName(greenhouseId, name) {
   const res = await fetch(`${BASE_URL}/Greenhouse/update/${greenhouseId}`, {
-    method: 'PUT',  // method needs to be specified
+    method: 'PUT',  
     headers: createAuthHeaders(),
     body: JSON.stringify(name),
   });
@@ -426,7 +401,7 @@ export async function getSensorStatus(type) {
   }
 }
 
-//TODO: make a detailed comment for this function
+
 /**
  * Fetches all notifications for the authenticated gardener.
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of notification objects.
@@ -447,7 +422,7 @@ export async function getAllNotifications() { // apparently no gardenerId is nee
   return data;
 }
 
-//TODO: make a detailed comment for this function
+
 /**
  * Fetches the notification preferences for the authenticated gardener.
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of notification preference objects.
@@ -467,7 +442,7 @@ export async function getNotificationPreferences() { // apparently no gardenerId
   return data;
 }
 
-//TODO: make a detailed comment for this function
+
 /**
  * Toggles a specific notification preference for a gardener.
  * @param {number} gardenerId - The ID of the gardener whose preference is to be toggled.
@@ -497,22 +472,21 @@ export async function toggleNotificationPreference(gardenerId, type) {
  * @throws {Error} If an invalid sensor type is provided or if the API request fails before data parsing.
  */
 export async function getSensorThresholds(type) {
-  // Validate the type parameter
+  
   if (!['temperature', 'humidity', 'light', 'soilMoisture'].includes(type)) {
     throw new Error(`Invalid sensor type: ${type}`);
   }
 
-  // Transform type to lowercase
+  
   const lowerType = type.toLowerCase();
 
-  // Translate type into int for filtering
-  let typeId = -1; // Default to an invalid ID
+  
+  let typeId = -1; 
   if (lowerType === 'temperature') typeId = 1;
   else if (lowerType === 'humidity') typeId = 2;
   else if (lowerType === 'light') typeId = 3;
   else if (lowerType === 'soilmoisture') typeId = 4;
 
-  // Fetch data from the API for the given date
   const res = await fetch(`${BASE_URL}/Sensor/${typeId}`, {
     headers: createAuthHeaders()
   });
@@ -520,16 +494,15 @@ export async function getSensorThresholds(type) {
 
   const data = await res.json();
 
-  // Retrieve the threshold value from the response, which is a json object originally
-  // The response is a single object, not an array
+  
   if (!data || typeof data.thresholdValue === 'undefined') {
     console.error(`No threshold data found for type ${type}`);
     return null;
   }
-  // Return the threshold value
+  
   const threshold = data.thresholdValue;
 
-  return threshold; // Return the threshold value, this is a number
+  return threshold; 
 }
 
 /**
@@ -561,7 +534,7 @@ export async function updateSensorThreshold(type, threshold) {
 
   // Fetch data from the API for the given date
   const res = await fetch(`${BASE_URL}/Sensor/update/${typeId}`, {
-    method: 'PATCH', // Changed from PUT to PATCH
+    method: 'PATCH', 
     headers: createAuthHeaders(),
     body: JSON.stringify({ thresholdValue: threshold }),
   });
@@ -569,7 +542,7 @@ export async function updateSensorThreshold(type, threshold) {
   if (!res.ok) {
     let errorBody = 'Could not retrieve error body.';
     try {
-      errorBody = await res.text(); // Try to get more info from the response
+      errorBody = await res.text(); 
     } catch (e) {
       console.error("Error trying to read error response body:", e);
     }
@@ -577,7 +550,7 @@ export async function updateSensorThreshold(type, threshold) {
     throw new Error(`Failed to update sensor thresholds for type ${type}. Status: ${res.status}`);
   }
 
-  return res.json(); // Return the updated sensor data object
+  return res.json(); 
 }
 
 /**
@@ -1173,7 +1146,7 @@ export async function deletePlant(plantId) {
  * @returns {string|null} The Gardener ID if found and successfully parsed, otherwise null.
  */
 export const getGardenerIdFromToken = () => {
-  const token = getAuthToken(); // Use existing getAuthToken
+  const token = getAuthToken(); 
   if (token) {
     try {
       const base64Url = token.split('.')[1];
@@ -1198,7 +1171,7 @@ export const getGardenerIdFromToken = () => {
         console.warn("Gardener ID claim not found in token or is empty. Token payload:", decodedToken);
         return null;
       }
-      return String(gardenerId); // Ensure it's a string if your API expects that
+      return String(gardenerId); 
     } catch (error) {
       console.error("Failed to decode token or extract gardenerId:", error);
       return null;

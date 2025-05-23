@@ -4,7 +4,7 @@ import temperatureIcon from '../assets/solar--temperature-bold.svg';
 import humidityIcon from '../assets/carbon--humidity-alt.svg';
 import lightIntensityIcon from '../assets/entypo--light-up.svg';
 import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
-import genericLogIcon from '../assets/notification-icon.svg'; // Using notification icon as a generic log icon
+import genericLogIcon from '../assets/notification-icon.svg'; 
 
 function LogCard({ log }) {
     const { darkMode } = useDarkMode();
@@ -24,14 +24,14 @@ function LogCard({ log }) {
         if (type.includes('light')) {
             return <img src={lightIntensityIcon} alt="Light Intensity" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
         }
-        // Default log icon (General)
+        
         return <img src={genericLogIcon} alt="Log Entry" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />;
     };
 
-    // Format the timestamp to YYYY-MM-DD
+    
     const formattedDate = log?.timeStamp?.split('T')[0] || "No date available";
-    // Optionally, format time if needed elsewhere or for desktop
-    // const formattedTime = log?.timeStamp ? new Date(log.timeStamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+    
+    
 
 
     return (
@@ -44,7 +44,7 @@ function LogCard({ log }) {
                     {/* Timestamp for Desktop */}
                     <div className={`hidden lg:flex items-center justify-between mb-2`}>
                         <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            {formattedDate} {/* Display formatted date for desktop */}
+                            {formattedDate} 
                         </span>
                     </div>
                     

@@ -183,9 +183,9 @@ function Dashboard() {
           <SensorCard
             title="Water Level"
             iconSrc={waterLevelIcon}
-            currentData={waterLevelCardData} // Assuming waterLevelCardData has a 'value' property
-            additionalText={waterLevelCardData ? `Level: ${waterLevelCardData.value}%` : 'N/A'} // Custom text
-            unit="%" // Unit might not be directly displayed if using additionalText fully
+            currentData={waterLevelCardData}
+            additionalText={waterLevelCardData ? `Level: ${waterLevelCardData.value}%` : 'N/A'}
+            unit="%" 
             precision={0}
             cardClassName="col-span-2 lg:col-span-1" // Spans 2 columns on mobile, 1 on large screens
             dataTestId="water-level-sensor-card"

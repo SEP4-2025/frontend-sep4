@@ -15,16 +15,16 @@ function NameCard({ greenhouseData }) {
     if (greenhouseData?.name) {
       setName(greenhouseData.name);
     }
-  }, [greenhouseData]); // rerenders when data arrives from the database
+  }, [greenhouseData]); 
 
   useEffect(() => {
     if (isEditing && inputReference.current) {
       inputReference.current.focus();
     }
-  }, [isEditing]); // Focus the input when editing starts
+  }, [isEditing]); 
 
   const handleSave = async () => {
-    if(!greenhouseData?.id || name === greenhouseData.name) { // no changes
+    if(!greenhouseData?.id || name === greenhouseData.name) { 
       setIsEditing(false);
       return;
     }
@@ -47,18 +47,18 @@ function NameCard({ greenhouseData }) {
     else {
       setIsEditing(true);
     }
-  }; // Handles the edit button click
+  }; 
 
   const handleNameChange = (event) => {
     setName(event.target.value);
-  }; // Handles the actual name change from the input field
+  }; 
 
   const handleEnterKey = (event) => {
     if (event.key === 'Enter') {
       handleSave();
       setIsEditing(false);
     }
-  }; // Handles the enter key press to save the name
+  }; 
 
   return (
     <div className={`rounded-lg p-5 w-full max-w-2xl shadow-sm mb-8 ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
@@ -104,6 +104,6 @@ function NameCard({ greenhouseData }) {
         </p>
       )}
     </div>
-  ); // For the image the same thing, conditional rendering using ternary operator it shows the pen icon or the save icon depending on the state of isEditing, it is also clickable and starts the editing process or close it.
+  ); 
 }
 export default NameCard;

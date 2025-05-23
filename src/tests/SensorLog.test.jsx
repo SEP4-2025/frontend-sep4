@@ -12,11 +12,11 @@ jest.mock('../context/DarkModeContext', () => ({
   useDarkMode: jest.fn(),
 }));
 
-jest.mock('../components/log-card', () => ({ log }) => (
+jest.mock('../components/LogCard', () => ({ log }) => (
   <div data-testid="log-card">{log.message}</div>
 ));
 
-jest.mock('../components/log-pupup', () => ({ isOpen }) => (
+jest.mock('../components/LogPopup', () => ({ isOpen }) => (
   isOpen ? <div data-testid="log-popup">Modal is open</div> : null
 ));
 

@@ -60,7 +60,7 @@ function LogCard({ log }) {
                         )}
                         
                         <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Recommended action: {log?.message || "No action needed"}
+                            Event: {log.type === "Log Entry" ? log.message : `${log.sensorType} reading recorded.`}
                         </p>
 
                         {/* Timestamp for Mobile - appears as the last item */}

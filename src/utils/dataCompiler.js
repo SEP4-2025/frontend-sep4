@@ -161,54 +161,146 @@ export async function toggleNotificationPreferenceData(gardenerId, type) {
 
 export async function compileSensorLogs(requestedApiType, signal) {
   try {
-    const rawLogs = await getLogs(requestedApiType, null);
-
-
-    if (!rawLogs || !Array.isArray(rawLogs)) {
-      console.warn(`No logs returned or invalid format for ${requestedApiType} from getLogs.`);
-      return [];
-    }
+    // 1. Fetch activity logs
+    const rawActivityLogs = await getLogs(requestedApiType === 'all' ? 'all' : requestedApiType, null, signal ? { signal } : undefined);
+    let processedActivityLogs = [];
 
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     thirtyDaysAgo.setHours(0, 0, 0, 0);
 
-    const filteredLogsByDate = rawLogs.filter(log => {
-
-      if (!log || !log.timestamp) { 
-        return false;
-      }
-      const logDate = new Date(log.timestamp);
-      return !isNaN(logDate.getTime()) && logDate >= thirtyDaysAgo;
-    });
-
+    if (rawActivityLogs && Array.isArray(rawActivityLogs)) {
+      processedActivityLogs = rawActivityLogs
+        .filter(log => {
+          // API for getLogs returns 'timestamp'
+          if (!log || !log.timestamp) {
+            return false;
+          }
+          const logDate = new Date(log.timestamp);
+          const isValidDate = !isNaN(logDate.getTime());
+          if (!isValidDate) {
+            return false;
+          }
+          const isWithinRange = logDate >= thirtyDaysAgo;
+          return isWithinRange;
+        })
+        .map(log => ({
+          id: `activity-${log.id}`,
+          type: "Log Entry",
+          message: log.message,
+          timeStamp: log.timestamp, // Use log.timestamp from API
+          sensorType: mapSensorIdToText(log.sensorReadingId),
+          originalLogDate: new Date(log.timestamp), // Use log.timestamp for sorting
+          waterPumpId: log.waterPumpId,
+          sensorReadingId: log.sensorReadingId,
+        }));
+    }
 
     function mapSensorIdToText(sensorId) {
         if (sensorId === 1) return 'Temperature';
         if (sensorId === 2) return 'Humidity';
         if (sensorId === 3) return 'Light';
         if (sensorId === 4) return 'Soil Moisture';
-        if (sensorId == null) return 'General'; 
+        if (sensorId == null) return 'General';
         return 'Unknown';
     }
 
-    return filteredLogsByDate.map(log => ({
-      type: "Log Entry",
-      message: log.message,
-      timeStamp: log.timestamp ? new Date(log.timestamp).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Invalid Date',
-      sensorType: mapSensorIdToText(log.sensorReadingId),
-      originalLogDate: log.timestamp ? new Date(log.timestamp) : new Date(0), 
-      waterPumpId: log.waterPumpId,
-      sensorReadingId: log.sensorReadingId 
-    })).sort((a, b) => b.originalLogDate - a.originalLogDate);
+    // 2. Fetch sensor readings and transform them into log objects
+    let sensorReadingLogs = [];
+    const sensorTypesToFetch = ['temperature', 'humidity', 'light', 'soilMoisture'];
+    const sensorTypeMappings = {
+        temperature: { name: 'Temperature', unit: '°C', apiType: 'temperature' },
+        humidity: { name: 'Humidity', unit: '%', apiType: 'humidity' },
+        light: { name: 'Light', unit: 'lux', apiType: 'light' },
+        soilMoisture: { name: 'Soil Moisture', unit: '%', apiType: 'soilMoisture' }
+    };
+
+    const fetchPromises = [];
+    for (const typeKey of sensorTypesToFetch) {
+        const apiType = sensorTypeMappings[typeKey]?.apiType;
+        if (!apiType) {
+            continue;
+        }
+
+        if (requestedApiType === 'all' || requestedApiType === apiType) {
+            fetchPromises.push(
+                getSensorData(apiType, signal ? { signal } : undefined)
+                    .then(data => {
+                        return { typeKey, data: Array.isArray(data) ? data : [] };
+                    })
+                    .catch(err => {
+                        if (err.name === 'AbortError') throw err;
+                        console.error(`[compileSensorLogs] Failed to fetch sensor data for ${apiType}:`, err); // Kept console.error as per typical best practice, can be removed if strictly no console output is desired.
+                        return { typeKey, data: [] };
+                    })
+            );
+        }
+    }
+
+    const sensorDataResults = await Promise.all(fetchPromises);
+
+    for (const result of sensorDataResults) {
+        const mapping = sensorTypeMappings[result.typeKey];
+        if (!mapping) {
+            continue;
+        }
+        if (result.data && Array.isArray(result.data)) {
+            const readingsAsLogs = result.data
+                .filter(reading => {
+                    // API for getSensorData also returns 'timeStamp'
+                    if (!reading || !reading.timeStamp || reading.value === undefined || reading.value === null) {
+                        return false;
+                    }
+                    const readingDate = new Date(reading.timeStamp);
+                    const isValidDate = !isNaN(readingDate.getTime());
+                    if (!isValidDate) {
+                        return false;
+                    }
+                    const isWithinRange = readingDate >= thirtyDaysAgo;
+                    return isWithinRange;
+                })
+                .map(reading => ({
+                    id: `sensor-${reading.sensorId}-${reading.id}`,
+                    type: "Sensor Reading",
+                    message: undefined, // Sensor readings don't have a direct "recommended action" message
+                    timeStamp: reading.timeStamp, // Use reading.timeStamp from API
+                    sensorType: mapping.name,
+                    value: reading.value,
+                    unit: mapping.unit,
+                    originalLogDate: new Date(reading.timeStamp), // Use reading.timeStamp for sorting
+                    deviation: null,
+                }));
+            sensorReadingLogs.push(...readingsAsLogs);
+        }
+    }
+
+    // 3. Combine and sort all logs
+    const combinedLogs = [...processedActivityLogs, ...sensorReadingLogs];
+
+    combinedLogs.sort((a, b) => {
+        const dateA = a.originalLogDate;
+        const dateB = b.originalLogDate;
+        if (!dateA || !dateB || isNaN(dateA.getTime()) || isNaN(dateB.getTime())) { // Added check for valid Date objects
+            // Decide how to handle: sort invalid dates to beginning or end, or treat as equal
+            if (!dateA && !dateB) return 0;
+            if (!dateA) return 1; // Sort logs with no dateA to the end
+            if (!dateB) return -1; // Sort logs with no dateB to the end
+            if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+            if (isNaN(dateA.getTime())) return 1;
+            if (isNaN(dateB.getTime())) return -1;
+        }
+        return dateB - dateA;
+    });
+
+    return combinedLogs;
 
   } catch (error) {
     if (error.name === 'AbortError' && signal && signal.aborted) {
-      console.log(`Log fetching operation possibly affected by abort signal for ${requestedApiType}.`);
-      throw error; 
+      // Re-throwing AbortError is often important for upstream handling.
+      throw error;
     }
-    console.error(`Error compiling sensor logs for ${requestedApiType}:`, error);
-    return []; 
+    console.error(`[compileSensorLogs] Error compiling sensor logs for ${requestedApiType}:`, error); // Kept console.error
+    return [];
   }
 }
 

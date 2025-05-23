@@ -5,16 +5,15 @@ import { updateGreenhouseName } from '../api/index.js';
 import { useDarkMode } from '../context/DarkModeContext.jsx'; 
 
 function NameCard({ greenhouseData }) {
-  const [name, setName] = useState(greenhouseData?.name);
+  const [name, setName] = useState(greenhouseData?.name || ''); // Initialize with empty string if name is undefined
   const [isEditing, setIsEditing] = useState(false);
   const { darkMode } = useDarkMode();
   
   const inputReference = useRef(null);
 
   useEffect(() => {
-    if (greenhouseData?.name) {
-      setName(greenhouseData.name);
-    }
+    // Update name if greenhouseData prop changes, defaulting to empty string
+    setName(greenhouseData?.name || '');
   }, [greenhouseData]); 
 
   useEffect(() => {
@@ -24,27 +23,33 @@ function NameCard({ greenhouseData }) {
   }, [isEditing]); 
 
   const handleSave = async () => {
-    if(!greenhouseData?.id || name === greenhouseData.name) { 
-      setIsEditing(false);
+    const originalNameFromProps = greenhouseData?.name || "";
+    const currentInputValue = name || ""; 
+    const trimmedName = currentInputValue.trim();
+
+    if (!trimmedName) {
+      setName(originalNameFromProps);
       return;
     }
-    else{
-      try{
-        await updateGreenhouseName(greenhouseData.id, name);
-        setIsEditing(false);
-      }
-      catch (error){
-        console.error("Error updating greenhouse data in the name-card:", error);
-      }
-    }
-  }
 
-  const handleEditToggle = () => {
-    if (isEditing) {
-      setIsEditing(false);
-      handleSave(); 
+    if (!greenhouseData?.id || trimmedName === originalNameFromProps) {
+      setName(trimmedName);
+      return;
     }
-    else {
+    
+    try {
+      await updateGreenhouseName(greenhouseData.id, trimmedName);
+      setName(trimmedName);
+    } catch (error) {
+      console.error("Error updating greenhouse data in the name-card:", error);
+    }
+  };
+
+  const handleEditToggle = async () => {
+    if (isEditing) {
+      await handleSave(); 
+      setIsEditing(false);
+    } else {
       setIsEditing(true);
     }
   }; 
@@ -53,9 +58,9 @@ function NameCard({ greenhouseData }) {
     setName(event.target.value);
   }; 
 
-  const handleEnterKey = (event) => {
+  const handleEnterKey = async (event) => {
     if (event.key === 'Enter') {
-      handleSave();
+      await handleSave();
       setIsEditing(false);
     }
   }; 

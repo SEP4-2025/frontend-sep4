@@ -98,6 +98,13 @@ function WaterManagement () {
                             isLoading={loading}
                             onUpdate={refreshData}
                         />
+                        <WateringCard
+                            title="Set Pump Threshold"
+                            pumpId={pumpId}
+                            thresholdValue={waterPumpData.thresholdValue}
+                            onUpdate={refreshData}
+                            isLoading={loading}
+                        />
                     </div> {/* Closes Left Panel */}
 
                     {/* Right side panel */}

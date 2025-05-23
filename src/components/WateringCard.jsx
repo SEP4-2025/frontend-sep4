@@ -8,7 +8,7 @@ function WateringCard({
   tankLevel = false, 
   value = 0, 
   pumpId, 
-  thresholdValue,
+  thresholdValue, // This prop should hold the current persistent threshold for the pump
   waterLevel,
   waterTankCapacity,
   onUpdate,
@@ -19,7 +19,7 @@ function WateringCard({
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
+  const [pendingAction, setPendingAction] = useState(null); // Stores the number from inputValue
   const { darkMode } = useDarkMode();
   
   const getTankColorClass = (percentage) => {
@@ -36,7 +36,6 @@ function WateringCard({
     }
   };
 
-  // Update local state when props change
   useEffect(() => {
     if (value !== undefined) {
       setCurrentValue(Number(value));
@@ -45,17 +44,17 @@ function WateringCard({
   
   const handleInputChange = (e) => {
     // Only allow numbers and decimal points
-    const value = e.target.value.replace(/[^0-9.]/g, '');
-    setInputValue(value);
+    const val = e.target.value.replace(/[^0-9.]/g, '');
+    setInputValue(val);
   };
   
-  // Close the password modal
   const closePasswordModal = () => {
     setIsPasswordModalOpen(false);
-    setPendingAction(null);
+    // Do not clear pendingAction here, it might be needed if modal is re-opened or for retry logic
+    // Consider clearing pendingAction if the modal is closed without confirming,
+    // depending on desired UX (e.g., setPendingAction(null);)
   };
 
-  // Handle form submission - opens the password confirmation dialog
   const handleSubmit = () => {
     const number = parseFloat(inputValue);
     if (isNaN(number) || number <= 0) {
@@ -64,53 +63,49 @@ function WateringCard({
     }
     
     setError(null);
-    
-    // Store the pending action for after password confirmation
-    setPendingAction(number);
+    setPendingAction(number); // Store the validated number for action after password confirm
     setIsPasswordModalOpen(true);
   };
   
-  // The actual update function that runs after password confirmation
   const handlePasswordConfirm = async (password) => {
-    if (!pendingAction) return false;
-    
-    const number = pendingAction;
+    if (pendingAction === null) return false; 
+
+    const numberToProcess = pendingAction; 
     setIsUpdating(true);
-    
+
     try {
-      // First verify password
-      await confirmPassword(password);
-      
-      // Then perform the actual action
+      await confirmPassword(password); 
+
       if (tankLevel) {
-        // Refill water tank
-        await updateCurrentWaterLevel(pumpId, number);
+        await updateCurrentWaterLevel(pumpId, numberToProcess);
+      } else if (title.toLowerCase().includes('threshold')) {
+        await updateWaterPumpThreshold(pumpId, numberToProcess);
       } else {
-        // Update watering threshold or trigger manual watering
-        if (title.toLowerCase().includes('threshold')) {
-          await updateWaterPumpThreshold(pumpId, number);
-        } else {
-          // For manual watering, first update the threshold/amount if provided
-          if (number > 0) {
-            // Update watering amount/threshold before triggering watering
-            await updateWaterPumpThreshold(pumpId, number);
-          }
-          // Then trigger manual watering
+        const originalPersistentThreshold = thresholdValue; 
+
+        try {
+          await updateWaterPumpThreshold(pumpId, numberToProcess);
           await triggerManualWatering(pumpId);
+        } finally {
+          if (originalPersistentThreshold !== undefined) {
+            await updateWaterPumpThreshold(pumpId, originalPersistentThreshold);
+          }
         }
       }
+
+      setInputValue(''); 
+      setPendingAction(null); 
+      if (onUpdate) onUpdate(); 
       
-      // Notify parent to refresh data
-      if (onUpdate) onUpdate();
-      setInputValue('');
-      setPendingAction(null);
-      return true;
+      setIsPasswordModalOpen(false); 
+      return true; 
+
     } catch (err) {
       console.error('Error in password confirmation or water action:', err);
       setError(err.message || 'Failed to update. Please try again.');
-      throw err; // Re-throw to show in the password popup
+      throw err; 
     } finally {
-      setIsUpdating(false);
+      setIsUpdating(false); 
     }
   };
 
@@ -128,9 +123,11 @@ function WateringCard({
             
             <div>
               <label className={`block mb-2 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                {tankLevel ? 'Add water to tank (ml)' : 'Amount of water (ml)'}
+                {tankLevel ? 'Add water to tank (ml)' : title.toLowerCase().includes('threshold') ? 'Set threshold (ml)' : 'Amount of water (ml)'}
               </label>
               <input
+                type="text" // Changed back to text to remove number input spinners
+                inputMode="decimal" // Provides a numeric-friendly keyboard on mobile
                 className={`border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-slate-700 text-white border-slate-500' : 'bg-white border-gray-300'}`}
                 placeholder="Enter value"
                 value={inputValue}
@@ -139,13 +136,11 @@ function WateringCard({
               />
             </div>
             
-
-            
             <button
               className={`w-full rounded-lg py-2.5 px-4 text-white font-medium transition-colors ${
                 isLoading || isUpdating
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : tankLevel && currentValue >= 100
+                  : tankLevel && currentValue >= 100 
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700'
               }`}
@@ -158,7 +153,7 @@ function WateringCard({
                   Updating...
                 </span>
               ) : (
-                tankLevel ? 'Add Water' : 'Water Now'
+                tankLevel ? 'Add Water' : title.toLowerCase().includes('threshold') ? 'Set Threshold' : 'Water Now'
               )}
             </button>
             
@@ -201,12 +196,17 @@ function WateringCard({
         </div>
       </div>
       
-      {/* Password Confirmation Popup */}
       <PasswordConfirmPopup 
         isOpen={isPasswordModalOpen}
         onClose={closePasswordModal}
         onConfirm={handlePasswordConfirm}
-        actionName={tankLevel ? "refill water tank" : "water the greenhouse"}
+        actionName={
+            tankLevel 
+            ? "refill water tank" 
+            : title.toLowerCase().includes('threshold') 
+            ? "update watering threshold" 
+            : "water the greenhouse"
+        }
       />
     </div>
   );

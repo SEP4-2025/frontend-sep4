@@ -11,7 +11,7 @@ function ClockCard(){
         }, 1000); 
 
         return () => clearInterval(timer); 
-    }, [currentTime]); 
+    }, []); 
 
     const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const formattedDate = currentTime.toLocaleDateString();

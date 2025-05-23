@@ -143,7 +143,6 @@ export function AIModelPredictions({
 
           <div className={`flex justify-between text-xs mt-1 px-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             <span>{minRange}{unit}</span>
-            {/* The | T marker span that was here has been removed */}
             <span>{maxRange}{unit}</span>
           </div>
         </div>

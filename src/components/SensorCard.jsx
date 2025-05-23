@@ -9,8 +9,8 @@ function SensorCard({
     averageYesterday,
     unit,
     precision,
-    additionalText, // For custom text in the second line, e.g., water level details
-    cardClassName,  // For specific card styling (e.g. col-span)
+    additionalText, 
+    cardClassName,  
     dataTestId
 }) {
     const { darkMode } = useDarkMode();

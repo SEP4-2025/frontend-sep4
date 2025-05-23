@@ -51,7 +51,6 @@ function AutomaticWatering ({ pumpId, isAutomatic, isLoading, onUpdate }) {
     return (
         <div className={`rounded-lg shadow-md ${darkMode ? 'bg-slate-700' : 'bg-white'}`}>
             <div className="p-6">
-                {/* Adjusted padding: px-6 py-4 on mobile, p-4 on sm and up */}
                 <div className={`rounded-lg ${darkMode ? 'bg-slate-600' : 'bg-gray-50'} px-6 py-4 sm:p-4`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">

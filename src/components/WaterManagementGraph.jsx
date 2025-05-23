@@ -23,7 +23,6 @@ ChartJS.register(
   Legend
 );
 
-// Create a chart plugin to set the background color based on theme
 const chartBgPlugin = {
   id: 'chartBgPlugin',
   beforeDraw: (chart, args, options) => {

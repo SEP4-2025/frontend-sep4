@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import NotificationCard from './NotificationCard.jsx'; // Standardized import
-import NotificationPopup from './NotificationPopup.jsx'; // Standardized import
+import NotificationCard from './NotificationCard.jsx';
+import NotificationPopup from './NotificationPopup.jsx';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
 import { useDarkMode } from '../context/DarkModeContext.jsx';
 
@@ -48,7 +48,6 @@ function NotificationCentre({ notificationData, notificationPreferences }) {
                 )}
             </div>
             
-            {/* View All Alerts button - larger and centered at bottom */}
             <div className="flex justify-center mt-auto pt-4">
                 <button 
                     onClick={openModal}
@@ -70,4 +69,4 @@ function NotificationCentre({ notificationData, notificationPreferences }) {
     );
 }
 
-export default NotificationCentre; // Standardized export name
+export default NotificationCentre;

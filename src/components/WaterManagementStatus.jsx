@@ -27,13 +27,12 @@ function WaterManagementStatus ({ waterNeeded, lastWatered, waterPumpStatus, isL
         }
     };
     
-    // Calculate next water prediction (simplified logic - in a real app this would be more complex)
+
     const calculateWaterPrediction = () => {
         if (!lastWatered) return 'N/A';
         
         try {
             const lastWateredDate = new Date(lastWatered);
-            // Simple prediction - water every 24 hours
             const predictedDate = new Date(lastWateredDate.getTime() + (24 * 60 * 60 * 1000));
             const now = new Date();
             const diffInHours = Math.round((predictedDate - now) / (1000 * 60 * 60));

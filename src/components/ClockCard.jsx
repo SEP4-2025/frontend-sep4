@@ -8,10 +8,10 @@ function ClockCard(){
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
-        }, 1000); // It creates a timer that updates the current time every second
+        }, 1000); 
 
-        return () => clearInterval(timer); // It prevents it still running in the background when the component is no longer in use
-    }, [currentTime]); // updates display every second, no need for additional components
+        return () => clearInterval(timer); 
+    }, [currentTime]); 
 
     const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const formattedDate = currentTime.toLocaleDateString();

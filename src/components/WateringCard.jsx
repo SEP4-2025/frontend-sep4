@@ -8,7 +8,7 @@ function WateringCard({
   tankLevel = false, 
   value = 0, 
   pumpId, 
-  thresholdValue, // This prop should hold the current persistent threshold for the pump
+  thresholdValue, 
   waterLevel,
   waterTankCapacity,
   onUpdate,
@@ -19,7 +19,7 @@ function WateringCard({
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null); // Stores the number from inputValue
+  const [pendingAction, setPendingAction] = useState(null);
   const { darkMode } = useDarkMode();
   
   const getTankColorClass = (percentage) => {
@@ -50,9 +50,6 @@ function WateringCard({
   
   const closePasswordModal = () => {
     setIsPasswordModalOpen(false);
-    // Do not clear pendingAction here, it might be needed if modal is re-opened or for retry logic
-    // Consider clearing pendingAction if the modal is closed without confirming,
-    // depending on desired UX (e.g., setPendingAction(null);)
   };
 
   const handleSubmit = () => {
@@ -126,7 +123,7 @@ function WateringCard({
                 {tankLevel ? 'Add water to tank (ml)' : title.toLowerCase().includes('threshold') ? 'Set threshold (ml)' : 'Amount of water (ml)'}
               </label>
               <input
-                type="text" // Changed back to text to remove number input spinners
+                type="text"
                 inputMode="decimal" // Provides a numeric-friendly keyboard on mobile
                 className={`border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-slate-700 text-white border-slate-500' : 'bg-white border-gray-300'}`}
                 placeholder="Enter value"

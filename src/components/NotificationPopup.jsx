@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import NotificationCard from './NotificationCard.jsx'; // Standardized import
+import NotificationCard from './NotificationCard.jsx'; 
 import filterArrow from '../assets/filterArrow.png';
 import { useDarkMode } from '../context/DarkModeContext.jsx';
 import { useNotificationHub } from '../context/NotificationHubContext.jsx';
-import { useMobileDetection } from '../utils/useMobileDetection.js'; // Import the hook
+import { useMobileDetection } from '../utils/useMobileDetection.js'; 
 
 function NotificationPopup({ isOpen, onClose, notificationData, notificationPreferences }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -11,7 +11,7 @@ function NotificationPopup({ isOpen, onClose, notificationData, notificationPref
     const { notifications } = useNotificationHub();
     const [notificationList, setNotificationList] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const isMobile = useMobileDetection(); // Use the hook
+    const isMobile = useMobileDetection(); 
 
     const allNotifications = [...(notifications || []), ...(notificationData || [])];
     const combinedNotifications = allNotifications.filter((notification, index, self) =>
@@ -36,18 +36,6 @@ function NotificationPopup({ isOpen, onClose, notificationData, notificationPref
         result.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
         setNotificationList(result);
     }, [notificationData, notificationPreferences, notifications, selectedFilter]);
-
-    // useEffect(() => {
-    //     // Update `isMobile` state on window resize
-    //     const handleResize = () => {
-    //         setIsMobile(window.innerWidth <= 768);
-    //     };
-    //
-    //     window.addEventListener('resize', handleResize);
-    //     return () => {
-    //         window.removeEventListener('resize', handleResize);
-    //     };
-    // }, []);
 
     if (!isOpen) return null;
 
@@ -209,4 +197,4 @@ function NotificationPopup({ isOpen, onClose, notificationData, notificationPref
       );
 }
 
-export default NotificationPopup; // Standardized export
+export default NotificationPopup;

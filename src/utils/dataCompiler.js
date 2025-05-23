@@ -10,7 +10,7 @@ import {
   getSensorThresholds,
   getLogs,
   getWaterPumpById,
-  getWaterPumpWaterLevel, // This might be redundant if getWaterPumpById has all info
+  getWaterPumpWaterLevel,
   toggleAutomationStatus,
   triggerManualWatering,
   updateCurrentWaterLevel,
@@ -110,8 +110,8 @@ export async function compileDashboardData(gardenerId) {
   if (waterPumpInfo && typeof waterPumpInfo.waterLevel === 'number' && typeof waterPumpInfo.waterTankCapacity === 'number' && waterPumpInfo.waterTankCapacity > 0) {
     waterLevelCardDisplayData = {
         value: (waterPumpInfo.waterLevel / waterPumpInfo.waterTankCapacity) * 100, // Percentage
-        currentLevelMl: waterPumpInfo.waterLevel,
-        capacityMl: waterPumpInfo.waterTankCapacity
+        currentWaterLevel: waterPumpInfo.waterLevel, // Changed from currentLevelMl
+        capacity: waterPumpInfo.waterTankCapacity // Changed from capacityMl
     };
   }
 

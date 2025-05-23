@@ -210,7 +210,13 @@ function Dashboard() {
             title="Water Level"
             iconSrc={waterLevelIcon}
             currentData={waterLevelCardData}
-            additionalText={waterLevelCardData ? `Level: ${waterLevelCardData.value}%` : 'N/A'}
+            additionalText={
+              waterLevelCardData &&
+              typeof waterLevelCardData.currentWaterLevel === 'number' &&
+              typeof waterLevelCardData.capacity === 'number'
+                ? `${waterLevelCardData.currentWaterLevel}ml / ${waterLevelCardData.capacity}ml`
+                : 'N/A'
+            }
             unit="%" 
             precision={0}
             cardClassName="col-span-2 lg:col-span-1"

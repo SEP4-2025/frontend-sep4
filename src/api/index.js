@@ -613,10 +613,10 @@ export async function getAllWaterPumps() {
  * The water pump object contains:
  * @property {number} id - The ID of the water pump.
  * @property {number} greenhouseId - The ID of the greenhouse the water pump belongs to.
- * @property {number} currentWaterLevel - The current water level in the pump's tank, in milliliters (ml).
- * @property {number} capacity - The total capacity of the water pump's tank, in milliliters (ml).
- * @property {number} threshold - The water level threshold (in ml) for triggering actions.
- * @property {boolean} autoWatering - Indicates if automatic watering is enabled for this pump.
+ * @property {number} waterLevel - The current water level in the pump's tank, in milliliters (ml).
+ * @property {number} waterTankCapacity - The total capacity of the water pump's tank, in milliliters (ml).
+ * @property {number} thresholdValue - The water level threshold (in ml) for triggering actions.
+ * @property {boolean} autoWateringEnabled - Indicates if automatic watering is enabled for this pump.
  */
 export async function getWaterPumpById(id) {
   try {

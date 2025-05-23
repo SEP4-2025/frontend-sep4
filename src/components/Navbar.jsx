@@ -71,8 +71,9 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
           shadow-md
           transform transition-transform duration-300 ease-in-out
           ${isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 lg:static
-          lg:h-screen
+          lg:translate-x-0 
+          lg:sticky lg:top-0 /* MODIFIED: Changed from lg:static */
+          lg:h-screen 
           lg:flex-shrink-0
         `}
       >

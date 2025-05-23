@@ -198,32 +198,41 @@ export async function getSensorAverageByDate(type, date) {
   return average;
 }
 
-// TODO: water level and ground moisture - Mariete
 /**
- * Fetches the latest prediction data.
+ * Fetches the latest prediction data by re-evaluating with the latest sensor readings.
  * @returns {Promise<Object>} A promise that resolves to the latest prediction object.
- * The prediction object (PredictionDto) contains:
- * @property {number} id - The ID of the prediction.
- * @property {string} date - The ISO 8601 date-time string of the prediction.
- * @property {number} optimalTemp - The predicted optimal temperature.
- * @property {number} optimalHumidity - The predicted optimal humidity.
- * @property {number} optimalLight - The predicted optimal light level.
- * @property {number} greenhouseId - The ID of the greenhouse for which the prediction is made.
- * @property {number} sensorReadingId - The ID of the single sensor reading used for this prediction.
+ * The prediction object contains:
+ * @property {number} prediction - The prediction class or value.
+ * @property {Array<number>} prediction_proba - An array of prediction probabilities.
+ * @property {Object} input_received - The input data used for the prediction.
+ * @property {number} input_received.temperature - Temperature reading.
+ * @property {number} input_received.light - Light reading.
+ * @property {number} input_received.airHumidity - Air humidity reading.
+ * @property {number} input_received.soilHumidity - Soil humidity reading.
+ * @property {string} input_received.date - ISO 8601 date-time string of the sensor readings.
+ * @property {number} input_received.greenhouseId - The ID of the greenhouse.
+ * @property {number} input_received.sensorReadingId - The ID of the sensor reading used.
  * @throws {Error} If no prediction data is found or if the API request fails.
  */
 export async function getLatestPrediction() {
-  const res = await fetch(`${BASE_URL}/Prediction/`, {
+  const res = await fetch(`${BASE_URL}/Prediction/repredict/latest`, { // Changed endpoint
+    method: 'POST', // Add POST method
     headers: createAuthHeaders()
   });
-  if (!res.ok) throw new Error(`Failed to load lastest prediction`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to load latest prediction. Status: ${res.status}, Message: ${errorText}`);
+  }
   const data = await res.json();
 
-  // Get the latest data from the response's array (last element)
-  const latestData = data[data.length - 1];
-  if (!latestData) throw new Error(`No data found for prediction`);
+  console.log("🔥Latest prediction data:", data); // Log the response for debugging
 
-  return latestData;
+  // The new endpoint is expected to return a single prediction object directly
+  if (!data) { // Check if data itself is null or undefined
+    throw new Error(`No data found for prediction`);
+  }
+
+  return data; // Return the single prediction object
 }
 
 /**

@@ -7,10 +7,10 @@ import {
   getNotificationPreferences,
   toggleNotificationPreference,
   getSensorStatus,
-  getSensorThresholds, // Still imported if used by other functions like compileSensorViewGraphData
+  getSensorThresholds,
   getLogs,
   getWaterPumpById,
-  getWaterPumpWaterLevel,
+  getWaterPumpWaterLevel, // This might be redundant if getWaterPumpById has all info
   toggleAutomationStatus,
   triggerManualWatering,
   updateCurrentWaterLevel,
@@ -28,6 +28,41 @@ function formatDate(date){
   return `${year}-${month}-${day}`;
 }
 
+export async function compileWaterPumpData(pumpId = 1) {
+  try {
+    const waterPump = await getWaterPumpById(pumpId);
+
+    // Ensure waterPump and its properties exist, using new property names
+    const currentWaterLevel = waterPump?.waterLevel ?? 0; // Changed from currentWaterLevel
+    const capacity = waterPump?.waterTankCapacity ?? 1000; // Changed from capacity
+    const autoWateringStatus = waterPump?.autoWateringEnabled ?? false; // Changed from autoWatering
+    const threshold = waterPump?.thresholdValue ?? 50; // Changed from threshold
+    // lastWatered is not in getWaterPumpById JSDoc, using fallback
+    const lastWateredTime = waterPump?.lastWatered || new Date().toISOString();
+
+
+    return {
+      pumpData: waterPump || {},
+      waterLevel: currentWaterLevel,
+      lastWatered: lastWateredTime,
+      autoWatering: autoWateringStatus,
+      thresholdValue: threshold,
+      waterTankCapacity: capacity
+    };
+  } catch (error) {
+    console.error('Error compiling water pump data:', error);
+    return {
+      pumpData: {},
+      waterLevel: 0,
+      lastWatered: new Date().toISOString(),
+      autoWatering: false,
+      thresholdValue: 50,
+      waterTankCapacity: 1000
+    };
+  }
+}
+
+
 export async function compileDashboardData(gardenerId) {
   const greenhouseData = await fetchGreenhouseDataByGardenerId(gardenerId);
 
@@ -35,7 +70,7 @@ export async function compileDashboardData(gardenerId) {
   const lightSensorData = await getSensorDataLastest('light');
   const temperatureSensorData = await getSensorDataLastest('temperature');
   const humiditySensorData = await getSensorDataLastest('humidity');
-  const soilMoistureSensorData = await getSensorDataLastest('soilMoisture'); // Just the reading
+  const soilMoistureSensorData = await getSensorDataLastest('soilMoisture');
 
   const today = new Date();
   const todayFormatted = formatDate(today);
@@ -68,11 +103,24 @@ export async function compileDashboardData(gardenerId) {
   const notificationPreferences = await getNotificationPreferences();
   const aiPredictionData = await getLatestPrediction();
 
+  // Fetch and process water pump data for the sensor card
+  const waterPumpInfo = await compileWaterPumpData(); // Uses default pumpId 1
+  let waterLevelCardDisplayData = null;
+  // waterPumpInfo directly provides waterLevel and waterTankCapacity correctly from the updated compileWaterPumpData
+  if (waterPumpInfo && typeof waterPumpInfo.waterLevel === 'number' && typeof waterPumpInfo.waterTankCapacity === 'number' && waterPumpInfo.waterTankCapacity > 0) {
+    waterLevelCardDisplayData = {
+        value: (waterPumpInfo.waterLevel / waterPumpInfo.waterTankCapacity) * 100, // Percentage
+        currentLevelMl: waterPumpInfo.waterLevel,
+        capacityMl: waterPumpInfo.waterTankCapacity
+    };
+  }
+
+
   return {
     lightSensorData,
     temperatureSensorData,
     humiditySensorData,
-    soilMoistureSensorData, // This is now just the latest reading object
+    soilMoistureSensorData,
     greenhouseData,
     lightSensorDataAverageToday,
     temperatureSensorDataAverageToday,
@@ -88,14 +136,11 @@ export async function compileDashboardData(gardenerId) {
     soilMoistureHistory,
     notificationData,
     notificationPreferences,
-    aiPredictionData
+    aiPredictionData,
+    waterLevelCardData: waterLevelCardDisplayData
   };
 }
 
-/**
- * Get notification preferences from the API
- * @returns {Promise<Array>} - Array of notification preferences
- */
 export async function getNotificationPreferencesData() {
   try {
     return await getNotificationPreferences();
@@ -105,12 +150,6 @@ export async function getNotificationPreferencesData() {
   }
 }
 
-/**
- * Toggle notification preference status
- * @param {number} gardenerId - ID of the gardener
- * @param {string} type - Type of notification preference
- * @returns {Promise<string>} - Success message
- */
 export async function toggleNotificationPreferenceData(gardenerId, type) {
   try {
     return await toggleNotificationPreference(gardenerId, type);
@@ -136,7 +175,7 @@ export async function compileSensorLogs(requestedApiType, signal) {
 
     const filteredLogsByDate = rawLogs.filter(log => {
 
-      if (!log || !log.timestamp) {
+      if (!log || !log.timestamp) { 
         return false;
       }
       const logDate = new Date(log.timestamp);
@@ -149,83 +188,64 @@ export async function compileSensorLogs(requestedApiType, signal) {
         if (sensorId === 2) return 'Humidity';
         if (sensorId === 3) return 'Light';
         if (sensorId === 4) return 'Soil Moisture';
-        if (sensorId == null) return 'General';
+        if (sensorId == null) return 'General'; 
         return 'Unknown';
     }
 
     return filteredLogsByDate.map(log => ({
       type: "Log Entry",
       message: log.message,
-
-      timeStamp: new Date(log.timestamp).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      timeStamp: log.timestamp ? new Date(log.timestamp).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Invalid Date',
       sensorType: mapSensorIdToText(log.sensorReadingId),
-
-      originalLogDate: new Date(log.timestamp),
+      originalLogDate: log.timestamp ? new Date(log.timestamp) : new Date(0), 
       waterPumpId: log.waterPumpId,
-      sensorReadingId: log.sensorReadingId
+      sensorReadingId: log.sensorReadingId 
     })).sort((a, b) => b.originalLogDate - a.originalLogDate);
 
   } catch (error) {
     if (error.name === 'AbortError' && signal && signal.aborted) {
       console.log(`Log fetching operation possibly affected by abort signal for ${requestedApiType}.`);
-      throw error;
+      throw error; 
     }
     console.error(`Error compiling sensor logs for ${requestedApiType}:`, error);
-    return [];
+    return []; 
   }
 }
 
-export async function compileWaterPumpData(pumpId = 1) {
-  try {
-    const waterPump = await getWaterPumpById(pumpId);
-    const waterLevel = await getWaterPumpWaterLevel(pumpId);
-
-    return {
-      pumpData: waterPump,
-      waterLevel: waterLevel,
-      lastWatered: waterPump.lastWatered || new Date().toISOString(),
-      autoWatering: waterPump.autoWatering || false,
-      thresholdValue: waterPump.thresholdValue || 50,
-      waterTankCapacity: waterPump.waterTankCapacity || 1000
-    };
-  } catch (error) {
-    console.error('Error compiling water pump data:', error);
-    return {
-      pumpData: {},
-      waterLevel: 0,
-      lastWatered: new Date().toISOString(),
-      autoWatering: false,
-      thresholdValue: 50,
-      waterTankCapacity: 1000
-    };
-  }
-}
 
 export async function compileWaterUsageHistory(pumpId = 1) {
   try {
     const waterUsageHistory = await getWaterUsageHistory(pumpId);
 
     if (!waterUsageHistory || !Array.isArray(waterUsageHistory) || waterUsageHistory.length === 0) {
-      throw new Error('No water usage history available');
+      console.warn('No water usage history available or invalid format.');
+      return {
+        labels: [],
+        consumption: [],
+        waterLevelPercentage: 0 
+      };
     }
 
     const sortedHistory = [...waterUsageHistory].sort((a, b) => {
-      return new Date(a.date) - new Date(b.date);
+      return new Date(a.date) - new Date(b.date); 
     });
 
     const labels = sortedHistory.map(item => {
-      if (!item.date) return '';
+      if (!item.date) return ''; 
       const date = new Date(item.date);
+      if (isNaN(date.getTime())) return ''; 
       return `${date.getMonth() + 1}/${date.getDate()}`;
-    }).filter(label => label !== '');
+    }).filter(label => label !== ''); 
 
     const consumption = sortedHistory.map(item => item.dailyWaterUsage || 0);
 
     let waterLevelPercentage = 0;
-    const latestData = await getWaterPumpById(pumpId);
-    if (latestData && latestData.waterLevel && latestData.waterTankCapacity) {
-      waterLevelPercentage = Math.round((latestData.waterLevel / latestData.waterTankCapacity) * 100);
+    const latestPumpData = await getWaterPumpById(pumpId); 
+    // Use new property names from getWaterPumpById
+    if (latestPumpData && typeof latestPumpData.waterLevel === 'number' && typeof latestPumpData.waterTankCapacity === 'number' && latestPumpData.waterTankCapacity > 0) {
+      waterLevelPercentage = Math.round((latestPumpData.waterLevel / latestPumpData.waterTankCapacity) * 100); // Changed currentWaterLevel to waterLevel, capacity to waterTankCapacity
     }
+
 
     return {
       labels,
@@ -235,9 +255,9 @@ export async function compileWaterUsageHistory(pumpId = 1) {
   } catch (error) {
     console.error('Error compiling water usage history:', error);
     return {
-      labels: ['5/12', '5/13', '5/14', '5/15'],
-      consumption: [0, 100, 250, 500],
-      waterLevelPercentage: 30
+      labels: ['Error'], 
+      consumption: [0],
+      waterLevelPercentage: 0
     };
   }
 }
@@ -247,10 +267,10 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
 
   try {
     const [historyDataRaw, thresholdValueFromAPI, latestDataRaw, statusRaw] = await Promise.all([
-      getSensorData(sensorApiType, options),
-      getSensorThresholds(sensorApiType, options), // Fetches only the threshold value
-      getSensorDataLastest(sensorApiType, options),
-      getSensorStatus(sensorApiType, options)
+      getSensorData(sensorApiType, options), 
+      getSensorThresholds(sensorApiType), 
+      getSensorDataLastest(sensorApiType), 
+      getSensorStatus(sensorApiType) 
     ]);
 
     let processedHistory = [];
@@ -273,24 +293,24 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
 
       if (recentData.length > 0) {
         const groupedByDate = recentData.reduce((acc, item) => {
-          const itemDate = new Date(item.timeStamp);
-          const dateKey = itemDate.toLocaleDateString('en-CA');
+          const itemDate = new Date(item.timeStamp); 
+          const dateKey = itemDate.toLocaleDateString('en-CA'); 
 
           if (!acc[dateKey]) {
             acc[dateKey] = { sum: 0, count: 0, dayDate: new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate()) };
           }
-          acc[dateKey].sum += Number(item.value);
+          acc[dateKey].sum += Number(item.value); 
           acc[dateKey].count++;
           return acc;
         }, {});
 
         processedHistory = Object.keys(groupedByDate)
-          .sort()
+          .sort((a,b) => new Date(a) - new Date(b)) 
           .map(dateKey => {
             const group = groupedByDate[dateKey];
             return {
-              date: group.dayDate.toLocaleDateString([], { day: '2-digit', month: '2-digit' }),
-              value: group.sum / group.count
+              date: group.dayDate.toLocaleDateString([], { day: '2-digit', month: '2-digit' }), 
+              value: parseFloat((group.sum / group.count).toFixed(sensorConfig.precision !== undefined ? sensorConfig.precision : 2)) 
             };
           });
       }
@@ -303,26 +323,26 @@ export async function compileSensorViewGraphData(sensorApiType, sensorConfig, si
     return {
       history: processedHistory,
       idealValue: idealValueToUse,
-      status: statusRaw !== null && statusRaw !== undefined ? (statusRaw ? 'Online' : 'Offline') : 'N/A',
+      status: statusRaw !== null && statusRaw !== undefined ? (statusRaw ? 'Online' : 'Offline') : 'N/A', 
       lastMeasurementValue: latestDataRaw && latestDataRaw.value !== undefined ? Number(latestDataRaw.value) : 'N/A',
       unit: sensorConfig.unit,
       name: sensorConfig.name,
-      error: null,
+      error: null, 
     };
   } catch (err) {
     if (err.name === 'AbortError') {
       console.log(`Data fetching aborted for ${sensorApiType} in compiler.`);
-      throw err;
+      throw err; 
     }
     console.error(`Failed to compile sensor view graph data for ${sensorApiType}:`, err);
     return {
       history: [],
-      idealValue: sensorConfig.defaultIdeal,
+      idealValue: sensorConfig.defaultIdeal, 
       status: 'Error',
       lastMeasurementValue: 'N/A',
       unit: sensorConfig.unit,
       name: sensorConfig.name,
-      error: `Failed to load data for ${sensorConfig.name}.`,
+      error: `Failed to load data for ${sensorConfig.name}.`, 
     };
   }
 }
@@ -332,7 +352,7 @@ export async function compileGalleryPageData() {
 
     if (!allPlants || !Array.isArray(allPlants)) {
       console.warn('No plants returned or invalid format from getAllPlants.');
-      return [];
+      return []; 
     }
     const plantsWithPictures = await Promise.all(
       allPlants.map(async (plant) => {
@@ -340,13 +360,13 @@ export async function compileGalleryPageData() {
           const pictures = await getAllPicturesByPlantId(plant.id);
           return {
             ...plant,
-            pictures: Array.isArray(pictures) ? pictures : []
+            pictures: Array.isArray(pictures) ? pictures : [] 
           };
         } catch (error) {
           console.error(`Error fetching pictures for plant ID ${plant.id}:`, error);
           return {
             ...plant,
-            pictures: []
+            pictures: [] 
           };
         }
       })
@@ -356,7 +376,7 @@ export async function compileGalleryPageData() {
 
   } catch (error) {
     console.error('Error compiling gallery page data:', error);
-    return [];
+    return []; 
   }
 }
 
@@ -368,10 +388,10 @@ export async function compilePlantManagementData() {
       console.warn('No plants returned or invalid format from getAllPlants.');
       return [];
     }
-    return allPlants;
+    return allPlants; 
 
   } catch (error) {
     console.error('Error compiling plant management data:', error);
-    return [];
+    return []; 
   }
 }

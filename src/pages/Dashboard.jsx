@@ -34,6 +34,7 @@ function Dashboard() {
   const [notificationData, setNotificationData] = useState([]);
   const [notificationPreferences, setNotificationPreferences] = useState([]);
   const [aiPredictionData, setAiPredictionData] = useState(null);
+  const [waterLevelCardData, setWaterLevelCardData] = useState(null); // New state for water level card
 
   const [gardenerId, setGardenerId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +46,8 @@ function Dashboard() {
       setGardenerId(id);
     } else {
       console.warn('Gardener ID not found in token. Dashboard data will not be loaded.');
-      setIsLoading(false); // Ensure loading stops if no ID
+      setError("User information not found. Please log in again.");
+      setIsLoading(false);
     }
   }, []);
 
@@ -54,7 +56,7 @@ function Dashboard() {
       setIsLoading(true);
       setError(null);
       Promise.all([
-        compileDashboardData(gardenerId),
+        compileDashboardData(gardenerId), // This now includes waterLevelCardData
         getSensorThresholds('soilMoisture')
       ])
         .then(([dashboardData, thresholdValue]) => {
@@ -79,31 +81,27 @@ function Dashboard() {
           setNotificationData(dashboardData.notificationData);
           setNotificationPreferences(dashboardData.notificationPreferences);
           setAiPredictionData(dashboardData.aiPredictionData);
+          setWaterLevelCardData(dashboardData.waterLevelCardData); // Set water level data
         })
         .catch((fetchError) => {
           console.error('Error fetching dashboard data or soil moisture threshold:', fetchError);
           setError(`Failed to load dashboard data: ${fetchError.message}. Please try again later.`);
-          setSoilMoistureSensorThreshold(null);
+          setSoilMoistureSensorThreshold(null); // Reset threshold on error
         })
         .finally(() => {
           setIsLoading(false);
         });
-    } else {
-      // If gardenerId is not set (e.g., initially or if token issue), ensure loading is false.
-      // This was slightly different in the provided snippet, ensuring it's covered.
-      if (!getGardenerIdFromToken()) { // Double check, though the first useEffect should handle this.
-         setIsLoading(false);
-      }
+    } else if (!isLoading && !getGardenerIdFromToken()) { // Only set loading false if not already loading and no ID
+        setIsLoading(false);
+        if (!error) setError("User information not found. Please log in again."); // Set error if not already set
     }
-  }, [gardenerId]);
+  }, [gardenerId]); // Removed 'error' and 'isLoading' from dependency array as they are set within this effect.
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   if (error) {
-    // This error state should also be a simple content block.
-    // App.jsx's <main> handles the background and scrolling.
     return (
       <div className={`px-4 py-6 text-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
         <p className="text-red-500 text-lg">{error}</p>
@@ -111,8 +109,7 @@ function Dashboard() {
     );
   }
 
-  if (!gardenerId) {
-    // This state should also be a simple content block.
+  if (!gardenerId && !isLoading) { // Check isLoading to prevent brief flash of this message
     return (
       <div className={`px-4 py-6 text-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
         <p className="text-yellow-500 text-lg">Unable to retrieve user information. Please ensure you are logged in.</p>
@@ -120,12 +117,6 @@ function Dashboard() {
     );
   }
 
-  // The root of the Dashboard page content.
-  // - No `min-h-screen` or `h-screen`.
-  // - No `flex flex-col` unless specifically needed for the grid's direct parent.
-  // - No `overflow-y-auto`.
-  // - Background color is inherited from App.jsx's <main> area.
-  // - Text color and padding are appropriate here.
   return (
     <div className={`px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
@@ -141,6 +132,7 @@ function Dashboard() {
             temperatureSensorData={temperatureSensorData}
             humiditySensorData={humiditySensorData}
             soilMoistureSensorData={soilMoistureSensorData}
+            waterLevelCardData={waterLevelCardData} // Pass water level data
             lightSensorDataAverageToday={lightSensorDataAverageToday}
             temperatureSensorDataAverageToday={temperatureSensorDataAverageToday}
             humiditySensorDataAverageToday={humiditySensorDataAverageToday}

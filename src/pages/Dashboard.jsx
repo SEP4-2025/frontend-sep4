@@ -4,12 +4,19 @@ import { useDarkMode } from '../context/DarkModeContext';
 import { compileDashboardData } from '../utils/dataCompiler';
 import { getGardenerIdFromToken, getSensorThresholds } from '../api';
 import NameCard from '../components/NameCard';
-import SensorCard from '../components/SensorCard';
+import SensorCard from '../components/SensorCard'; // Updated import
 import { SensorOverview } from '../components/SensorOverview';
 import NotificationCentre from '../components/NotificationCentre';
 import { AIModelPredictions } from '../components/AIModelPredictions';
 import ClockCard from '../components/ClockCard';
 import LoadingScreen from '../components/LoadingScreen';
+
+// Import icons for each sensor
+import lightIcon from '../assets/entypo--light-up.svg';
+import temperatureIcon from '../assets/solar--temperature-bold.svg';
+import humidityIcon from '../assets/hugeicons--humidity.svg';
+import soilMoistureIcon from '../assets/soil-moisture-icon.svg';
+import waterLevelIcon from '../assets/lets-icons--water.svg';
 
 function Dashboard() {
   const { darkMode } = useDarkMode();
@@ -126,23 +133,65 @@ function Dashboard() {
         <div className="hidden lg:block lg:col-span-1">
           <ClockCard />
         </div>
-        <div className="lg:col-span-6 mt-1">
+
+        {/* Sensor Cards Grid */}
+        <div className="lg:col-span-6 mt-1 grid grid-cols-2 lg:grid-cols-5 gap-4">
           <SensorCard
-            lightSensorData={lightSensorData}
-            temperatureSensorData={temperatureSensorData}
-            humiditySensorData={humiditySensorData}
-            soilMoistureSensorData={soilMoistureSensorData}
-            waterLevelCardData={waterLevelCardData} // Pass water level data
-            lightSensorDataAverageToday={lightSensorDataAverageToday}
-            temperatureSensorDataAverageToday={temperatureSensorDataAverageToday}
-            humiditySensorDataAverageToday={humiditySensorDataAverageToday}
-            soilMoistureSensorDataAverageToday={soilMoistureSensorDataAverageToday}
-            lightSensorDataAverageYesterday={lightSensorDataAverageYesterday}
-            temperatureSensorDataAverageYesterday={temperatureSensorDataAverageYesterday}
-            humiditySensorDataAverageYesterday={humiditySensorDataAverageYesterday}
-            soilMoistureSensorDataAverageYesterday={soilMoistureSensorDataAverageYesterday}
+            title="Light"
+            iconSrc={lightIcon}
+            currentData={lightSensorData}
+            averageToday={lightSensorDataAverageToday}
+            averageYesterday={lightSensorDataAverageYesterday}
+            unit=" lux"
+            precision={0}
+            cardClassName="lg:col-span-1" // Ensures each card takes up one column on large screens
+            dataTestId="light-sensor-card"
+          />
+          <SensorCard
+            title="Temperature"
+            iconSrc={temperatureIcon}
+            currentData={temperatureSensorData}
+            averageToday={temperatureSensorDataAverageToday}
+            averageYesterday={temperatureSensorDataAverageYesterday}
+            unit="°C"
+            precision={1}
+            cardClassName="lg:col-span-1"
+            dataTestId="temperature-sensor-card"
+          />
+          <SensorCard
+            title="Humidity"
+            iconSrc={humidityIcon}
+            currentData={humiditySensorData}
+            averageToday={humiditySensorDataAverageToday}
+            averageYesterday={humiditySensorDataAverageYesterday}
+            unit="%"
+            precision={1}
+            cardClassName="lg:col-span-1"
+            dataTestId="humidity-sensor-card"
+          />
+          <SensorCard
+            title="Soil Moisture"
+            iconSrc={soilMoistureIcon}
+            currentData={soilMoistureSensorData}
+            averageToday={soilMoistureSensorDataAverageToday}
+            averageYesterday={soilMoistureSensorDataAverageYesterday}
+            unit="%"
+            precision={1}
+            cardClassName="lg:col-span-1" // Takes 1 column on large screens
+            dataTestId="soil-moisture-sensor-card"
+          />
+          <SensorCard
+            title="Water Level"
+            iconSrc={waterLevelIcon}
+            currentData={waterLevelCardData} // Assuming waterLevelCardData has a 'value' property
+            additionalText={waterLevelCardData ? `Level: ${waterLevelCardData.value}%` : 'N/A'} // Custom text
+            unit="%" // Unit might not be directly displayed if using additionalText fully
+            precision={0}
+            cardClassName="col-span-2 lg:col-span-1" // Spans 2 columns on mobile, 1 on large screens
+            dataTestId="water-level-sensor-card"
           />
         </div>
+
         <div className="lg:col-span-6 mb-5">
           <SensorOverview
             temperatureHistory={temperatureHistory}

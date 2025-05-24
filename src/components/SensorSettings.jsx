@@ -48,15 +48,6 @@ function SensorSettings ({ selectedSensorKey, sensorConfig, onThresholdUpdate })
         }
     };
 
-    // eslint-disable-next-line no-unused-vars
-    const getButtonClasses = () => {
-        let baseClasses = `rounded-lg p-2 mt-4 text-white w-full`;
-        if (darkMode) {
-            return `${baseClasses} bg-slate-800 hover:bg-slate-700`;
-        }
-        return `${baseClasses} bg-gray-600 hover:bg-gray-700`;
-    };
-    
     const getPopupClasses = () => {
         if (!popupMessage.text) return 'hidden';
         let baseClasses = 'p-2 mt-2 mb-2 text-sm rounded-md text-center';

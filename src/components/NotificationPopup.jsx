@@ -35,7 +35,7 @@ function NotificationPopup({ isOpen, onClose, notificationData, notificationPref
 
         result.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
         setNotificationList(result);
-    }, [notificationData, notificationPreferences, notifications, selectedFilter]);
+    }, [notificationData, notificationPreferences, notifications, selectedFilter, combinedNotifications]);
 
     if (!isOpen) return null;
 

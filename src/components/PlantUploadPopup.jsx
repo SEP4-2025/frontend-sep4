@@ -1,4 +1,3 @@
-import logo from '../assets/GrowMate_Logo_Transparent.png';
 import filterArrow from '../assets/filterArrow.png';
 import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext.jsx';

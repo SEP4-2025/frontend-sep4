@@ -52,15 +52,15 @@ function TeamCarouselCard() {
 
     const teamMembers = [
         { name: "Andreea Caisim", description: "IOT team member" },
-        { name: "Dario Montes", description: "Frontend warrior" },
+        { name: "Dario Montes", description: "Frontend team member" },
         { name: "Darja Jefremova", description: "IOT team member" },
         { name: "Dimitar Asenov Nizamov", description: "IOT team member" },
-        { name: "Jakub Abramek", description: "Frontend warrior" },
+        { name: "Jakub Abramek", description: "Frontend team member" },
         { name: "Maciej Matuszewski", description: "Backend team member" },
-        { name: "Mario Cuellar Prieto", description: "Frontend warrior" },
+        { name: "Mario Cuellar Prieto", description: "Frontend team member" },
         { name: "Mario-Adrian Vlad", description: "Backend team member" },
         { name: "Marius Marcoci", description: "IOT team member" },
-        { name: "Mateusz Samborski", description: "Frontend warrior" },
+        { name: "Mateusz Samborski", description: "Frontend team member" },
         { name: "Plamen Plamenov Michev", description: "IOT team member" },
         { name: "Romans Mihalonoks", description: "Backend team member" },
         { name: "Samuel Kacenga", description: "Backend team member" },
@@ -78,7 +78,7 @@ function TeamCarouselCard() {
                                     className="rounded-full w-28 h-28 mb-2 mx-auto "
                                 />
                                 <h3 className="Jacques-Francois text-xl">{member.name}</h3>
-                                <p className="Jacques-Francois text-sm">{member.description}</p>
+                                <p className="Jacques-Francois text-sm ">{member.description}</p>
                             </div>
                         ))}
                     </Slider>

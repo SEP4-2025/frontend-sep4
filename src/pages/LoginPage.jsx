@@ -91,6 +91,12 @@ function LoginPage({ setIsAuthenticated }) {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleLogin();
+                                }
+                            }}
                             className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${darkMode ? 'placeholder-[#a3bfb3] text-white ' : 'placeholder-[#7a8678]'}`}
                             placeholder="Insert Password"
                         />

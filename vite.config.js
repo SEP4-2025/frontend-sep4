@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        // eslint-disable-next-line no-undef
         target: process.env.VITE_PROXY_TARGET || 'http://localhost:8000',  // Use environment variable
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '') // Corrected regex

@@ -84,13 +84,13 @@ function PlantGalleryCard({ name, time, imageUrl, note, pictureId, onNoteUpdate,
     return (
         <>
             <div className={`Manrope flex flex-col items-center justify-center rounded-lg p-4 shadow-md border-1 border-[#AFA8A8] ${darkMode ? 'bg-slate-700' : 'bg-[#F3F3F3]'}`}>
-                <div className='flex flex-row gap-4 w-full'>
-                    <div className={`mr-auto rounded-lg px-6 py-4 text-center flex justify-start ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                        <p>{name}</p>
-                    </div>
-                    <div className={`ml-auto rounded-lg p-4 text-center flex justify-end gap-4 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                        <img src={calendarIcon} alt="calendar-icon" className={`w-6 h-6 ${darkMode ? 'filter invert' : ''}`} />
-                        <p className={` ${darkMode ? 'text-[#dfdde4]' : 'text-gray-400'}`}>{time}</p>
+                <div className={`w-full p-4 rounded-lg ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                    <div className='flex flex-col space-y-2'>
+                        <p className='text-center font-medium'>{name}</p>
+                        <div className='flex items-center justify-center gap-2'>
+                            <img src={calendarIcon} alt="calendar-icon" className={`w-5 h-5 ${darkMode ? 'filter invert' : ''}`} />
+                            <p className={`text-sm ${darkMode ? 'text-[#dfdde4]' : 'text-gray-400'}`}>{time}</p>
+                        </div>
                     </div>
                 </div>
                 <div className='mt-4 w-full h-90 overflow-hidden'>

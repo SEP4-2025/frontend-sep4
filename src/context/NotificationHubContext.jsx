@@ -5,7 +5,7 @@ const HUB_URL = 'https://webapi-service-68779328892.europe-north2.run.app/notifi
 const NotificationContext = createContext();
 
 
-let globalConnection = null; // Singleton pattern to maintatin a single connection, avoiding multiple connections
+let globalConnection = null; // Singleton pattern to maintain a single connection, avoiding multiple connections
 let connectionCounter = 0; // Tracks how many components are using the connection
 
 // Function to get the auth token from session storage
@@ -23,8 +23,8 @@ export const NotificationProvider = ({ children }) => {
     if (storedNotifications) {
       try {
         setNotifications(JSON.parse(storedNotifications));
-      } catch (error) {
-        // console.error('Error parsing stored notifications:', error);
+      } catch {
+        // console.error('Error parsing stored notifications');
       }
     }
   }, []);

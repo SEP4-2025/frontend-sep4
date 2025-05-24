@@ -48,6 +48,7 @@ function SensorSettings ({ selectedSensorKey, sensorConfig, onThresholdUpdate })
         }
     };
 
+    // eslint-disable-next-line no-unused-vars
     const getButtonClasses = () => {
         let baseClasses = `rounded-lg p-2 mt-4 text-white w-full`;
         if (darkMode) {

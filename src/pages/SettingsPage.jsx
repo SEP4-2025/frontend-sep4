@@ -30,8 +30,11 @@ const SettingsPage = () => {
   const [error, setError] = useState(null);
   const { darkMode, setDarkMode } = useDarkMode();
   const { fontSizeKey, setFontSizeKey, FONT_SIZES_CONFIG } = useFontSize();
+  // eslint-disable-next-line no-unused-vars
   const [theme, setTheme] = useState('green');
+  // eslint-disable-next-line no-unused-vars
   const [tempMin, setTempMin] = useState(18);
+  // eslint-disable-next-line no-unused-vars
   const [tempMax, setTempMax] = useState(30);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const SettingsPage = () => {
     try {
       await toggleNotificationPreferenceData(gardenerId, type);
       setNotificationPrefs(prev => prev.map(p => p.gardenerId === gardenerId && p.type === type ? { ...p, isEnabled: !p.isEnabled } : p));
-    } catch (err) {
+    } catch {
       setError('Failed to update notification preference.');
     }
   };

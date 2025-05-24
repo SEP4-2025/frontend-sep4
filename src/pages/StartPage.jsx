@@ -23,10 +23,7 @@ function StartPage () {
                     </div>
                     <p className="text-white Jacques-Francois sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">GrowMate</p>
                     <button onClick={goToLogin} className="Manrope w-full bg-[#4a8c3d]/20 hover:bg-[#4a8c3d] text-white py-2 px-4 rounded-lg text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-                        Login
-                    </button>
-                    <button className="Manrope w-full bg-[#4a8c3d]/20 hover:bg-[#4a8c3d] text-white py-2 px-4 rounded-lg text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-                        Reset password
+                        Get Started
                     </button>
                     <hr className="border-t border-white/50 my-2 h-px w-full"></hr>
                     <div className='p-4 w-full h-20 text-center flex flex-row justify-center items-center gap-6'>

@@ -1,7 +1,7 @@
 import { useDarkMode } from '../context/DarkModeContext';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Line } from 'react-chartjs-2';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 import {
   Chart as ChartJS,

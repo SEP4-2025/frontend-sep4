@@ -10,16 +10,6 @@ import {
   getSensorThresholds,
   getLogs,
   getWaterPumpById,
-  // eslint-disable-next-line no-unused-vars
-  getWaterPumpWaterLevel,
-  // eslint-disable-next-line no-unused-vars
-  toggleAutomationStatus,
-  // eslint-disable-next-line no-unused-vars
-  triggerManualWatering,
-  // eslint-disable-next-line no-unused-vars
-  updateCurrentWaterLevel,
-  // eslint-disable-next-line no-unused-vars
-  updateWaterPumpThreshold,
   getWaterUsageHistory,
   getAllPlants,
   getAllPicturesByPlantId,

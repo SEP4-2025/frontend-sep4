@@ -23,8 +23,8 @@ export const NotificationProvider = ({ children }) => {
     if (storedNotifications) {
       try {
         setNotifications(JSON.parse(storedNotifications));
-      } catch {
-        // console.error('Error parsing stored notifications');
+      } catch (error) {
+        console.error('Error parsing stored notifications:', error);
       }
     }
   }, []);

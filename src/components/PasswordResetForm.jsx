@@ -51,7 +51,7 @@ function PasswordResetForm({ onShowLogin }) {
                     const errorJson = JSON.parse(responseText);
                     errorDetail = errorJson.message || errorJson.title || responseText;
                 } 
-                catch (_jsonError) { 
+                catch { 
                     // Ignore if not JSON, use text as is
                 }
                 setMessage(`Error: ${response.status} - ${errorDetail}`);

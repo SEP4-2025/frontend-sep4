@@ -73,17 +73,30 @@ npm run preview
 frontend-sep4/
 ├── public/             # Static files
 ├── src/                # Source files
+│   ├── api/            # API
 │   ├── assets/         # Images, icons, etc.
+│   ├── components/     # Components used by the pages
+│   ├── context/        # Context files (Dark Mode, Font Size...)
+│   ├── pages/          # Pages
+│   ├── tests/          # Component tessting files
+│   ├── utils/          # Data compiler
 │   ├── App.css         # Component-specific styles
 │   ├── App.jsx         # Main application component
 │   ├── index.css       # Global styles and Tailwind directives
+│   ├── setupTests.js   # Setup for the test eviroment
 │   └── main.jsx        # Application entry point
-├── .eslintrc.json      # ESLint configuration
+├── Dockerfile          # Docker image building
+├── .eslint.config.js   # ESLint configuration
+├── index.html          # Entry point of the app
+├── jest.config.cjs     # JEST configuration
 ├── package.json        # Dependencies and scripts
 ├── vite.config.js      # Vite configuration with tailwind
 ```
--- to be changed
 
 ## Connecting to Backend
 
-The frontend communicates with the backend services. Ensure the backend services are running when developing or testing the full application stack.
+The frontend communicates with the backend services trough endpoints. Ensure the backend services are running when developing or testing the full application stack.
+
+## Github Pages
+
+This repository is hosted on GitHub pages. Visit it at any time at https://sep4-2025.github.io/frontend-sep4/

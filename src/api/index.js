@@ -6,6 +6,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'https://webapi-service-6877932
  */
 const getAuthToken = () => sessionStorage.getItem('token');
 
+
 /**
  * Creates the Authorization header if a token exists.
  * @returns {Object} An object containing the Authorization header if a token exists, otherwise an empty object.
@@ -71,28 +72,66 @@ export async function confirmPassword(password) {
     throw new Error('Password is required');
   }
 
+  const token = getAuthToken();
+  if (!token) {
+    // If there's no token, this action requires authentication.
+    // Trigger the standard unauthorized handling which should lead to logout.
+    handleUnauthorized();
+    throw new Error('Authentication required to confirm password.');
+  }
+
+  const apiHeaders = createAuthHeaders();
+  apiHeaders['Content-Type'] = 'application/json';
+
   try {
-    const response = await fetchWithAuthHandling(`${BASE_URL}/Auth/confirm-password`, {
+    const response = await fetch(`${BASE_URL}/Auth/confirm-password`, {
       method: 'POST',
+      headers: apiHeaders,
       body: JSON.stringify({
         Password: password,
-        ConfirmPassword: password
+        ConfirmPassword: password // Assuming this is the expected body structure
       })
     });
 
-    if (!response.ok) {
-      // For non-401 errors, try to parse error message from backend
-      const errorData = await response.json().catch(() => ({})); // Default if JSON parsing fails
-      throw new Error(errorData.message || `Password confirmation failed: ${response.status}`);
+    if (response.status === 401) {
+      // Special handling for 401 from /Auth/confirm-password:
+      // Assume it means incorrect password to prevent immediate logout.
+      // If the token was genuinely invalid, other API calls would trigger logout.
+      let errorData = { message: 'Incorrect password. Please try again.' };
+      try {
+        const jsonData = await response.json();
+        if (jsonData && jsonData.message) {
+          errorData.message = jsonData.message;
+        }
+      } catch (e) {
+        // Ignore if response is not JSON or JSON parsing fails
+      }
+      throw new Error(errorData.message);
     }
 
-    return true;
-  } catch (error) {
-    // Log if it's not the 'Unauthorized' error already handled by dispatching event
-    if (error.message !== 'Unauthorized') {
-      console.error('Error confirming password:', error);
+    if (!response.ok) {
+      // Handle other non-successful statuses (e.g., 400, 403, 500)
+      let errorData = { message: `Password confirmation failed with status: ${response.status}` };
+      try {
+        const jsonData = await response.json();
+        if (jsonData && jsonData.message) {
+          errorData.message = jsonData.message;
+        }
+      } catch (e) {
+        // Ignore
+      }
+      throw new Error(errorData.message);
     }
-    throw error; // Re-throw to be handled by the caller
+
+    return true; // Password confirmed successfully
+  } catch (error) {
+    // Log unexpected errors, but not the ones we crafted for UI display
+    if (!(error.message.includes('Incorrect password') ||
+          error.message.includes('Password confirmation failed') ||
+          error.message.includes('Authentication required'))) {
+      console.error('Network or unexpected error during password confirmation:', error);
+    }
+    throw error; // Re-throw for the UI (e.g., PasswordConfirmPopup) to handle
   }
 }
 

@@ -1,14 +1,12 @@
 import './App.css';
-import { HashRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { HashRouter as Router, Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
-// Components
 import Navbar from './components/Navbar';
 import MobileHeader from './components/MobileHeader';
 import { useMobileDetection } from './utils/useMobileDetection';
-import { useDarkMode } from './context/DarkModeContext'; 
+import { useDarkMode } from './context/DarkModeContext';
 
-// Pages
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
@@ -29,10 +27,29 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const isMobile = useMobileDetection();
-  const { darkMode } = useDarkMode(); 
+  const { darkMode } = useDarkMode();
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setIsAuthenticated(false);
+      navigate('/loginPage', { replace: true });
+    };
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
+  }, [navigate]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token && isAuthenticated) {
+      setIsAuthenticated(false);
+    } else if (token && !isAuthenticated) {
+      setIsAuthenticated(true);
+    }
+  }, [location, isAuthenticated]);
 
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
@@ -70,6 +87,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to="/loginPage" replace /> : <StartPage />} />
           <Route path="/loginPage" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+          
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/loginPage" replace />} />
           <Route path="/water-management" element={isAuthenticated ? <WaterManagement /> : <Navigate to="/loginPage" replace />} />
           <Route path="/sensor-view" element={isAuthenticated ? <SensorViewPage /> : <Navigate to="/loginPage" replace />} />
@@ -77,7 +95,8 @@ function AppContent() {
           <Route path="/plant-management" element={isAuthenticated ? <PlantManagement /> : <Navigate to="/loginPage" replace />} />
           <Route path="/settings" element={isAuthenticated ? <SettingsPage /> : <Navigate to="/loginPage" replace />} />
           <Route path="/about" element={isAuthenticated ? <AboutUsPage /> : <Navigate to="/loginPage" replace />} />
-          <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/loginPage"} />} />
+          
+          <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/loginPage"} replace />} />
         </Routes>
       </main>
     </div>

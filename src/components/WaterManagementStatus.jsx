@@ -1,6 +1,6 @@
 import { useDarkMode } from '../context/DarkModeContext';
 
-function WaterManagementStatus ({ waterNeeded, lastWatered, waterPumpStatus, isLoading }) {
+function WaterManagementStatus ({ lastWatered, waterPumpStatus, isLoading }) {
     const { darkMode } = useDarkMode();
     
     // Format the last watered time

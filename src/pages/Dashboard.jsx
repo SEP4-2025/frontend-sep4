@@ -153,7 +153,7 @@ function Dashboard() {
 
   return (
     <div className={`px-4 py-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
         <div className="lg:col-span-5">
           <NameCard greenhouseData={greenhouseData} />
         </div>

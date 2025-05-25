@@ -16,6 +16,8 @@ const CloseIcon = () => (
   </svg>
 );
 
+const SUPPORT_URL = import.meta.env.VITE_SUPPORT_URL;
+
 function Navbar({ isMobileNavOpen, toggleMobileNav }) {
   const { darkMode } = useDarkMode();
   const location = useLocation();
@@ -113,13 +115,18 @@ function Navbar({ isMobileNavOpen, toggleMobileNav }) {
         {/* Bottom Section with Support and Logout: mt-auto pushes to bottom if space available */}
         <div className="mt-auto p-4 border-t border-gray-700">
           {/* Support Section */}
-          <div className={`flex items-center mb-4 p-2 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-[#345c4e]'}`}>
+          <a
+            href={SUPPORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center mb-4 p-2 rounded-lg ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-[#345c4e] hover:bg-[#4a7c6a]'}`}
+          >
             <img src={supportIcon} alt="Support" width="30" height="30" className="rounded-full mr-3 filter invert" />
             <div>
               <p className="text-sm">Need help?</p>
               <p className="text-xs text-gray-400">Contact support</p>
             </div>
-          </div>
+          </a>
           
           {/* Logout Button */}
           <button

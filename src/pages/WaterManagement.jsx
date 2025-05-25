@@ -43,7 +43,7 @@ function WaterManagement () {
         const intervalId = setInterval(fetchData, 30000);
         
         return () => clearInterval(intervalId);
-    }, [pumpId]);
+    }, []);
     
     const refreshData = async () => {
         try {

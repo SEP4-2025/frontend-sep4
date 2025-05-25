@@ -144,7 +144,7 @@ function PlantGalleryCard({ name, time, imageUrl, note, pictureId, onNoteUpdate,
                         </button>
                     )}
                     <button onClick={handleDeleteClick} className={`ml-auto cursor-pointer rounded-lg px-6 py-4 text-center flex flex-row gap-4 items-center border-1 border-[#AFA8A8] hover:bg-opacity-80 transition-colors ${darkMode ? 'bg-red-800 hover:bg-red-700 text-white border-red-700' : 'bg-red-500 hover:bg-red-600 text-white border-red-400'}`}>
-                        <span>Delete note</span>
+                        <span>Delete photo</span>
                         <img src={deleteIcon} alt="delete-icon" className={`w-5 h-5 ${darkMode ? 'invert' : ''}`} />
                     </button>
                 </div>

@@ -32,8 +32,7 @@ export async function compileWaterPumpData(pumpId = 1) {
     const capacity = waterPump?.waterTankCapacity ?? 1000; // Changed from capacity
     const autoWateringStatus = waterPump?.autoWateringEnabled ?? false; // Changed from autoWatering
     const threshold = waterPump?.thresholdValue ?? 50; // Changed from threshold
-    // lastWatered is not in getWaterPumpById JSDoc, using fallback
-    const lastWateredTime = waterPump?.lastWatered || new Date().toISOString();
+    const lastWateredTime = waterPump?.lastWateredTime || new Date().toISOString();
 
 
     return {

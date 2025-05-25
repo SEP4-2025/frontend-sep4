@@ -165,8 +165,8 @@ function PlantGalleryCard({ name, time, imageUrl, note, pictureId, onNoteUpdate,
                     isOpen={isDeleteModalOpen}
                     onClose={() => setIsDeleteModalOpen(false)}
                     onConfirm={handleDeleteConfirm}
-                    title="Delete Note"
-                    message="Are you sure you want to delete this note?"
+                    title="Delete Photo"
+                    message="Are you sure you want to delete this photo?"
                 />
             )}
         </>

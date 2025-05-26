@@ -56,7 +56,6 @@ const SettingsPage = () => {
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-slate-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      {/* MobileHeader removed from here */}
       <main className="flex-grow overflow-y-auto p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row gap-6"> {/* Main two-column container */}
           {/* Left Column */}

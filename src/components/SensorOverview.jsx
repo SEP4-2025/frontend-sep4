@@ -6,7 +6,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const defaultSensorHistory = [];
-const defaultLatestValue = { value: null, date: null }; // Using object for consistency
+const defaultLatestValue = { value: null, date: null };
 
 export function SensorOverview({
   temperatureHistory = defaultSensorHistory,
@@ -197,16 +197,15 @@ export function SensorOverview({
       max: Math.ceil(currentYMax),
     });
 
-  }, [selectedSensor, timeframe, temperatureHistory, humidityHistory, lightHistory, soilMoistureHistory, darkMode]); // Added darkMode to dependencies for getColor
+  }, [selectedSensor, timeframe, temperatureHistory, humidityHistory, lightHistory, soilMoistureHistory, darkMode]);
 
   const getColor = (sensorType) => {
-    // Colors can be adjusted based on dark mode if needed, or kept static
     switch (sensorType) {
       case "temperature": return "#FF0000"; 
       case "humidity": return "#0000FF";    
       case "light": return "#FFD700";       
       case "soilMoisture": return "#008000"; 
-      default: return darkMode ? "#60a5fa" : "#2563eb"; // Example: Tailwind blue-400/blue-600
+      default: return darkMode ? "#60a5fa" : "#2563eb"; 
     }
   };
 

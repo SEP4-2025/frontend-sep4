@@ -27,11 +27,11 @@ export async function compileWaterPumpData(pumpId = 1) {
   try {
     const waterPump = await getWaterPumpById(pumpId);
 
-    // Ensure waterPump and its properties exist, using new property names
-    const currentWaterLevel = waterPump?.waterLevel ?? 0; // Changed from currentWaterLevel
-    const capacity = waterPump?.waterTankCapacity ?? 1000; // Changed from capacity
-    const autoWateringStatus = waterPump?.autoWateringEnabled ?? false; // Changed from autoWatering
-    const threshold = waterPump?.thresholdValue ?? 50; // Changed from threshold
+    // Ensure waterPump and its properties exist
+    const currentWaterLevel = waterPump?.waterLevel ?? 0; 
+    const capacity = waterPump?.waterTankCapacity ?? 1000; 
+    const autoWateringStatus = waterPump?.autoWateringEnabled ?? false; 
+    const threshold = waterPump?.thresholdValue ?? 50; 
     const lastWateredTime = waterPump?.lastWateredTime || new Date().toISOString();
 
 
@@ -104,8 +104,8 @@ export async function compileDashboardData(gardenerId) {
   if (waterPumpInfo && typeof waterPumpInfo.waterLevel === 'number' && typeof waterPumpInfo.waterTankCapacity === 'number' && waterPumpInfo.waterTankCapacity > 0) {
     waterLevelCardDisplayData = {
         value: (waterPumpInfo.waterLevel / waterPumpInfo.waterTankCapacity) * 100, // Percentage
-        currentWaterLevel: waterPumpInfo.waterLevel, // Changed from currentLevelMl
-        capacity: waterPumpInfo.waterTankCapacity // Changed from capacityMl
+        currentWaterLevel: waterPumpInfo.waterLevel, 
+        capacity: waterPumpInfo.waterTankCapacity 
     };
   }
 

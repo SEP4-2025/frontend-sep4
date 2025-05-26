@@ -89,13 +89,12 @@ export async function confirmPassword(password) {
       headers: apiHeaders,
       body: JSON.stringify({
         Password: password,
-        ConfirmPassword: password // Assuming this is the expected body structure
+        ConfirmPassword: password
       })
     });
 
     if (response.status === 401) {
       // Special handling for 401 from /Auth/confirm-password:
-      // Assume it means incorrect password to prevent immediate logout.
       // If the token was genuinely invalid, other API calls would trigger logout.
       let errorData = { message: 'Incorrect password. Please try again.' };
       try {
@@ -472,7 +471,6 @@ export async function getSensorStatus(type) {
     if (error.message !== 'Unauthorized') {
       console.error(`Error in getSensorStatus for type ${type}:`, error);
       // For 'all' type, if an individual check throws 'Unauthorized', it will propagate here.
-      // Otherwise, for other errors, we might want to return false as per original logic.
       if (lowerType === 'all' && error.message !== 'Unauthorized') return false; // If part of 'all' check fails with non-auth error
     }
     throw error; // Propagate 'Unauthorized' or other critical errors
@@ -976,8 +974,6 @@ export async function uploadPicture(plantId, pictureFile, note) {
     if (pictureFile instanceof File) {
       formData.append('File', pictureFile);
     } else if (typeof pictureFile === 'string') {
-      // This case might be problematic if the backend strictly expects a file upload.
-      // Assuming backend can handle a string as 'File' if it's a URL or base64, etc.
       formData.append('File', pictureFile);
     } else {
         throw new Error("pictureFile must be a File object or a string URL.");
@@ -986,14 +982,9 @@ export async function uploadPicture(plantId, pictureFile, note) {
       formData.append('Note', note);
     }
 
-    // For FormData, Content-Type is set automatically by the browser, so don't set it in headers.
-    // fetchWithAuthHandling is designed to skip 'Content-Type: application/json' for FormData.
     const res = await fetchWithAuthHandling(`${BASE_URL}/Picture/UploadPicture`, {
       method: 'POST',
       body: formData,
-      // `credentials: 'include'` was in original, but typically not needed with token-based auth.
-      // If your backend specifically requires cookies even with Bearer tokens, you can add it.
-      // For now, relying on Authorization header.
     });
 
     if (!res.ok) {
@@ -1041,10 +1032,8 @@ export async function deletePicture(pictureId) {
  */
 export async function editPictureNote(pictureId, note) {
   try {
-    // The endpoint seems to expect id and note as query parameters for a PUT request.
     const res = await fetchWithAuthHandling(`${BASE_URL}/Picture?id=${pictureId}&note=${encodeURIComponent(note)}`, {
       method: 'PUT',
-      // `credentials: 'include'` was in original. See comment in uploadPicture.
     });
     if (!res.ok) throw new Error(`Failed to edit picture note for ID ${pictureId}. Status: ${res.status}`);
     return res.json();
@@ -1158,7 +1147,7 @@ export const getGardenerIdFromToken = () => {
           .join('')
       );
       const decodedToken = JSON.parse(jsonPayload);
-      const gardenerId = decodedToken.nameid; // Standard claim for NameIdentifier in .NET JWTs
+      const gardenerId = decodedToken.nameid;
 
       if (!gardenerId) {
         console.warn("Gardener ID (nameid claim) not found in token or is empty. Token payload:", decodedToken);

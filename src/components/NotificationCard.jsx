@@ -9,7 +9,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 function NotificationCard({ notification }) {
     const { darkMode } = useDarkMode();
 
-    // Helper function to determine the importance tier of the notification
+    // Determine the importance tier of the notification
     const getImportanceTier = () => {
         const type = notification?.type?.toLowerCase();
         const message = notification?.message;
@@ -19,7 +19,7 @@ function NotificationCard({ notification }) {
         }
 
         if (!message) {
-            return "Info"; // Default to Info if message is not available
+            return "Info"; // Default to "Info"
         }
 
         // Regex to find a number followed by '%' or 'Celcius' (case-insensitive)
@@ -43,7 +43,7 @@ function NotificationCard({ notification }) {
         return "Info";
     };
 
-    // Helper function to get the notification icon based on the type
+    // Get the notification icon based on the type
     const getNotificationIconSVG = () => {
         const type = notification?.type?.toLowerCase();
 

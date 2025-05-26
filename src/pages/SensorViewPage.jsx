@@ -94,7 +94,6 @@ function SensorViewPage() {
         setSelectedSensorKey(sensorKey);
     };
 
-    // eslint-disable-next-line no-unused-vars
     const handleThresholdUpdate = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };

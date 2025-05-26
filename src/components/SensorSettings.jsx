@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
-import { updateSensorThreshold } from '../api/index.js'; // Import the API function
+import { updateSensorThreshold } from '../api/index.js';
 
-// SensorSettings now accepts props to know which sensor is selected
 function SensorSettings ({ selectedSensorKey, sensorConfig, onThresholdUpdate }) {
     const { darkMode } = useDarkMode();
     const [thresholdValue, setThresholdValue] = useState('');

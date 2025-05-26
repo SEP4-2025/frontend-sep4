@@ -103,7 +103,7 @@ export async function confirmPassword(password) {
           errorData.message = jsonData.message;
         }
       } catch (e) {
-        // Ignore if response is not JSON or JSON parsing fails
+        console.error(e);
       }
       throw new Error(errorData.message);
     }
@@ -117,7 +117,7 @@ export async function confirmPassword(password) {
           errorData.message = jsonData.message;
         }
       } catch (e) {
-        // Ignore
+        console.error(e);
       }
       throw new Error(errorData.message);
     }
